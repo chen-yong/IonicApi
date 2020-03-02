@@ -1,4 +1,5 @@
-﻿using IonicApi.Models;
+﻿using IonicApi.Common;
+using IonicApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,15 @@ namespace IonicApi.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<IEnumerable<PeCourse>> GeCoursesAsync()
+        /// <summary>
+        /// 根据登录用户的authtoken获取课程
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeCourse>> GeCoursesAsync(string authtoken)
         {
-            return await _context.PeCourse.ToListAsync();
+            int userId = AuthtokenUtility.GetId(authtoken);
+            return await _context.PeCourse.Where(e=>e.CreateUserId==userId&&e.IsDel==false).OrderByDescending(e=>e.CreateTime).ToListAsync();
         }
        
     }

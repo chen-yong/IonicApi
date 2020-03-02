@@ -7,29 +7,29 @@ namespace IonicApi.Common
 {
     public class AuthtokenUtility
     {
-        private static string crykey = "KEY4AUTH";
+          private static string crykey = "KEY4AUTH";
         /// <summary>
         /// 生成Token
         /// </summary>
         /// <param name="id"></param>
         /// <param name="timeout">小时</param>
         /// <returns></returns>
-        public static string Create<TKey>(TKey id, int timeout)
+        public static string Create(int id, int timeout)
         {
             return DESUtil.Encode(string.Format("{0}-{1}-{2:yyyyMMddHHmmss}", id, timeout, DateTime.Now), crykey);
         }
 
-        public static TKey GetId<TKey>(string token)
+        public static int GetId(string token)
         {
             string uncrystr = DESUtil.Decode(token, crykey);
-            return (TKey)Convert.ChangeType(uncrystr.Split('-')[0], typeof(TKey));
+            return int.Parse(uncrystr.Split('-')[0]);
         }
         /// <summary>
         /// 验证令牌是否有效
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool ValidToken<TKey>(string token)
+        public static bool ValidToken(string token)
         {
             try
             {
@@ -38,13 +38,20 @@ namespace IonicApi.Common
                 if (factors.Length == 3)
                 {
                     int tmp;
-                    if (int.TryParse(factors[1], out tmp))
+                    if (int.TryParse(factors[0], out tmp))
                     {
-                        DateTime createDatetime;
-                        if (DateTime.TryParseExact(factors[2], "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out createDatetime))
+                        if (int.TryParse(factors[1], out tmp))
                         {
-                            DateTime endTime = createDatetime.AddHours(tmp);
-                            return endTime > DateTime.Now;
+                            DateTime createDatetime;
+                            if (DateTime.TryParseExact(factors[2], "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out createDatetime))
+                            {
+                                DateTime endTime = createDatetime.AddHours(tmp);
+                                return endTime > DateTime.Now;
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
                         else
                         {

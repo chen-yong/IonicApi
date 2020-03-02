@@ -5,6 +5,10 @@ namespace IonicApi.Models
 {
     public partial class PeUser
     {
+        public bool IsVaild { get { return UserIdentity01 == "1"; } }
+        public bool IsTeacher { get { return UserIdentity03 == "2"; } }
+        public string UserType { get { return IsTeacher ? "教师" : "学生"; } }
+        public string SearchKey { get { return RealName + "//" + UserName; } }
         public PeUser()
         {
             PeCourse = new HashSet<PeCourse>();
