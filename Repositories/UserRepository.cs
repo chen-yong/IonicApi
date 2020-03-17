@@ -17,16 +17,19 @@ namespace IonicApi.Repositories
         }
 
         /// <summary>
-        /// 获取所有人员信息（连接数据库测试数据）
+        /// 查询课程所属的学生
         /// </summary>
+        /// <param name="courseId">课程Id</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeUser>> GetUsersAsync()
+        public async Task<IEnumerable<PeUser>> GetUsersAsync(int courseId)
         {
-            return await _context.PeUser.ToListAsync();
+            var userId = from e in _context.PeCourseStudent where e.CourseId == courseId select e.UserId;
+            var userList = from a in _context.PeUser where a.Id.ToString().Contains(userId.ToString()) select a;
+            return await userList.ToListAsync();
         }
 
         /// <summary>
-        /// 获取用户
+        /// 获取登录用户
         /// </summary>
         /// <param name="account">账号</param>
         /// <param name="pwd">密码</param>
@@ -36,14 +39,19 @@ namespace IonicApi.Repositories
             return await _context.PeUser.FirstOrDefaultAsync(e => (e.UserName == account || e.Email == account) && e.Password == pwd && e.UserIdentity01 != AppConstants.UserStatus.Deleted);
         }
 
-        public Task<PeUser> GetUserAsync(int Id)
+        /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="Id">用户Id</param>
+        /// <returns></returns>
+        public async Task<PeUser> GetUserAsync(int Id)
         {
-            throw new NotImplementedException();
+            return await _context.PeUser.SingleOrDefaultAsync(e => e.Id==Id);
         }
 
         public void AddUser(PeUser user)
         {
-            throw new NotImplementedException();
+            _context.PeUser.Add(user);
         }
 
         public void UpdateUser(PeUser user)
@@ -55,5 +63,21 @@ namespace IonicApi.Repositories
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// 用户名是否存在
+        /// </summary>
+        /// <param name="name">用户名</param>
+        /// <returns></returns>
+        public async Task<bool> UserExists(string name)
+        {
+            return await _context.PeUser.AnyAsync(e => e.UserName == name);
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return await _context.SaveChangesAsync() >= 0;
+        }
+
     }
 }

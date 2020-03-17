@@ -17,25 +17,25 @@ namespace IonicApi
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-            //var host = CreateHostBuilder(args).Build();
-            //using (var scope = host.Services.CreateScope())
-            //{
-            //    try
-            //    {
-            //        var dbContext = scope.ServiceProvider.GetService<PureExam_DevContext>();
-            //        //删除
-            //        //dbContext.Database.EnsureDeleted();
-            //        //数据库迁移
-            //        dbContext.Database.Migrate();
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        //日志服务
-            //        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            //        logger.LogError(e, message: "Database Migration Error!");
-            //    }
-            //}
-            //host.Run();
+            var host = CreateHostBuilder(args).Build();
+            using (var scope = host.Services.CreateScope())
+            {
+                try
+                {
+                    var dbContext = scope.ServiceProvider.GetService<PureExam_DevContext>();
+                    //删除
+                    //dbContext.Database.EnsureDeleted();
+                    //数据库迁移
+                    //dbContext.Database.Migrate();
+                }
+                catch (Exception e)
+                {
+                    //日志服务
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(e, message: "Database Migration Error!");
+                }
+            }
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

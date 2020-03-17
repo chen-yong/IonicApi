@@ -13,8 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IonicApi.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route(template: "api/Login/Course")]
     public class CourseController : ControllerBase
     { 
         private readonly ICourseRepository _courseRepository;
@@ -26,6 +26,11 @@ namespace IonicApi.Controllers
             //注册AutoMapper
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+        /// <summary>
+        /// 根据登录人authtoken获取课程信息
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourses(string authtoken)
         {
@@ -40,7 +45,7 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 11;
             }
-            return Ok(ret.retcode);
+            return Ok(ret);
         }
 
     }
