@@ -9,6 +9,7 @@ namespace IonicApi.Repositories
     public interface IUserRepository
     {
         Task<IEnumerable<PeUser>> GetUsersAsync(int courseId);
+        Task<IEnumerable<PeUser>> GetUsersAsync(int courseId,string keyword);
         Task<PeUser> GetUserAsync(string account, string pwd);
         Task<PeUser> GetUserAsync(int Id);
         void AddUser(PeUser user);

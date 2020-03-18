@@ -128,16 +128,38 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<UserDto>>> SearchUser(int courseId,  string keyword)
-        //{
-        //    if (!await _courseRepository.CourseExistAsync(courseId)) 
-        //    {
-        //        return NotFound();
-        //    }
-        //    var users=await _userRepository.GetUsersAsync()
 
-        //}
+        public async Task<ActionResult<PeUser>>EditUser(int id,PeUser peUser)
+        {
+            PeUser entity = await _userRepository.GetUserAsync(id);
+            if (entity != null)
+            {
+                ret.retcode = 0;
+            }
+            else
+            { 
+            
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 查询学生
+        /// </summary>
+        /// <param name="courseId">课程ID</param>
+        /// <param name="keyword">关键词</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDto>>> SearchUser(int courseId, string keyword)
+        {
+            if (!await _courseRepository.CourseExistAsync(courseId))
+            {
+                return NotFound();
+            }
+            var users = await _userRepository.GetUsersAsync(courseId, keyword);
+            var UserDots = _mapper.Map<IEnumerable<UserDto>>(users);
+            return Ok(UserDots);
+        }
 
     }
 }

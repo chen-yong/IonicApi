@@ -1,18 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+
 
 namespace IonicApi.Dtos
 {
-    public class UserDto
+    public class UserAddDto
     {
-        public int Id { get; set; }
+        [Display(Name = "用户名")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        [MaxLength(20, ErrorMessage = "{0}的最大长度不可以超过{1}")]
         public string UserName { get; set; }
-        public string UserNO { get; set; }
+        [Display(Name = "密码")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        [StringLength(40, MinimumLength = 6, ErrorMessage = "{0}的长度范围从{2}到{1}")]
         public string Password { get; set; }
-        public string  RealName { get; set; }
-        public string  Sex { get; set; }
+        public string RealName { get; set; }
+        public string Sex { get; set; }
         public DateTime Brithday { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }

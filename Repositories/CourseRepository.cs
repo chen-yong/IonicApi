@@ -27,9 +27,9 @@ namespace IonicApi.Repositories
             return await _context.PeCourse.Where(e=>e.Teacher== userId && !e.IsDel && e.Status == 0).OrderByDescending(e => e.UpdateTime).ToListAsync();
         }
         /// <summary>
-        /// 
+        /// 课程是否存在
         /// </summary>
-        /// <param name="courseId"></param>
+        /// <param name="courseId">课程Id</param>
         /// <returns></returns>
         public async Task<bool> CourseExistAsync(int courseId)
         {
