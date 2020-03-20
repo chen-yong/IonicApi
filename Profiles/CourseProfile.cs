@@ -12,10 +12,8 @@ namespace IonicApi.Profiles
     {
         public CourseProfile()
         {
-            CreateMap<PeCourse, CourseDto>().ForMember(
-                destinationMember: dest => dest.Name,
-                memberOptions: opt => opt.MapFrom(mapExpression: src => src.Name)
-            );
+            CreateMap<PeCourse, CourseDto>();
+            CreateMap<CourseAddDto, PeCourse>();
         }
     }
 }

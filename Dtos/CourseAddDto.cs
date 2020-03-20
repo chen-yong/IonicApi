@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace IonicApi.Dtos
 {
-    public class CourseDto
+    public class CourseAddDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -40,6 +40,5 @@ namespace IonicApi.Dtos
         public double Pkscj5 { get; set; }
         public bool IsAuthor { get; set; }
         public int CopyTimes { get; set; }
-
     }
 }

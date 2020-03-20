@@ -134,6 +134,7 @@ namespace IonicApi.Controllers
             PeUser entity = await _userRepository.GetUserAsync(id);
             if (entity != null)
             {
+
                 ret.retcode = 0;
             }
             else

@@ -36,5 +36,42 @@ namespace IonicApi.Repositories
             return await _context.PeCourse.AnyAsync(e => e.Id == courseId);
         }
 
+        /// <summary>
+        /// 增加课程
+        /// </summary>
+        /// <param name="userId">用户Id</param>
+        /// <param name="peCourse">课程实体</param>
+        public void AddCourse(int userId, PeCourse peCourse)
+        {
+            if (peCourse == null)
+            {
+                throw new ArgumentException(nameof(peCourse));
+            }
+            peCourse.Teacher = userId;
+            peCourse.CreateUserId = userId;
+            peCourse.CreateTime = DateTime.Now;
+            peCourse.UpdateTime = DateTime.Now;
+            peCourse.Psycj = 0;
+            peCourse.Pzycj = 50;
+            peCourse.Pkscj1 = 0;
+            peCourse.Pkscj2 = 50;
+            peCourse.IsAuthor = true;
+            _context.PeCourse.Add(peCourse);
+        }
+
+        public void UpdateCourse(int courseId, PeCourse peCourse)
+        {
+            
+        }
+
+        public void DeleteCourse(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return await _context.SaveChangesAsync() >= 0;
+        }
     }
 }

@@ -95,6 +95,10 @@ namespace IonicApi.Repositories
             return await _context.PeUser.AnyAsync(e => e.UserName == name);
         }
 
+        public async Task<bool> UserExistsAsync(int id)
+        {
+            return await _context.PeUser.AnyAsync(e => e.Id == id);
+        }
         public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() >= 0;
