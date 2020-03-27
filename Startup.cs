@@ -55,6 +55,9 @@ namespace IonicApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                //endpoints.MapControllerRoute(
+                //    name:"default",
+                //    pattern: "api/{controller=Login}/{action=LoginAsync}/{username?&password?}");
             });
         }
     }

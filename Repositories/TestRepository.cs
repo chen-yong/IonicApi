@@ -15,7 +15,7 @@ namespace IonicApi.Repositories
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        public void AddTest(int courseId, PeTest test)
+        public void AddTest(int courseId, Models.PeTest test)
         {
             if (test == null)
             {
@@ -32,20 +32,30 @@ namespace IonicApi.Repositories
             _context.PeTest.Add(test);
         }
 
-        public void DeleteTest(PeTest test)
+        public void DeleteTest(Models.PeTest test)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<PeTest> GetTestAsync(int id)
+        public async Task<Models.PeTest> GetTestAsync(int id)
         {
-            return await _context.PeTest.Where(e => e.Id == id ).SingleOrDefaultAsync();
+            return await _context.PeTest.Where(e => e.Id == id).SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId)
+        public async Task<IEnumerable<Models.PeTest>> GetExercisesAsync(int courseId)
         {
-            //Mode=1考试 Mode=3作业 Mode=4实验
+            //Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验
+            return await _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == 2 && !e.IsDel).OrderBy(e => e.Id).ToListAsync();
+        }
+        public async Task<IEnumerable<Models.PeTest>> GetTestsAsync(int courseId)
+        {
+            //Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验
             return await _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == 3 && !e.IsDel).OrderBy(e => e.Id).ToListAsync();
+        }
+        public async Task<IEnumerable<Models.PeTest>> GetLabsAsync(int courseId)
+        {
+            //Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验
+            return await _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == 4 && !e.IsDel).OrderBy(e => e.Id).ToListAsync();
         }
 
         public async Task<bool> SaveAsync()
@@ -58,7 +68,7 @@ namespace IonicApi.Repositories
             return await _context.PeTest.AnyAsync(e => e.Id == testId);
         }
 
-        public void UpdateTest(int testId, PeTest test)
+        public void UpdateTest(int testId, Models.PeTest test)
         {
             //throw new NotImplementedException();
         }

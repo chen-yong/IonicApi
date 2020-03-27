@@ -15,8 +15,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IonicApi.Controllers
 {
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    [Route(template: "api/Login")]
+    //[Route(template: "api/Login")]
     public class LoginController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -36,7 +37,7 @@ namespace IonicApi.Controllers
         /// <param name="password">密码</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> LoginAsync(string username, string password)
+        public async Task<ActionResult> Login(string username, string password)
         {
             MapiData ret = new MapiData();
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))

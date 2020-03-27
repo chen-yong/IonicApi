@@ -10,6 +10,7 @@ namespace IonicApi.Profiles
         {
             CreateMap<PeTest, TestDto>();
             CreateMap<TestAddDto, PeTest>();
+            CreateMap<TestEditDto, PeTest>();
         }
     }
 }

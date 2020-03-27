@@ -21,10 +21,19 @@ namespace IonicApi.Repositories
         /// </summary>
         /// <param name="authtoken">authtoken</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeCourse>> GeCoursesAsync(string authtoken)
+        public async Task<IEnumerable<PeCourse>> GetCoursesAsync(string authtoken)
         {
             int userId = AuthtokenUtility.GetId(authtoken);
             return await _context.PeCourse.Where(e=>e.Teacher== userId && !e.IsDel && e.Status == 0).OrderByDescending(e => e.UpdateTime).ToListAsync();
+        }
+        /// <summary>
+        /// 根据课程Id获取课程
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeCourse>> GetCourseAsync(int courseId)
+        {
+            return await _context.PeCourse.Where(e => e.Id == courseId && !e.IsDel && e.Status == 0).ToListAsync();
         }
         /// <summary>
         /// 课程是否存在

@@ -8,7 +8,8 @@ namespace IonicApi.Repositories
 {
     public interface ICourseRepository
     {
-        Task<IEnumerable<PeCourse>> GeCoursesAsync(string authtoken);
+        Task<IEnumerable<PeCourse>> GetCoursesAsync(string authtoken);
+        Task<IEnumerable<PeCourse>> GetCourseAsync(int courseId);
         Task<bool> CourseExistAsync(int courseId);
         void AddCourse(int userId,PeCourse peCourse);
         void UpdateCourse(int courseId, PeCourse peCourse);

@@ -13,13 +13,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IonicApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class CourseController : ControllerBase
     { 
         private readonly ICourseRepository _courseRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
+        MapiData ret = new MapiData();
 
         public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IMapper mapper)
         {
@@ -36,11 +37,10 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourses(string authtoken)
         {
-            MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
             {
                 ret.retcode = 0;
-                var courses = await _courseRepository.GeCoursesAsync(authtoken);
+                var courses = await _courseRepository.GetCoursesAsync(authtoken);
                 ret.info = _mapper.Map<IEnumerable<CourseDto>>(courses);
             }
             else
@@ -51,15 +51,35 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
+        /// 获取课程详细信息
+        /// </summary>
+        /// <param name="id">课程Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourse(int id)
+        {
+            var course = await _courseRepository.CourseExistAsync(id);
+            if (course)
+            {
+                ret.retcode = 0;
+                var courses = await _courseRepository.GetCourseAsync(id);
+                ret.info = _mapper.Map<IEnumerable<CourseDto>>(courses);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+        /// <summary>
         /// 创建课程
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <param name="course">课程实体</param>
         /// <returns></returns>
-        [HttpPost(Name = nameof(CreateCourse))]
+        [HttpPost]
         public async Task<ActionResult<CourseDto>> CreateCourse(int userId, CourseAddDto course)
         {
-            MapiData ret = new MapiData();
             if (!await _userRepository.UserExistsAsync(userId))
             {
                 ret.retcode = 11;

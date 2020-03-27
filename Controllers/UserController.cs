@@ -14,9 +14,8 @@ using IonicApi.Common;
 
 namespace IonicApi.Controllers
 {
-    //[Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    [Route(template: "api/Users")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -36,7 +35,7 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet(template: "{courseId}",Name =nameof(GetStudents))]
+        [HttpGet]
         public async Task<ActionResult<PeUser>> GetStudents(int courseId)
         {
             if (courseId > 0)
@@ -93,7 +92,7 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id">用户id</param>
         /// <returns></returns>
-        [HttpGet(template: "{id}", Name = nameof(RetsetPwd))]
+        [HttpGet]
         public async Task<ActionResult<PeUser>> RetsetPwd(int id)
         {
             PeUser entity= await _userRepository.GetUserAsync(id);
@@ -114,8 +113,24 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id">用户id</param>
         /// <returns></returns>
-        [HttpGet(template: "{id}", Name = nameof(DeleteUser))]
+        [HttpGet]
         public async Task<ActionResult<PeUser>> DeleteUser(int id)
+        {
+            PeUser entity = await _userRepository.GetUserAsync(id);
+            if (entity != null)
+            {
+                entity.UserIdentity01 = "0";
+                await _userRepository.SaveAsync();
+                ret.retcode = 0;
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+        [HttpPatch]
+        public async Task<ActionResult<PeUser>>EditUser(int id,PeUser peUser)
         {
             PeUser entity = await _userRepository.GetUserAsync(id);
             if (entity != null)
@@ -125,21 +140,6 @@ namespace IonicApi.Controllers
             else
             {
                 ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
-
-        public async Task<ActionResult<PeUser>>EditUser(int id,PeUser peUser)
-        {
-            PeUser entity = await _userRepository.GetUserAsync(id);
-            if (entity != null)
-            {
-
-                ret.retcode = 0;
-            }
-            else
-            { 
-            
             }
             return Ok(ret);
         }
@@ -155,11 +155,15 @@ namespace IonicApi.Controllers
         {
             if (!await _courseRepository.CourseExistAsync(courseId))
             {
-                return NotFound();
+                ret.retcode = 11;
             }
-            var users = await _userRepository.GetUsersAsync(courseId, keyword);
-            var UserDots = _mapper.Map<IEnumerable<UserDto>>(users);
-            return Ok(UserDots);
+            else
+            {
+                ret.retcode = 0;
+                var users = await _userRepository.GetUsersAsync(courseId, keyword);
+                ret.info= _mapper.Map<IEnumerable<UserDto>>(users);
+            }
+            return Ok(ret);
         }
 
     }
