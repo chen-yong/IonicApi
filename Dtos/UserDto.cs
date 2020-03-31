@@ -17,8 +17,10 @@ namespace IonicApi.Dtos
         public string Email { get; set; }
         public string Mobile { get; set; }
         public string UserIdentity00 { get; set; }
+        //0:删除 1：正常
         public string UserIdentity01 { get; set; }
         public string UserIdentity02 { get; set; }
+        //1：学生 2.老师
         public string UserIdentity03 { get; set; }
         public string Zip { get; set; }
         public string Address { get; set; }
@@ -26,6 +28,7 @@ namespace IonicApi.Dtos
         public string Introduction { get; set; }
         public string Property00 { get; set; }
         public string Property01 { get; set; }
+        //班级
         public string Property02 { get; set; }
         public string Property03 { get; set; }
         public string Property04 { get; set; }
