@@ -145,6 +145,16 @@ namespace IonicApi.Repositories
             return await _context.PeCourseStudent.Where(e => e.CourseId == courseId).ToArrayAsync();
         }
         /// <summary>
+        /// 获取学生汇总成绩
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="id">学生Id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeCourseStudent>> GradeAsync(int courseId,int id)
+        {
+            return await _context.PeCourseStudent.Where(e => e.CourseId == courseId &&e.UserId==id).ToArrayAsync();
+        }
+        /// <summary>
         /// 成绩是否存在
         /// </summary>
         /// <param name="courseId">课程Id</param>

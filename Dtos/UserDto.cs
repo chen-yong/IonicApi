@@ -16,11 +16,21 @@ namespace IonicApi.Dtos
         public DateTime Brithday { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
+        /// <summary>
+        /// 学院、系
+        /// </summary>
         public string UserIdentity00 { get; set; }
-        //0:删除 1：正常
+        /// <summary>
+        /// 0:删除 1：正常
+        /// </summary>
         public string UserIdentity01 { get; set; }
+        /// <summary>
+        /// 班级
+        /// </summary>
         public string UserIdentity02 { get; set; }
-        //1：学生 2.老师
+        /// <summary>
+        /// 1：学生 2.老师
+        /// </summary>
         public string UserIdentity03 { get; set; }
         public string Zip { get; set; }
         public string Address { get; set; }
@@ -28,7 +38,9 @@ namespace IonicApi.Dtos
         public string Introduction { get; set; }
         public string Property00 { get; set; }
         public string Property01 { get; set; }
-        //班级
+        /// <summary>
+        /// 班级
+        /// </summary>
         public string Property02 { get; set; }
         public string Property03 { get; set; }
         public string Property04 { get; set; }

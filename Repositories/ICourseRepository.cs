@@ -25,6 +25,7 @@ namespace IonicApi.Repositories
         Task<bool> TestExistsAsync(int testId);
 
         Task<IEnumerable<PeCourseStudent>> GradeListAsync(int courseId);
+        Task<IEnumerable<PeCourseStudent>> GradeAsync(int courseId, int id);
         Task<bool> GradeExists(int courseId);
     }
 }

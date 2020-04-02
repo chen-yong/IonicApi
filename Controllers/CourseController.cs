@@ -16,7 +16,7 @@ namespace IonicApi.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class CourseController : ControllerBase
-    { 
+    {
         private readonly ICourseRepository _courseRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
@@ -106,7 +106,7 @@ namespace IonicApi.Controllers
         /// <param name="type">类型：type=1考试 type=2练习 type=3作业 type=4实验</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeTest>>> HomeWorkList(int courseId,int type)
+        public async Task<ActionResult<IEnumerable<PeTest>>> HomeWorkList(int courseId, int type)
         {
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
@@ -198,8 +198,10 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
-      
+
         #endregion
+
+        #region 成绩
         /// <summary>
         /// 获取课程学生成绩
         /// </summary>
@@ -220,11 +222,18 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
-        public async Task<ActionResult<IEnumerable<StudentScoreInfoModel>>> ScoreInfo(int courseId,int type)
+        /// <summary>
+        /// 未完成
+        /// </summary>
+        /// <param name="courseId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public async Task<ActionResult<IEnumerable<StudentScoreInfoModel>>> ScoreInfo(int courseId, int type)
         {
             StudentScoreInfoModel model = new StudentScoreInfoModel();
             model.Course = await _courseRepository.GetCourse(courseId);
             model.Tests = await _courseRepository.GetTestsAsync(courseId, type);
+            var usre = await _userRepository.GetUsersAsync(courseId);
             //var students = await _courseRepository.GradeListAsync(courseId);
             //var students = await _courseRepository.GradeListAsync(courseId) as IQueryable<PeCourseStudent>;
             //model.Students = await PagedList<PeCourseStudent>.CreateAsync(students, 10, 1);
@@ -239,5 +248,45 @@ namespace IonicApi.Controllers
             }
             return Ok(ret.info);
         }
+        public async Task<ActionResult> StudentList(int courseId)
+        {
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            if (course)
+            {
+                ret.retcode = 0;
+                var entity = await _userRepository.GetUsersAsync(courseId);
+                var student = _mapper.Map<IEnumerable<StudentDto>>(entity);
+                ret.info = student;
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 获取单个学生汇总成绩
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="id">学生Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PeCourseStudent>>> StudentGrade(int courseId, int id)
+        {
+            var grade = await _courseRepository.GradeExists(courseId);
+            if (grade)
+            {
+                ret.retcode = 0;
+                var entity = await _courseRepository.GradeAsync(courseId, id);
+                ret.info= _mapper.Map<IEnumerable<CJHZDto>>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        } 
+        #endregion
     }
 }

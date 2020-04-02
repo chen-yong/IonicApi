@@ -20,6 +20,9 @@ namespace IonicApi.Profiles
             CreateMap<TestEditDto, PeTest>();
 
             CreateMap<PeCourseStudent, CourseStudentDto>();
+
+            CreateMap<PeUser, StudentDto>();
+            CreateMap<PeCourseStudent, CJHZDto>();
         }
     }
 }
