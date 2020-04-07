@@ -30,5 +30,17 @@ namespace IonicApi.Common
 
             return sBuilder.ToString();  // Return the hexadecimal string.
         }
+
+        /// <summary>
+        /// Removes all line breaks from a string
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        public static string RemoveLineBreaks(this string lines)
+        {
+            return lines.Replace("\r\n", "")
+                        .Replace("\r", "")
+                        .Replace("\n", "");
+        }
     }
 }

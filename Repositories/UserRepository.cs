@@ -26,8 +26,8 @@ namespace IonicApi.Repositories
             //select * from PE__user where Id in(select userId from PE__CourseStudent where courseId=courseId )
             // linq 子查询
             var usersList = from a in _context.PeUser
-                        where (from b in _context.PeCourseStudent where b.CourseId==courseId select b.UserId).Contains(a.Id)
-                        select a;
+                            where (from b in _context.PeCourseStudent where b.CourseId == courseId select b.UserId).Contains(a.Id)
+                            select a;
             usersList = usersList.Where(e => e.UserIdentity01 != AppConstants.UserStatus.Deleted).OrderBy(e => e.Id);
             return await usersList.ToListAsync();
         }
@@ -43,17 +43,14 @@ namespace IonicApi.Repositories
             var usersList = from a in _context.PeUser
                             where (from b in _context.PeCourseStudent where b.CourseId == courseId select b.UserId).Contains(a.Id)
                             select a;
-            usersList = usersList.Where(e => e.UserIdentity01 != AppConstants.UserStatus.Deleted);
-            if (string.IsNullOrEmpty(keyword))
-            {
-                return await usersList.OrderBy(e=>e.Id).ToListAsync();
-            }
-            else
+            usersList = usersList.Where(e => e.UserIdentity01 != AppConstants.UserStatus.Deleted).OrderBy(e => e.Id);
+            if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.Trim();
-                usersList = usersList.Where(e => e.UserName.Contains(keyword) || e.RealName.Contains(keyword));
-                return await usersList.OrderBy(e => e.Id).ToListAsync();
+                usersList = usersList.Where(e => e.UserName.Contains(keyword) || e.RealName.Contains(keyword) || e.UserIdentity00.Contains(keyword) || e.UserIdentity02.Contains(keyword));
+                usersList = usersList.OrderBy(e => e.Id);
             }
+            return await usersList.ToListAsync();
         }
         /// <summary>
         /// 获取登录用户

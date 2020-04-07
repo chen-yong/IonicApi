@@ -22,7 +22,7 @@ namespace IonicApi.Controllers
         private readonly IMapper _mapper;
         MapiData ret = new MapiData();
 
-        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IMapper mapper)
+        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository,  IMapper mapper)
         {
             _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -248,14 +248,19 @@ namespace IonicApi.Controllers
             }
             return Ok(ret.info);
         }
-        public async Task<ActionResult> StudentList(int courseId)
+        /// <summary>
+        ///  作业，实验，考试成绩学生基本信息
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> StudentList(int courseId, string keyword)
         {
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
             {
-                ret.retcode = 0;
-                var entity = await _userRepository.GetUsersAsync(courseId);
+                var entity = await _userRepository.GetUsersAsync(courseId, keyword);
                 var student = _mapper.Map<IEnumerable<StudentDto>>(entity);
+                ret.retcode = 0;
                 ret.info = student;
             }
             else
@@ -279,14 +284,84 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 0;
                 var entity = await _courseRepository.GradeAsync(courseId, id);
-                ret.info= _mapper.Map<IEnumerable<CJHZDto>>(entity);
+                ret.info = _mapper.Map<IEnumerable<CJHZDto>>(entity);
             }
             else
             {
                 ret.retcode = 11;
             }
             return Ok(ret);
-        } 
+        }
+        #endregion
+
+        #region 课程资源
+        /// <summary>
+        /// 获取课程资源
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="parentId">parentId</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PeResource>>> ResourceList(int courseId, int parentId = 0)
+        {
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            if (course)
+            {
+                ret.retcode = 0;
+                var entity = await _courseRepository.GetResourcesAsync(courseId, parentId);
+                ret.info = _mapper.Map<IEnumerable<ResourceDto>>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+        /// <summary>
+        /// 搜索课程资源
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="parentId">parentId</param>
+        /// <param name="keyword">关键词</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PeResource>>> SearchResource(int courseId, int parentId, string keyword)
+        {
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            if (course)
+            {
+                ret.retcode = 0;
+                var entity = await _courseRepository.GetResourcesAsync(courseId, parentId, keyword);
+                ret.info = _mapper.Map<IEnumerable<ResourceDto>>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 删除资源
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<PeResource>> DeleteResource(int id)
+        {
+            PeResource entity = await _courseRepository.GetResourceAsync(id);
+            if (entity != null)
+            {
+                entity.IsDel = true;
+                await _userRepository.SaveAsync();
+                ret.retcode = 0;
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
         #endregion
     }
 }

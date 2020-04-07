@@ -24,7 +24,7 @@ namespace IonicApi.Repositories
         public async Task<IEnumerable<PeCourse>> GetCoursesAsync(string authtoken)
         {
             int userId = AuthtokenUtility.GetId(authtoken);
-            return await _context.PeCourse.Where(e=>e.Teacher== userId && !e.IsDel && e.Status == 0).OrderByDescending(e => e.UpdateTime).ToListAsync();
+            return await _context.PeCourse.Where(e => e.Teacher == userId && !e.IsDel && e.Status == 0).OrderByDescending(e => e.UpdateTime).ToListAsync();
         }
         /// <summary>
         /// 根据课程Id获取课程
@@ -74,7 +74,7 @@ namespace IonicApi.Repositories
 
         public void UpdateCourse(int courseId, PeCourse peCourse)
         {
-            
+
         }
 
         public void DeleteCourse(int id)
@@ -111,7 +111,7 @@ namespace IonicApi.Repositories
 
         public async Task<PeTest> GetTestAsync(int id)
         {
-            return await _context.PeTest.Where(e => e.Id == id&& !e.IsDel).SingleOrDefaultAsync();
+            return await _context.PeTest.SingleOrDefaultAsync(e => e.Id == id && !e.IsDel);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace IonicApi.Repositories
         /// <param name="courseId">课程Id</param>
         /// <param name="mode">mode类型：Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId,int mode)
+        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode)
         {
             return await _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == mode && !e.IsDel).OrderBy(e => e.StartTime).ToListAsync();
         }
@@ -150,9 +150,9 @@ namespace IonicApi.Repositories
         /// <param name="courseId">课程Id</param>
         /// <param name="id">学生Id</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeCourseStudent>> GradeAsync(int courseId,int id)
+        public async Task<IEnumerable<PeCourseStudent>> GradeAsync(int courseId, int id)
         {
-            return await _context.PeCourseStudent.Where(e => e.CourseId == courseId &&e.UserId==id).ToArrayAsync();
+            return await _context.PeCourseStudent.Where(e => e.CourseId == courseId && e.UserId == id).ToArrayAsync();
         }
         /// <summary>
         /// 成绩是否存在
@@ -162,6 +162,63 @@ namespace IonicApi.Repositories
         public async Task<bool> GradeExists(int courseId)
         {
             return await _context.PeCourseStudent.AnyAsync(e => e.CourseId == courseId);
+        }
+
+        public async Task<IEnumerable<PeResource>> GetResourcesAsync(int courseId, int parentId)
+        {
+            //共享资源
+            var shareResources = _context.PeResource.Where(e => e.IsShared && !e.IsDel);
+            //非共享资源
+            var privateResources = from a in _context.PeResource
+                                   where a.ParentId == parentId && !a.IsDel && (from b in _context.PeCourseResource where b.CourseId == courseId select b.ResourceId).Contains(a.Id)
+                                   select a;
+            //资源合并，时间倒序排序
+            var resources = shareResources.Concat(privateResources).OrderByDescending(e => e.CreateTime);
+            return await resources.ToListAsync();
+        }
+
+        public async Task<IEnumerable<PeResource>> GetResourcesAsync(int courseId, int parentId, string keyword)
+        {
+            //共享资源
+            var shareResources = _context.PeResource.Where(e => e.IsShared && !e.IsDel);
+            //非共享资源
+            var privateResources = from a in _context.PeResource
+                            where a.ParentId == parentId && !a.IsDel && (from b in _context.PeCourseResource where b.CourseId == courseId select b.ResourceId).Contains(a.Id)
+                            select a;
+            //资源合并，时间倒序排序
+            var resources = shareResources.Concat(privateResources).OrderByDescending(e => e.CreateTime);
+            //关键词检索
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.Trim();
+                resources = resources.Where(e => e.FileName.Contains(keyword.Trim())).OrderByDescending(e => e.CreateTime);
+            }
+            return await resources.ToListAsync();
+        }
+
+        public async Task<bool> ResourceExistsAsync(int id)
+        {
+            return await _context.PeResource.AnyAsync(e=>e.Id==id);
+        }
+
+        public void AddResource(int courseId, PeResource peResource)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateResource(int Id, PeResource peResource)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteResource(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PeResource> GetResourceAsync(int id)
+        {
+            return await _context.PeResource.SingleOrDefaultAsync(e => e.Id == id&&!e.IsDel);
         }
     }
 }
