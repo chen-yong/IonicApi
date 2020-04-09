@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IonicApi.Common;
@@ -8,8 +7,8 @@ using IonicApi.Dtos;
 using IonicApi.Models;
 using IonicApi.Modes;
 using IonicApi.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PagedList;
 
 namespace IonicApi.Controllers
 {
@@ -20,9 +19,8 @@ namespace IonicApi.Controllers
         private readonly ICourseRepository _courseRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        MapiData ret = new MapiData();
 
-        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository,  IMapper mapper)
+        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IMapper mapper)
         {
             _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
@@ -38,6 +36,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourses(string authtoken)
         {
+            MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
             {
                 ret.retcode = 0;
@@ -59,6 +58,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourse(int id)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(id);
             if (course)
             {
@@ -81,6 +81,7 @@ namespace IonicApi.Controllers
         [HttpPost]
         public async Task<ActionResult<CourseDto>> CreateCourse(int userId, CourseAddDto course)
         {
+            MapiData ret = new MapiData();
             if (!await _userRepository.UserExistsAsync(userId))
             {
                 ret.retcode = 11;
@@ -104,15 +105,26 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <param name="type">类型：type=1考试 type=2练习 type=3作业 type=4实验</param>
+        /// <param name="keyword">关键字</param>
+        /// <param name="page">页码</param>
+        /// <param name="count">每页数量</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeTest>>> HomeWorkList(int courseId, int type)
+        public async Task<ActionResult<IEnumerable<PeTest>>> HomeWorkList(int courseId, int type, string keyword, int page, int count)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
             {
+                var entity = await _courseRepository.GetTestsAsync(courseId, type, keyword);
+                IPagedList<PeTest> list = new PagedList<PeTest>(entity, page, count);
+                var test = _mapper.Map<IEnumerable<TestDto>>(list);
                 ret.retcode = 0;
-                ret.info = await _courseRepository.GetTestsAsync(courseId, type);
+                ret.pagecount = list.PageCount;
+                ret.recordcount = list.TotalItemCount;
+                ret.isfirst = list.IsFirstPage;
+                ret.hasnext = list.HasNextPage;
+                ret.info = test;
             }
             else
             {
@@ -128,6 +140,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeTest>> HomeWork(int id)
         {
+            MapiData ret = new MapiData();
             var homeWork = await _courseRepository.GetTestAsync(id);
             if (homeWork == null)
             {
@@ -147,6 +160,7 @@ namespace IonicApi.Controllers
         [HttpPost]
         public async Task<ActionResult<PeTest>> AddHomeWork(int courseId, PeTest peTest)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course || peTest == null)
             {
@@ -166,6 +180,7 @@ namespace IonicApi.Controllers
         [HttpPatch]
         public async Task<ActionResult<PeTest>> EditHomeWork(int id)
         {
+            MapiData ret = new MapiData();
             var homeWork = await _courseRepository.GetTestAsync(id);
             if (homeWork == null)
             {
@@ -185,6 +200,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeTest>> DeleteWork(int id)
         {
+            MapiData ret = new MapiData();
             PeTest entity = await _courseRepository.GetTestAsync(id);
             if (entity != null)
             {
@@ -210,6 +226,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourseStudent>>> GradeList(int courseId)
         {
+            MapiData ret = new MapiData();
             var grade = await _courseRepository.GradeExists(courseId);
             if (grade)
             {
@@ -230,13 +247,12 @@ namespace IonicApi.Controllers
         /// <returns></returns>
         public async Task<ActionResult<IEnumerable<StudentScoreInfoModel>>> ScoreInfo(int courseId, int type)
         {
+            MapiData ret = new MapiData();
             StudentScoreInfoModel model = new StudentScoreInfoModel();
             model.Course = await _courseRepository.GetCourse(courseId);
             model.Tests = await _courseRepository.GetTestsAsync(courseId, type);
-            var usre = await _userRepository.GetUsersAsync(courseId);
-            //var students = await _courseRepository.GradeListAsync(courseId);
-            //var students = await _courseRepository.GradeListAsync(courseId) as IQueryable<PeCourseStudent>;
-            //model.Students = await PagedList<PeCourseStudent>.CreateAsync(students, 10, 1);
+            var students = await _courseRepository.GradeListAsync(courseId);
+            model.Students = new PagedList<PeCourseStudent>(students, 10, 1);
             if (model != null)
             {
                 ret.retcode = 0;
@@ -246,21 +262,30 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 11;
             }
-            return Ok(ret.info);
+            return Ok(ret);
         }
         /// <summary>
-        ///  作业，实验，考试成绩学生基本信息
+        /// 作业，实验，考试成绩所属学生基本信息
         /// </summary>
         /// <param name="courseId">课程Id</param>
+        /// <param name="keyword">关键词</param>
+        /// <param name="page">页码</param>
+        /// <param name="count">每页数量</param>
         /// <returns></returns>
-        public async Task<ActionResult> StudentList(int courseId, string keyword)
+        public async Task<ActionResult> StudentList(int courseId, string keyword, int page, int count)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
             {
                 var entity = await _userRepository.GetUsersAsync(courseId, keyword);
-                var student = _mapper.Map<IEnumerable<StudentDto>>(entity);
+                IPagedList<PeUser> list = new PagedList<PeUser>(entity, page, count);
+                var student = _mapper.Map<IEnumerable<StudentDto>>(list);
                 ret.retcode = 0;
+                ret.pagecount = list.PageCount;
+                ret.recordcount = list.TotalItemCount;
+                ret.isfirst = list.IsFirstPage;
+                ret.hasnext = list.HasNextPage;
                 ret.info = student;
             }
             else
@@ -279,6 +304,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeCourseStudent>>> StudentGrade(int courseId, int id)
         {
+            MapiData ret = new MapiData();
             var grade = await _courseRepository.GradeExists(courseId);
             if (grade)
             {
@@ -304,6 +330,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeResource>>> ResourceList(int courseId, int parentId = 0)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
             {
@@ -327,6 +354,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PeResource>>> SearchResource(int courseId, int parentId, string keyword)
         {
+            MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
             if (course)
             {
@@ -349,6 +377,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeResource>> DeleteResource(int id)
         {
+            MapiData ret = new MapiData();
             PeResource entity = await _courseRepository.GetResourceAsync(id);
             if (entity != null)
             {
@@ -362,6 +391,69 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 文件资源重命名
+        /// </summary>
+        /// <param name="id">资源Id</param>
+        /// <param name="name">名称</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<PeResource>> Rename(int id, string name)
+        {
+            MapiData ret = new MapiData();
+            PeResource entity = await _courseRepository.GetResourceAsync(id);
+            if (entity != null && !string.IsNullOrEmpty(name))
+            {
+                //后缀名
+                string[] array = entity.FileName.Split(".");
+                string postfix = array[array.Length - 1];
+                entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(name)) + "." + postfix;
+                await _userRepository.SaveAsync();
+                ret.retcode = 0;
+                ret.message = "重命名成功";
+            }
+            else
+            {
+                ret.retcode = 11;
+                ret.message = "参数错误";
+            }
+            return Ok(ret);
+        }
+        /// <summary>
+        /// 创建文件夹（未完成）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="Name"></param>
+        /// <returns></returns>
+        public ActionResult CreateDirectory(int id, string Name, int courseId)
+        {
+            MapiData ret = new MapiData();
+            PeResource entity = new PeResource();
+            try
+            {
+                entity.ParentId = id;
+                entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(Name));
+                entity.FileType = "DIR";
+                entity.FileIcon = "dir";
+                entity.IsDir = true;
+                entity.CreateTime = DateTime.Now;
+                entity.Password = "";
+                entity.UserId = 1;
+                entity.Size = 0;
+                //entity.Url = VirtualPathUtility.Combine(VirtualRootPath, entity.FileName);
+                //_userRepository
+                entity.PeCourseResource.Add(new PeCourseResource { CourseId = courseId });
+                _userRepository.SaveAsync();
+                ret.retcode = 0;
+            }
+            catch
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
         #endregion
     }
 }

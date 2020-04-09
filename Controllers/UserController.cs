@@ -21,7 +21,6 @@ namespace IonicApi.Controllers
         private readonly IUserRepository _userRepository;
         private readonly ICourseRepository _courseRepository;
         private readonly IMapper _mapper;
-        MapiData ret = new MapiData();
 
         public UsersController(IUserRepository userRepository, IMapper mapper,ICourseRepository courseRepository)
         {
@@ -38,6 +37,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeUser>> GetStudents(int courseId)
         {
+            MapiData ret = new MapiData();
             if (courseId > 0)
             {
                 var studets = await _userRepository.GetUsersAsync(courseId);
@@ -62,6 +62,7 @@ namespace IonicApi.Controllers
         [HttpPost]
         public async Task<ActionResult<PeUser>> AddCourseStudent(int courseId, PeUser entity)
         {
+            MapiData ret = new MapiData();
             if (!await _userRepository.UserExists(entity.UserName))
             {
                 ret.retcode = 11;
@@ -95,6 +96,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeUser>> RetsetPwd(int id)
         {
+            MapiData ret = new MapiData();
             PeUser entity= await _userRepository.GetUserAsync(id);
             if (entity != null)
             {
@@ -116,6 +118,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<PeUser>> DeleteUser(int id)
         {
+            MapiData ret = new MapiData();
             PeUser entity = await _userRepository.GetUserAsync(id);
             if (entity != null)
             {
@@ -132,6 +135,7 @@ namespace IonicApi.Controllers
         [HttpPatch]
         public async Task<ActionResult<PeUser>>EditUser(int id,PeUser peUser)
         {
+            MapiData ret = new MapiData();
             PeUser entity = await _userRepository.GetUserAsync(id);
             if (entity != null)
             {
@@ -153,6 +157,7 @@ namespace IonicApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDto>>> SearchUser(int courseId, string keyword)
         {
+            MapiData ret = new MapiData();
             if (!await _courseRepository.CourseExistAsync(courseId))
             {
                 ret.retcode = 11;

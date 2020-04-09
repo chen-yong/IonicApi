@@ -1,5 +1,6 @@
 ﻿using IonicApi.Common;
 using IonicApi.Models;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace IonicApi.Dtos
     public class StudentScoreInfoModel
     {
         public PeCourse Course { get; set; }
-        public PagedList<PeCourseStudent> Students { get; set; }
+        public IPagedList<PeCourseStudent> Students { get; set; }
         public IEnumerable<PeTest> Tests { get; set; }
     }
 }

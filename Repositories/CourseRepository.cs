@@ -124,6 +124,23 @@ namespace IonicApi.Repositories
         {
             return await _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == mode && !e.IsDel).OrderBy(e => e.StartTime).ToListAsync();
         }
+        /// <summary>
+        /// 检索练习，作业，考试，实验
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="mode">mode类型：Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验</param>
+        /// <param name="keyword">关键词</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode,string keyword)
+        {
+            var tests= _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == mode && !e.IsDel);
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.Trim();
+                tests = tests.Where(e => e.Name.Contains(keyword.Trim()));
+            }
+            return await tests.OrderByDescending(e => e.CreateTime).ToListAsync();
+        }
 
         public async Task<bool> TestExistsAsync(int testId)
         {
@@ -203,7 +220,7 @@ namespace IonicApi.Repositories
 
         public void AddResource(int courseId, PeResource peResource)
         {
-            throw new NotImplementedException();
+            _context.PeResource.Add(peResource);
         }
 
         public void UpdateResource(int Id, PeResource peResource)
