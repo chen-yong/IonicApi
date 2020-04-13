@@ -30,8 +30,10 @@ namespace IonicApi
         {
             //添加AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<IBaseRepository, BaseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IPaperOutputTaskRepository, PaperOutputTaskRepository>();
 
             //连接数据库
             var sqlConnection = Configuration.GetConnectionString("SqlServerConnection");

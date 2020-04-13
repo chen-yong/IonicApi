@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using IonicApi.Common;
@@ -18,12 +19,14 @@ namespace IonicApi.Controllers
     {
         private readonly ICourseRepository _courseRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IPaperOutputTaskRepository _outputTaskRepository;
         private readonly IMapper _mapper;
 
-        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IMapper mapper)
+        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IPaperOutputTaskRepository paperOutRepository, IMapper mapper)
         {
             _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            _outputTaskRepository = paperOutRepository ?? throw new ArgumentNullException(nameof(paperOutRepository));
             //注册AutoMapper
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -296,7 +299,7 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 获取单个学生汇总成绩
+        /// 获取单个学生汇总成绩（未完成）
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <param name="id">学生Id</param>
@@ -310,7 +313,7 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 0;
                 var entity = await _courseRepository.GradeAsync(courseId, id);
-                ret.info = _mapper.Map<IEnumerable<CJHZDto>>(entity);
+                ret.info = entity;//_mapper.Map<IEnumerable<CJHZDto>>(entity);
             }
             else
             {
@@ -454,6 +457,121 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        #endregion
+
+        #region 试卷打印
+        /// <summary>
+        ///  打印任务展示列表
+        /// </summary>
+        /// <param name="userId">用户Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> PaperTaskList(int userId)
+        {
+            MapiData ret = new MapiData();
+            var user = await _userRepository.UserExistsAsync(userId);
+            if (user)
+            {
+                ret.retcode = 0;
+                var entity = await _outputTaskRepository.GetPaperTasksAsync(userId);
+                ret.info = _mapper.Map<IEnumerable<PaperOutputTaskDto>>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 重新启动打印任务（未完成）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> ResetPaperTask(int id)
+        {
+            MapiData ret = new MapiData();
+            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+            if (entity != null)
+            {
+                entity.StartTime = DateTime.Now;
+                entity.Message = "";
+                entity.Result = "";
+                entity.FinishTime = null;
+                ret.retcode = 0;
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 删除打印任务
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> DeletePaperTask(int id)
+        {
+            MapiData ret = new MapiData();
+            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+            if (entity != null)
+            {
+                _outputTaskRepository.DeletePaperTask(entity);
+                await _outputTaskRepository.SaveAsync();
+                ret.retcode = 0;
+                ret.message = "删除成功";
+            }
+            else
+            {
+                ret.retcode = 11;
+                ret.message = "删除失败";
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 添加打印任务（未做）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> AddPaperTask(int id)
+        {
+            MapiData ret = new MapiData();
+            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+            if (entity != null)
+            { 
+
+            }
+            else
+            {
+                ret.retcode = 11;
+                ret.message = "失败";
+            }
+            return Ok(ret);
+        }
+        /// <summary>
+        /// 编辑打印任务
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> EditPaperTask(int id)
+        {
+            MapiData ret = new MapiData();
+            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+            if (entity != null)
+            {
+
+            }
+            else
+            {
+                ret.retcode = 11;
+                ret.message = "失败";
+            }
+            return Ok(ret);
+        }
         #endregion
     }
 }

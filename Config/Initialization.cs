@@ -33,5 +33,118 @@ namespace IonicApi.Config
         public static readonly string[] OpenedCompiler = new string[] { "C编译器", "C++编译器", "Java编译器", "Python", "C#编译器" };
 
         public static readonly bool IsLicenseCacheEnabled = true;
+
+        #region Users
+        public static User[] S_User = new User[]{
+            new User{
+                Id = "S_0",
+                Account = "PE_Supper0",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员0",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User{
+                Id = "S_1",
+                Account = "PE_Supper1",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员1",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User{
+                Id = "S_2",
+                Account = "PE_Supper2",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员2",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User{
+                Id = "S_3",
+                Account = "PE_Supper3",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员3",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User{
+                Id = "S_4",
+                Account = "PE_Supper4",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员4",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User{
+                Id = "S_5",
+                Account = "PE_Supper5",
+                Password = "CAI2014$_#OpenEx",
+                Name = "超级管理员5",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "2"
+            },
+            new User
+            {
+                Id = "S_6",
+                Account = "PE_Student6",
+                Password = "st2014$_#OpenEx",
+                Name = "一个考生6",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "1"
+            }
+            ,
+            new User
+            {
+                Id = "S_7",
+                Account = "PE_Student7",
+                Password = "st2014$_#OpenEx",
+                Name = "一个考生7",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "1"
+            }
+            ,
+            new User
+            {
+                Id = "S_8",
+                Account = "PE_Student8",
+                Password = "st2014$_#OpenEx",
+                Name = "一个考生8",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "1"
+            }
+            ,
+            new User
+            {
+                Id = "S_9",
+                Account = "PE_Student9",
+                Password = "st2014$_#OpenEx",
+                Name = "一个考生9",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "1"
+            }
+            ,
+            new User
+            {
+                Id = "S_10",
+                Account = "PE_Student10",
+                Password = "st2014$_#OpenEx",
+                Name = "一个考生10",
+                EMail = "OpenExam@qq.com",
+                UserIdentity03 = "1"
+            }
+        }; 
+        #endregion
+    }
+    public class User
+    {
+        public string Id { get; set; }
+        public string Account { get; set; }
+        public string Password { get; set; }
+        public string Name { get; set; }
+        public string EMail { get; set; }
+        public string UserIdentity01 { get; set; }
+        public string UserIdentity03 { get; set; }
+
     }
 }

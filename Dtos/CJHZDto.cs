@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IonicApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,12 +21,19 @@ namespace IonicApi.Dtos
         public double Kscj4 { get; set; }
         public double Kscj5 { get; set; }
         public double Cj { get; set; }
+        public virtual PeCourse Course { get; set; } 
         public double FinalGrade
         {
             get
             {
-                var v = Math.Round((Zycj+ Sycj+ Kscj1+ Kscj2+ Kscj3+ Kscj4+ Kscj5+Cj)/8);
-                return v;
+                var v = (Course.Psycj * Sycj / 100) +
+                    (Course.Pzycj * Zycj / 100) +
+                    (Course.Pkscj1 * Kscj1 / 100) +
+                    (Course.Pkscj2 * Kscj2 / 100) +
+                    (Course.Pkscj3 * Kscj3 / 100) +
+                    (Course.Pkscj4 * Kscj4 / 100) +
+                    (Course.Pkscj5 * Kscj5 / 100);
+                return Math.Round(v);
             }
         }
         public string Level

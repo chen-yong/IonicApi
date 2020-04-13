@@ -72,6 +72,10 @@ namespace IonicApi.Repositories
         {
             return await _context.PeUser.SingleOrDefaultAsync(e => e.Id == Id);
         }
+        public PeUser GetUser(int Id)
+        {
+            return  _context.PeUser.SingleOrDefault(e => e.Id == Id);
+        }
 
         public void AddUser(PeUser user)
         {
