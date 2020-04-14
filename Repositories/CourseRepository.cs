@@ -237,5 +237,43 @@ namespace IonicApi.Repositories
         {
             return await _context.PeResource.SingleOrDefaultAsync(e => e.Id == id&&!e.IsDel);
         }
+
+        public async Task<bool> UserTestExists(int testId)
+        {
+            return await _context.PeUserTest.AnyAsync(e=>e.TestId==testId);
+        }
+
+        public async Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId)
+        {
+            return await _context.PeUserTest.Where(e=>e.TestId==testId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId)
+        {
+            return await _context.PeUserTest.Where(e => e.UserTestNo == userId.ToString()).ToListAsync();
+        }
+
+        /// <summary>
+        /// 获取作业，实验，考试成绩
+        /// </summary>
+        /// <param name="testId">作业，实验，考试Id</param>
+        /// <param name="userId">学生Id</param>
+        /// <returns>成绩</returns>
+        public async Task<string> GetTestScoreAsync(int testId, int userId)
+        {
+            var score = _context.PeUserTest.Any(e => e.TestId == testId && e.UserId == userId);
+            //ScoreAlter（成绩）存在
+            if (score)
+            {
+                var entity = await _context.PeUserTest.SingleOrDefaultAsync(e => e.TestId == testId && e.UserId == userId);
+                //ScoreAlter（成绩）为null
+                if (string.IsNullOrEmpty(entity.ScoreAlter.ToString()))
+                {
+                    return "0";
+                }
+                else { return entity.ScoreAlter.ToString(); }
+            }
+            else { return "0"; }
+        }
     }
 }

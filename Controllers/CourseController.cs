@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -37,7 +38,7 @@ namespace IonicApi.Controllers
         /// <param name="authtoken"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourses(string authtoken)
+        public async Task<ActionResult> GetCourses(string authtoken)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -59,7 +60,7 @@ namespace IonicApi.Controllers
         /// <param name="id">课程Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeCourse>>> GetCourse(int id)
+        public async Task<ActionResult> GetCourse(int id)
         {
             MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(id);
@@ -82,7 +83,7 @@ namespace IonicApi.Controllers
         /// <param name="course">课程实体</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<CourseDto>> CreateCourse(int userId, CourseAddDto course)
+        public async Task<ActionResult> CreateCourse(int userId, CourseAddDto course)
         {
             MapiData ret = new MapiData();
             if (!await _userRepository.UserExistsAsync(userId))
@@ -113,7 +114,7 @@ namespace IonicApi.Controllers
         /// <param name="count">每页数量</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeTest>>> HomeWorkList(int courseId, int type, string keyword, int page, int count)
+        public async Task<ActionResult> HomeWorkList(int courseId, int type, string keyword, int page, int count)
         {
             MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
@@ -227,7 +228,7 @@ namespace IonicApi.Controllers
         /// <param name="courseId">课程Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeCourseStudent>>> GradeList(int courseId)
+        public async Task<ActionResult> GradeList(int courseId)
         {
             MapiData ret = new MapiData();
             var grade = await _courseRepository.GradeExists(courseId);
@@ -242,31 +243,7 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
-        /// <summary>
-        /// 未完成
-        /// </summary>
-        /// <param name="courseId"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public async Task<ActionResult<IEnumerable<StudentScoreInfoModel>>> ScoreInfo(int courseId, int type)
-        {
-            MapiData ret = new MapiData();
-            StudentScoreInfoModel model = new StudentScoreInfoModel();
-            model.Course = await _courseRepository.GetCourse(courseId);
-            model.Tests = await _courseRepository.GetTestsAsync(courseId, type);
-            var students = await _courseRepository.GradeListAsync(courseId);
-            model.Students = new PagedList<PeCourseStudent>(students, 10, 1);
-            if (model != null)
-            {
-                ret.retcode = 0;
-                ret.info = model;
-            }
-            else
-            {
-                ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
+    
         /// <summary>
         /// 作业，实验，考试成绩所属学生基本信息
         /// </summary>
@@ -299,13 +276,43 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
+        /// 单个学生作业，实验，考试成绩
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="type">类型</param>
+        /// <param name="userId">学生Id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> ScoreInfo(int courseId, int type, int userId)
+        {
+            MapiData ret = new MapiData();
+            var tests = await _courseRepository.GetTestsAsync(courseId, type);
+            if (tests != null)
+            {
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                string str = "";
+                foreach (var test in tests)
+                {
+                    str = await _courseRepository.GetTestScoreAsync(test.Id, userId);
+                    dic.Add(test.Name, str);
+                }
+                ret.retcode = 0;
+                ret.info = dic;
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
         /// 获取单个学生汇总成绩（未完成）
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <param name="id">学生Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeCourseStudent>>> StudentGrade(int courseId, int id)
+        public async Task<ActionResult> StudentGrade(int courseId, int id)
         {
             MapiData ret = new MapiData();
             var grade = await _courseRepository.GradeExists(courseId);
@@ -464,16 +471,17 @@ namespace IonicApi.Controllers
         ///  打印任务展示列表
         /// </summary>
         /// <param name="userId">用户Id</param>
+        /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> PaperTaskList(int userId)
+        public async Task<ActionResult> PaperTaskList(int userId,string keyword)
         {
             MapiData ret = new MapiData();
             var user = await _userRepository.UserExistsAsync(userId);
             if (user)
             {
                 ret.retcode = 0;
-                var entity = await _outputTaskRepository.GetPaperTasksAsync(userId);
+                var entity = await _outputTaskRepository.GetPaperTasksAsync(userId, keyword);
                 ret.info = _mapper.Map<IEnumerable<PaperOutputTaskDto>>(entity);
             }
             else
@@ -488,7 +496,7 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> ResetPaperTask(int id)
+        public async Task<ActionResult> ResetPaperTask(int id)
         {
             MapiData ret = new MapiData();
             PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
@@ -499,10 +507,38 @@ namespace IonicApi.Controllers
                 entity.Result = "";
                 entity.FinishTime = null;
                 ret.retcode = 0;
+                await _outputTaskRepository.SaveAsync();
+                Action action = async () =>
+                  {
+                      try
+                      {
+                          //未做 zipFileName
+                          string zipFileName = "";
+                          entity.Result = "成功";
+                          entity.FileName = Path.GetFileName(zipFileName);
+                          entity.FilePath = zipFileName;
+                          entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
+                          entity.FinishCount = entity.TotalCount;
+                      }
+                      catch (Exception ex)
+                      {
+                          entity.Result = "失败";
+                          entity.Message = ex.Message;
+                      }
+                      finally
+                      {
+                          entity.FinishTime = DateTime.Now;
+                      }
+                      await _outputTaskRepository.SaveAsync();
+                  };
+                await Task.Factory.StartNew(action);
+                ret.retcode = 0;
+                ret.message = "重启成功";
             }
             else
             {
                 ret.retcode = 11;
+                ret.message = "重启失败";
             }
             return Ok(ret);
         }
@@ -513,7 +549,7 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> DeletePaperTask(int id)
+        public async Task<ActionResult> DeletePaperTask(int id)
         {
             MapiData ret = new MapiData();
             PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
@@ -537,7 +573,7 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> AddPaperTask(int id)
+        public async Task<ActionResult> AddPaperTask(int id)
         {
             MapiData ret = new MapiData();
             PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
@@ -553,11 +589,11 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
         /// <summary>
-        /// 编辑打印任务
+        /// 编辑打印任务（未做）
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ActionResult<IEnumerable<PePaperOutputTask>>> EditPaperTask(int id)
+        public async Task<ActionResult> EditPaperTask(int id)
         {
             MapiData ret = new MapiData();
             PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
