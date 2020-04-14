@@ -142,7 +142,7 @@ namespace IonicApi.Controllers
         /// <param name="id">作业Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeTest>> HomeWork(int id)
+        public async Task<ActionResult> HomeWork(int id)
         {
             MapiData ret = new MapiData();
             var homeWork = await _courseRepository.GetTestAsync(id);
@@ -162,7 +162,7 @@ namespace IonicApi.Controllers
         /// <param name="peTest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<PeTest>> AddHomeWork(int courseId, PeTest peTest)
+        public async Task<ActionResult> AddHomeWork(int courseId, PeTest peTest)
         {
             MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
@@ -182,7 +182,7 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
         [HttpPatch]
-        public async Task<ActionResult<PeTest>> EditHomeWork(int id)
+        public async Task<ActionResult> EditHomeWork(int id)
         {
             MapiData ret = new MapiData();
             var homeWork = await _courseRepository.GetTestAsync(id);
@@ -202,7 +202,7 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeTest>> DeleteWork(int id)
+        public async Task<ActionResult> DeleteWork(int id)
         {
             MapiData ret = new MapiData();
             PeTest entity = await _courseRepository.GetTestAsync(id);
@@ -330,7 +330,7 @@ namespace IonicApi.Controllers
         }
         #endregion
 
-        #region 课程资源
+        #region 课程资源 PeResource
         /// <summary>
         /// 获取课程资源
         /// </summary>
@@ -338,7 +338,7 @@ namespace IonicApi.Controllers
         /// <param name="parentId">parentId</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeResource>>> ResourceList(int courseId, int parentId = 0)
+        public async Task<ActionResult> ResourceList(int courseId, int parentId = 0)
         {
             MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
@@ -362,7 +362,7 @@ namespace IonicApi.Controllers
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PeResource>>> SearchResource(int courseId, int parentId, string keyword)
+        public async Task<ActionResult> SearchResource(int courseId, int parentId, string keyword)
         {
             MapiData ret = new MapiData();
             var course = await _courseRepository.CourseExistAsync(courseId);
@@ -385,7 +385,7 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeResource>> DeleteResource(int id)
+        public async Task<ActionResult> DeleteResource(int id)
         {
             MapiData ret = new MapiData();
             PeResource entity = await _courseRepository.GetResourceAsync(id);
@@ -409,7 +409,7 @@ namespace IonicApi.Controllers
         /// <param name="name">名称</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeResource>> Rename(int id, string name)
+        public async Task<ActionResult> Rename(int id, string name)
         {
             MapiData ret = new MapiData();
             PeResource entity = await _courseRepository.GetResourceAsync(id);
@@ -466,7 +466,7 @@ namespace IonicApi.Controllers
 
         #endregion
 
-        #region 试卷打印
+        #region 试卷打印 PePaperOutputTask
         /// <summary>
         ///  打印任务展示列表
         /// </summary>

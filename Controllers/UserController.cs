@@ -35,7 +35,7 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeUser>> GetStudents(int courseId)
+        public async Task<ActionResult> GetStudents(int courseId)
         {
             MapiData ret = new MapiData();
             if (courseId > 0)
@@ -60,7 +60,7 @@ namespace IonicApi.Controllers
         /// <param name="entity"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<PeUser>> AddCourseStudent(int courseId, PeUser entity)
+        public async Task<ActionResult> AddCourseStudent(int courseId, PeUser entity)
         {
             MapiData ret = new MapiData();
             if (!await _userRepository.UserExists(entity.UserName))
@@ -94,7 +94,7 @@ namespace IonicApi.Controllers
         /// <param name="id">用户id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeUser>> RetsetPwd(int id)
+        public async Task<ActionResult> RetsetPwd(int id)
         {
             MapiData ret = new MapiData();
             PeUser entity= await _userRepository.GetUserAsync(id);
@@ -116,7 +116,7 @@ namespace IonicApi.Controllers
         /// <param name="id">用户id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<PeUser>> DeleteUser(int id)
+        public async Task<ActionResult> DeleteUser(int id)
         {
             MapiData ret = new MapiData();
             PeUser entity = await _userRepository.GetUserAsync(id);
@@ -133,7 +133,7 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
         [HttpPatch]
-        public async Task<ActionResult<PeUser>>EditUser(int id,PeUser peUser)
+        public async Task<ActionResult>EditUser(int id,PeUser peUser)
         {
             MapiData ret = new MapiData();
             PeUser entity = await _userRepository.GetUserAsync(id);
@@ -155,7 +155,7 @@ namespace IonicApi.Controllers
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> SearchUser(int courseId, string keyword)
+        public async Task<ActionResult> SearchUser(int courseId, string keyword)
         {
             MapiData ret = new MapiData();
             if (!await _courseRepository.CourseExistAsync(courseId))
