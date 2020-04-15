@@ -20,7 +20,7 @@ namespace IonicApi.Repositories
         Task<PeTest> GetTestAsync(int id);
         Task<IEnumerable<PeTest>> GetTestsAsync(int courseId,int mode);
         Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode, string keyword);
-        void AddTest(int courseId, PeTest test);
+        void AddTest(PeTest test);
         void UpdateTest(int testId, PeTest test);
         void DeleteTest(PeTest test);
         Task<bool> TestExistsAsync(int testId);
@@ -41,5 +41,7 @@ namespace IonicApi.Repositories
         Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId);
         Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId);
         Task<string> GetTestScoreAsync(int testId,int userId);
+
+        Task<IEnumerable<PeDrawPlot>> GetDrawPlotsAsync(int userId);
     }
 }

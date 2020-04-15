@@ -36,6 +36,8 @@ namespace IonicApi.Profiles
 
             CreateMap<PeResource, ResourceDto>();
             CreateMap<PePaperOutputTask, PaperOutputTaskDto>();
+
+            CreateMap<PeDrawPlot, DrawPlotOptions>();
         }
     }
 }

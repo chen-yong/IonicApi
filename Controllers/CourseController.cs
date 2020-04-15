@@ -103,6 +103,31 @@ namespace IonicApi.Controllers
 
         #endregion
 
+        #region 抽题策略
+        /// <summary>
+        /// 抽题策略
+        /// </summary>
+        /// <param name="authtoken">authtoken</param>
+        /// <returns></returns>
+        public async Task<ActionResult> DrawPlotList(string authtoken)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                ret.retcode = 0;
+                ret.authtoken = authtoken;
+                var entity= await _courseRepository.GetDrawPlotsAsync(AuthtokenUtility.GetId(authtoken));
+                ret.info = _mapper.Map<IEnumerable<DrawPlotOptions>>(entity);
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
+        #endregion
+
         #region 作业实验练习
         /// <summary>
         /// 获取作业、实验、练习列表
@@ -162,25 +187,47 @@ namespace IonicApi.Controllers
         /// <param name="peTest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddHomeWork(int courseId, PeTest peTest)
+        public async Task<ActionResult> AddHomeWork(string authtoken,int courseId, TestAddDto peTest)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course || peTest == null)
+            if (AuthtokenUtility.ValidToken(authtoken)) 
             {
-                ret.retcode = 11;
-                throw new ArgumentException(nameof(peTest));
+                var course = await _courseRepository.CourseExistAsync(courseId);
+                if (course)
+                {
+                    ret.retcode = 11;
+                    throw new ArgumentException(nameof(peTest));
+                }
+                else
+                {
+                    var entity = _mapper.Map<PeTest>(peTest);
+                    entity.CourseId = courseId;
+                    entity.CreateUserId = AuthtokenUtility.GetId(authtoken);
+                    entity.CreateTime = DateTime.Now;
+                    entity.IsOpen = true;
+                    if (entity.TimeLimit > 0)
+                    {
+                        entity.AutoSubmitOnTimeLimit = true;
+                    }
+                    entity.Nid = GUIDUtility.GenerateCharID();
+                    _courseRepository.AddTest(entity);
+                    await _courseRepository.SaveAsync();
+                    ret.retcode = 0;
+                }
             }
             else
             {
-                var entity = _mapper.Map<PeTest>(course);
-                _courseRepository.AddTest(courseId, entity);
-                _mapper.Map<TestAddDto>(entity);
-                await _courseRepository.SaveAsync();
-                ret.retcode = 0;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 编辑作业
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPatch]
         public async Task<ActionResult> EditHomeWork(int id)
         {
@@ -306,7 +353,7 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 获取单个学生汇总成绩（未完成）
+        /// 获取单个学生汇总成绩
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <param name="id">学生Id</param>

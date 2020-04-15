@@ -87,20 +87,12 @@ namespace IonicApi.Repositories
             return await _context.SaveChangesAsync() >= 0;
         }
 
-        public void AddTest(int courseId, PeTest test)
+        public void AddTest(PeTest test)
         {
             if (test == null)
             {
                 throw new ArgumentNullException(nameof(test));
             }
-            //test.CreateUserId=
-            test.CreateTime = DateTime.Now;
-            test.IsOpen = true;
-            if (test.TimeLimit > 0)
-            {
-                test.AutoSubmitOnTimeLimit = true;
-            }
-            test.Nid = GUIDUtility.GenerateCharID();
             _context.PeTest.Add(test);
         }
 
@@ -274,6 +266,16 @@ namespace IonicApi.Repositories
                 else { return entity.ScoreAlter.ToString(); }
             }
             else { return "0"; }
+        }
+
+        /// <summary>
+        /// 抽题策略
+        /// </summary>
+        /// <param name="userId">用户Id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeDrawPlot>> GetDrawPlotsAsync(int userId)
+        {
+            return await _context.PeDrawPlot.Where(e => (!e.IsDel &&(e.CreateUserId == userId || e.Shared == 1))).OrderBy(e=>e.UpdateTime).ToListAsync();
         }
     }
 }
