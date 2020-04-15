@@ -320,7 +320,7 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 0;
                 var entity = await _courseRepository.GradeAsync(courseId, id);
-                ret.info = entity;//_mapper.Map<IEnumerable<CJHZDto>>(entity);
+                ret.info = _mapper.Map<IEnumerable<CJHZDto>>(entity);
             }
             else
             {
