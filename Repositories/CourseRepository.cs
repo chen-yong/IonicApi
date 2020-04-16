@@ -143,6 +143,10 @@ namespace IonicApi.Repositories
         {
             //throw new NotImplementedException();
         }
+        public void UpdateTest(PeTest test)
+        {
+            //throw new NotImplementedException();
+        }
 
         /// <summary>
         /// 根据课程ID查找课程所有的学生成绩

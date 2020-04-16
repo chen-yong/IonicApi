@@ -9,6 +9,7 @@ using IonicApi.Dtos;
 using IonicApi.Models;
 using IonicApi.Modes;
 using IonicApi.Repositories;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
 
@@ -181,30 +182,39 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 添加作业
+        /// 添加作业、实验、练习
         /// </summary>
         /// <param name="courseId">课程Id</param>
+        /// <param name="type">类型：type=1考试 type=2练习 type=3作业 type=4实验</param>
         /// <param name="peTest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddHomeWork(string authtoken,int courseId, TestAddDto peTest)
+        public async Task<ActionResult> AddHomeWork(string authtoken,int courseId,int type, TestAddDto test)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken)) 
             {
                 var course = await _courseRepository.CourseExistAsync(courseId);
-                if (course)
+                if (!course)
                 {
                     ret.retcode = 11;
-                    throw new ArgumentException(nameof(peTest));
+                    throw new ArgumentException(nameof(test));
                 }
                 else
                 {
-                    var entity = _mapper.Map<PeTest>(peTest);
+                    var entity = _mapper.Map<PeTest>(test);
+                    //课程Id
                     entity.CourseId = courseId;
+                    entity.Mode = type;
+                    //创建者Id
                     entity.CreateUserId = AuthtokenUtility.GetId(authtoken);
                     entity.CreateTime = DateTime.Now;
                     entity.IsOpen = true;
+                    if (entity.DelayEndTime.HasValue)
+                    {
+                        entity.DelayEndTime = entity.EndTime.Value.AddDays(1).AddMinutes(-1);
+                        entity.DelayPercentOfScore = entity.DelayPercentOfScore ?? 100;
+                    }
                     if (entity.TimeLimit > 0)
                     {
                         entity.AutoSubmitOnTimeLimit = true;
@@ -229,7 +239,7 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPatch]
-        public async Task<ActionResult> EditHomeWork(int id)
+        public async Task<ActionResult> EditHomeWork(int id, JsonPatchDocument<TestEditDto> test)
         {
             MapiData ret = new MapiData();
             var homeWork = await _courseRepository.GetTestAsync(id);
@@ -239,7 +249,11 @@ namespace IonicApi.Controllers
             }
             else
             {
-
+                _mapper.Map(homeWork, test);
+                _courseRepository.UpdateTest(homeWork);
+                //await _courseRepository.SaveAsync();
+                ret.info = homeWork;
+                ret.retcode = 0;
             }
             return Ok(ret);
         }

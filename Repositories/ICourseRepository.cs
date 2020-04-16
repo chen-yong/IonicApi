@@ -22,6 +22,7 @@ namespace IonicApi.Repositories
         Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode, string keyword);
         void AddTest(PeTest test);
         void UpdateTest(int testId, PeTest test);
+        void UpdateTest(PeTest test);
         void DeleteTest(PeTest test);
         Task<bool> TestExistsAsync(int testId);
 
