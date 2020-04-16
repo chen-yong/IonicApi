@@ -60,31 +60,46 @@ namespace IonicApi.Controllers
         /// <param name="entity"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddCourseStudent(int courseId, PeUser entity)
+        public async Task<ActionResult> AddCourseStudent(int courseId, UserAddDto addUser)
         {
             MapiData ret = new MapiData();
-            if (!await _userRepository.UserExists(entity.UserName))
-            {
-                ret.retcode = 11;
-                ret.message = "此学生已存在";
-            }
-            if (!await _userRepository.UserExists(entity.UserName))
+            var entity = _mapper.Map<PeUser>(addUser);
+            PeUser user = _userRepository.GetUser(entity.UserName);
+            //新账号
+            if (user==null)
             {
                 entity.Password = StringUtils.md5HashString("123456");
                 entity.UserIdentity01 = "1";
                 entity.UserIdentity03 = "1";
+                if (string.IsNullOrEmpty(entity.Sex)) entity.Sex = "男";
                 entity.PeCourseStudent.Add(new PeCourseStudent
                 {
                     CourseId = courseId
                 });
                 _userRepository.AddUser(entity);
-                await _userRepository.SaveAsync();
                 ret.retcode = 0;
+                ret.message = "新增新学生成功";
             }
             else
             {
-                ret.retcode = 99;
+                //老师账号
+                if (user.UserIdentity03 == "2") //教师帐号
+                {
+                    ret.retcode = 11;
+                    ret.message = "用户已经存在";
+                }
+                //学生已经存在，添加到PeCourseStudent表中与课程关联
+                else
+                {
+                    user.PeCourseStudent.Add(new PeCourseStudent
+                    {
+                        CourseId = courseId
+                    });
+                    ret.retcode = 0;
+                    ret.message = "学生关联到课程中成功";
+                }
             }
+            await _userRepository.SaveAsync();
             return Ok(ret);
         }
 

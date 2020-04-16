@@ -18,6 +18,7 @@ namespace IonicApi.Repositories
         void UpdateUser(PeUser user);
         void DeleteUser(PeUser user);
         Task<bool> UserExists(string name);
+        PeUser GetUser(string name);
         Task<bool> UserExistsAsync(int id);
         Task<bool> SaveAsync();
     }

@@ -115,5 +115,9 @@ namespace IonicApi.Repositories
             return await _context.SaveChangesAsync() >= 0;
         }
 
+        public PeUser GetUser(string name)
+        {
+            return _context.PeUser.SingleOrDefault(e => (e.UserName == name));
+        }
     }
 }
