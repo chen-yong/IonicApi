@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace IonicApi
 {
@@ -28,6 +29,15 @@ namespace IonicApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //AddNewtonsoftJson
+            services.AddControllers(setup =>
+            {
+                setup.ReturnHttpNotAcceptable = true;
+            }).AddNewtonsoftJson(setup =>
+            {
+                setup.SerializerSettings.ContractResolver =
+                    new CamelCasePropertyNamesContractResolver();
+            }).AddXmlDataContractSerializerFormatters();
             //Ìí¼ÓAutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IBaseRepository, BaseRepository>();

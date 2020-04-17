@@ -88,7 +88,7 @@ namespace IonicApi.Repositories
 
         public void UpdateUser(PeUser user)
         {
-            throw new NotImplementedException();
+           // throw new NotImplementedException();
         }
 
         public void DeleteUser(PeUser user)

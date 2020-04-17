@@ -18,6 +18,7 @@ namespace IonicApi.Profiles
             );
             CreateMap<UserAddDto, PeUser>();
             CreateMap<UserEditDto, PeUser>();
+            CreateMap<PeUser, UserEditDto>();
         }
     }
 

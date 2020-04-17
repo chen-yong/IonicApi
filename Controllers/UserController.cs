@@ -11,6 +11,7 @@ using AutoMapper;
 using IonicApi.Modes;
 using IonicApi.Dtos;
 using IonicApi.Common;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace IonicApi.Controllers
 {
@@ -68,7 +69,7 @@ namespace IonicApi.Controllers
             //新账号
             if (user==null)
             {
-                entity.Password = StringUtils.md5HashString("123456");
+                entity.Password = StringUtils.md5HashString("123456").ToUpper();
                 entity.UserIdentity01 = "1";
                 entity.UserIdentity03 = "1";
                 if (string.IsNullOrEmpty(entity.Sex)) entity.Sex = "男";
@@ -117,6 +118,7 @@ namespace IonicApi.Controllers
             {
                 entity.Password = StringUtils.md5HashString("123456");
                 ret.retcode = 0;
+                await _userRepository.SaveAsync();
             }
             else
             {
@@ -147,14 +149,43 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 更新学生（patch局部更新）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDocument">更新操作</param>
+        /// <returns></returns>
         [HttpPatch]
-        public async Task<ActionResult>EditUser(int id,PeUser peUser)
+        public async Task<ActionResult>EditUser(int id, JsonPatchDocument<UserEditDto> patchDocument)
         {
             MapiData ret = new MapiData();
             PeUser entity = await _userRepository.GetUserAsync(id);
             if (entity != null)
             {
-                ret.retcode = 0;
+                try
+                {
+                    var dtoToPatch = _mapper.Map<UserEditDto>(entity);
+                    // 需要处理验证错误
+                    patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+                    if (!TryValidateModel(dtoToPatch))
+                    {
+                        return ValidationProblem(ModelState);
+                    }
+
+                    _mapper.Map(dtoToPatch, entity);
+                    _userRepository.UpdateUser(entity);
+                    ret.retcode = 0;
+                    ret.message = "修改成功";
+                    await _userRepository.SaveAsync();
+                }
+                catch (Exception e)
+                {
+                    ret.retcode = 11;
+                    ret.info = e;
+                }
+               
             }
             else
             {
