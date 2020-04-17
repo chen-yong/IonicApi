@@ -258,6 +258,12 @@ http://api/Users/EditUser?id=35899
 
    [HttpPatch]
 
+有关HttpPatch局部更新操作转下面的链接：
+
+```json 
+https://www.cnblogs.com/bijinshan/p/9140111.html
+```
+
 参数 params：
 
 | 参数名 | 类型 | 是否可空 | 说明   |
@@ -314,9 +320,20 @@ Body:
 | ------- | ---- | ------ |
 | retcode | int  | 返回码 |
 
-```
+```json
 {
-  "retcode" : 0
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "修改成功"
 }
 ```
 
