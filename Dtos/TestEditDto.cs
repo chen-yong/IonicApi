@@ -16,9 +16,9 @@ namespace IonicApi.Dtos
         /// <summary>
         /// 类型：1考试 2练习 3作业 4实验
         /// </summary>
-        //[Display(Name = "类型")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
-        //public int Mode { get; set; }
+        [Display(Name = "类型")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        public int Mode { get; set; }
         /// <summary>
         /// 开启
         /// </summary>
@@ -38,25 +38,25 @@ namespace IonicApi.Dtos
         /// <summary>
         /// 创建者Id
         /// </summary>
-        //[Display(Name = "创建者Id")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
-        //public int CreateUserId { get; set; }
+        [Display(Name = "创建者Id")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        public int CreateUserId { get; set; }
         /// <summary>
         /// 创建时间
         /// </summary>
-        //public DateTime CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
         //public bool IsDel { get; set; }
         /// <summary>
         /// 开始时间
         /// </summary>
         [Display(Name = "开始时间")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public DateTime? StartTime { get; set; }
         /// <summary>
         /// 截止时间
         /// </summary>
         [Display(Name = "结束时间")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public DateTime? EndTime { get; set; }
         public int? RestTime { get; set; }
         public int? LunchTime { get; set; }
@@ -87,9 +87,9 @@ namespace IonicApi.Dtos
         /// <summary>
         /// 课程ID
         /// </summary>
-        //[Display(Name = "课程Id")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
-        //public int? CourseId { get; set; }
+        [Display(Name = "课程Id")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        public int? CourseId { get; set; }
         /// <summary>
         /// 作业互评
         /// </summary>

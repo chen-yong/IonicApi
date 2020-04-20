@@ -17,13 +17,12 @@ namespace IonicApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Route(template: "api/Login")]
-    public class LoginController : ControllerBase
+    public class LaunchController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public LoginController(IUserRepository userRepository, IMapper mapper)
+        public LaunchController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             //注册AutoMapper
@@ -64,6 +63,7 @@ namespace IonicApi.Controllers
                                 ret.authtoken = AuthtokenUtility.Create(user.Id, 24 * 30); //60天过期
                                 ret.info = new
                                 {
+                                    id=user.Id,
                                     name = user.RealName,
                                     gender = user.Sex,
                                     cls = user.Property00,
@@ -71,10 +71,11 @@ namespace IonicApi.Controllers
                                     email = user.Email,
                                     qq = user.Property05,
                                     addr = user.Address,
-                                    zipcode = user.Zip,
-                                    showQuestionMenu = Initialization.ShowQuestionRedo,
-                                    testNumberLabel = Initialization.TestNumberLabel
+                                    schoolId = user.SchoolId,
+                                    school =user.School
                                 };
+                                ret.message = "学生登录成功";
+                                ret.datetime = DateTime.UtcNow;
                             }
                             else if (user.UserIdentity03 == AppConstants.UserType.Teacher)
                             {
@@ -82,16 +83,18 @@ namespace IonicApi.Controllers
                                 ret.authtoken = AuthtokenUtility.Create(user.Id, 24 * 30); //60天过期
                                 ret.info = new
                                 {
+                                    id = user.Id,
                                     name = user.RealName,
                                     gender = user.Sex,
                                     phone = user.Mobile,
                                     email = user.Email,
                                     qq = user.Property05,
                                     addr = user.Address,
-                                    zipcode = user.Zip,
-                                    showQuestionMenu = Initialization.ShowQuestionRedo,
-                                    testNumberLabel = Initialization.TestNumberLabel
+                                    schoolId = user.SchoolId,
+                                    school = user.School
                                 };
+                                ret.message = "老师登录成功";
+                                ret.datetime = DateTime.UtcNow;
                             }
                             else
                             {

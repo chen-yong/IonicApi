@@ -18,10 +18,11 @@ namespace IonicApi.Profiles
             CreateMap<PeTest, TestDto>();
             CreateMap<TestAddDto, PeTest>();
             CreateMap<TestEditDto, PeTest>();
+            CreateMap<PeTest, TestEditDto>();
 
             CreateMap<PeCourseStudent, CourseStudentDto>();
 
-            CreateMap<PeUser, StudentDto>();
+            //CreateMap<PeUser, StudentDto>();
             CreateMap<PeCourseStudent, CJHZDto>().ForMember(
                 destinationMember: dest => dest.FinalGrade,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => Math.Round(

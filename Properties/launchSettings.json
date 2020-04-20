@@ -20,7 +20,7 @@
     "IonicApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/Login/Login",
+      "launchUrl": "api/Launch/Login",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

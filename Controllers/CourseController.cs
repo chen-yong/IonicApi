@@ -39,7 +39,7 @@ namespace IonicApi.Controllers
         /// <param name="authtoken"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetCourses(string authtoken)
+        public async Task<ActionResult> GetCoursesList(string authtoken)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -223,6 +223,7 @@ namespace IonicApi.Controllers
                     _courseRepository.AddTest(entity);
                     await _courseRepository.SaveAsync();
                     ret.retcode = 0;
+                    ret.message = "创建成功";
                 }
             }
             else
@@ -239,21 +240,38 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPatch]
-        public async Task<ActionResult> EditHomeWork(int id, JsonPatchDocument<TestEditDto> test)
+        public async Task<ActionResult> EditHomeWork(int id, JsonPatchDocument<TestEditDto> patchDocument)
         {
             MapiData ret = new MapiData();
-            var homeWork = await _courseRepository.GetTestAsync(id);
-            if (homeWork == null)
+            PeTest entity = await _courseRepository.GetTestAsync(id);
+            if (entity != null)
             {
-                ret.retcode = 11;
+                try 
+                {
+                     var dtoToPatch = _mapper.Map<TestEditDto>(entity);
+                    // 需要处理验证错误
+                    patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+                    if (!TryValidateModel(dtoToPatch))
+                    {
+                        return ValidationProblem(ModelState);
+                    }
+
+                    _mapper.Map(dtoToPatch, entity);
+                    _courseRepository.UpdateTest(entity);
+                    ret.retcode = 0;
+                    ret.message = "修改成功";
+                    await _courseRepository.SaveAsync();
+                }
+                catch (Exception e)
+                {
+                    ret.retcode = 11;
+                    ret.info = e;
+                }
             }
             else
             {
-                _mapper.Map(homeWork, test);
-                _courseRepository.UpdateTest(homeWork);
-                //await _courseRepository.SaveAsync();
-                ret.info = homeWork;
-                ret.retcode = 0;
+                ret.retcode = 11;
             }
             return Ok(ret);
         }
@@ -283,59 +301,6 @@ namespace IonicApi.Controllers
         #endregion
 
         #region 成绩
-        /// <summary>
-        /// 获取课程学生成绩
-        /// </summary>
-        /// <param name="courseId">课程Id</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<ActionResult> GradeList(int courseId)
-        {
-            MapiData ret = new MapiData();
-            var grade = await _courseRepository.GradeExists(courseId);
-            if (grade)
-            {
-                ret.retcode = 0;
-                ret.info = await _courseRepository.GradeListAsync(courseId);
-            }
-            else
-            {
-                ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
-    
-        /// <summary>
-        /// 作业，实验，考试成绩所属学生基本信息
-        /// </summary>
-        /// <param name="courseId">课程Id</param>
-        /// <param name="keyword">关键词</param>
-        /// <param name="page">页码</param>
-        /// <param name="count">每页数量</param>
-        /// <returns></returns>
-        public async Task<ActionResult> StudentList(int courseId, string keyword, int page, int count)
-        {
-            MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course)
-            {
-                var entity = await _userRepository.GetUsersAsync(courseId, keyword);
-                IPagedList<PeUser> list = new PagedList<PeUser>(entity, page, count);
-                var student = _mapper.Map<IEnumerable<StudentDto>>(list);
-                ret.retcode = 0;
-                ret.pagecount = list.PageCount;
-                ret.recordcount = list.TotalItemCount;
-                ret.isfirst = list.IsFirstPage;
-                ret.hasnext = list.HasNextPage;
-                ret.info = student;
-            }
-            else
-            {
-                ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
-
         /// <summary>
         /// 单个学生作业，实验，考试成绩
         /// </summary>
@@ -392,29 +357,6 @@ namespace IonicApi.Controllers
         #endregion
 
         #region 课程资源 PeResource
-        /// <summary>
-        /// 获取课程资源
-        /// </summary>
-        /// <param name="courseId">课程Id</param>
-        /// <param name="parentId">parentId</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<ActionResult> ResourceList(int courseId, int parentId = 0)
-        {
-            MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course)
-            {
-                ret.retcode = 0;
-                var entity = await _courseRepository.GetResourcesAsync(courseId, parentId);
-                ret.info = _mapper.Map<IEnumerable<ResourceDto>>(entity);
-            }
-            else
-            {
-                ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
         /// <summary>
         /// 搜索课程资源
         /// </summary>
@@ -535,19 +477,28 @@ namespace IonicApi.Controllers
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> PaperTaskList(int userId,string keyword)
+        public async Task<ActionResult> PaperTaskList(string authtoken, string keyword)
         {
             MapiData ret = new MapiData();
-            var user = await _userRepository.UserExistsAsync(userId);
-            if (user)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                ret.retcode = 0;
-                var entity = await _outputTaskRepository.GetPaperTasksAsync(userId, keyword);
-                ret.info = _mapper.Map<IEnumerable<PaperOutputTaskDto>>(entity);
+                var userId = AuthtokenUtility.GetId(authtoken);
+                var user = await _userRepository.UserExistsAsync(userId);
+                if (user)
+                {
+                    ret.retcode = 0;
+                    var entity = await _outputTaskRepository.GetPaperTasksAsync(userId, keyword);
+                    ret.info = _mapper.Map<IEnumerable<PaperOutputTaskDto>>(entity);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }

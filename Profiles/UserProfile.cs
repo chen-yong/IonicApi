@@ -12,13 +12,11 @@ namespace IonicApi.Profiles
     {
         public UserProfile()
         {
-            CreateMap<PeUser, UserDto>().ForMember(
-                destinationMember: dest => dest.UserName,
-                memberOptions: opt => opt.MapFrom(mapExpression: src => src.UserName)
-            );
+            CreateMap<PeUser, UserDto>();
             CreateMap<UserAddDto, PeUser>();
             CreateMap<UserEditDto, PeUser>();
             CreateMap<PeUser, UserEditDto>();
+            CreateMap<PeUser, StudentDto>();
         }
     }
 

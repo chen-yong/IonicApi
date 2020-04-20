@@ -60,7 +60,7 @@ namespace IonicApi.Repositories
         /// <returns></returns>
         public async Task<PeUser> GetUserAsync(string account, string pwd)
         {
-            return await _context.PeUser.FirstOrDefaultAsync(e => (e.UserName == account || e.Email == account) && e.Password == pwd && e.UserIdentity01 != AppConstants.UserStatus.Deleted);
+            return await _context.PeUser.SingleOrDefaultAsync(e => (e.UserName == account || e.Email == account) && e.Password == pwd && e.UserIdentity01 != AppConstants.UserStatus.Deleted);
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ using IonicApi.Modes;
 using IonicApi.Dtos;
 using IonicApi.Common;
 using Microsoft.AspNetCore.JsonPatch;
+using PagedList;
 
 namespace IonicApi.Controllers
 {
@@ -30,23 +31,31 @@ namespace IonicApi.Controllers
             //注册AutoMapper
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
         /// <summary>
-        /// 根据课程ID获取学生
+        /// 根据课程ID获取所属学生基本信息
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="courseId">课程Id</param>
+        /// <param name="keyword">关键词</param>
+        /// <param name="page">页码</param>
+        /// <param name="count">每页数量</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetStudents(int courseId)
+        public async Task<ActionResult> StudentList(int courseId, string keyword, int page=1, int count=10)
         {
             MapiData ret = new MapiData();
-            if (courseId > 0)
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            if (course)
             {
-                var studets = await _userRepository.GetUsersAsync(courseId);
-                if (studets != null)
-                {
-                    ret.retcode = 0;
-                    ret.info = _mapper.Map<IEnumerable<UserDto>>(studets);
-                }
+                var entity = await _userRepository.GetUsersAsync(courseId, keyword);
+                IPagedList<PeUser> list = new PagedList<PeUser>(entity, page, count);
+                var student = _mapper.Map<IEnumerable<StudentDto>>(list);
+                ret.retcode = 0;
+                ret.pagecount = list.PageCount;
+                ret.recordcount = list.TotalItemCount;
+                ret.isfirst = list.IsFirstPage;
+                ret.hasnext = list.HasNextPage;
+                ret.info = student;
             }
             else
             {
@@ -54,6 +63,30 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 根据id获取学生信息
+        /// </summary>
+        /// <param name="id">学生Id</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> GetStudent(int id)
+        {
+            MapiData ret = new MapiData();
+            var user = await _userRepository.UserExistsAsync(id);
+            if (user)
+            {
+                var entity = await _userRepository.GetUserAsync(id);
+                ret.retcode = 0;
+                ret.info = _mapper.Map<StudentDto>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
         /// <summary>
         /// 在课程中添加学生
         /// </summary>
@@ -190,29 +223,6 @@ namespace IonicApi.Controllers
             else
             {
                 ret.retcode = 11;
-            }
-            return Ok(ret);
-        }
-
-        /// <summary>
-        /// 查询学生
-        /// </summary>
-        /// <param name="courseId">课程ID</param>
-        /// <param name="keyword">关键词</param>
-        /// <returns></returns>
-        [HttpGet]
-        public async Task<ActionResult> SearchUser(int courseId, string keyword)
-        {
-            MapiData ret = new MapiData();
-            if (!await _courseRepository.CourseExistAsync(courseId))
-            {
-                ret.retcode = 11;
-            }
-            else
-            {
-                ret.retcode = 0;
-                var users = await _userRepository.GetUsersAsync(courseId, keyword);
-                ret.info= _mapper.Map<IEnumerable<UserDto>>(users);
             }
             return Ok(ret);
         }

@@ -31,5 +31,13 @@ namespace IonicApi.Dtos
         /// 班级
         /// </summary>
         public string UserIdentity02 { get; set; }
+        /// <summary>
+        /// 电话
+        /// </summary>
+        public string Mobile { get; set; }
+        /// <summary>
+        /// 学院、系
+        /// </summary>
+        public string UserIdentity00 { get; set; }
     }
 }
