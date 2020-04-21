@@ -1485,7 +1485,7 @@ http://api/Course/Rename?id=1961&name=
 ```json
 {  
  	"retcode" : 0,
-    ret.message = "重命名成功"
+    "message" = "重命名成功"
 }
 ```
 
@@ -1662,27 +1662,34 @@ http://api/printTest?courseId=1
 #####  1.打印考试列表（搜索）
 
 ```http
-http://localhost:5000/api/Course/PaperTaskList?authtoken=&keyword
+http://localhost:5000/api/Course/PaperTaskList?courseId=422&authtoken=&keyword
 ```
 
 参数：
 
 | 参数名    | 类型   | 是否可空 | 说明         |
 | --------- | ------ | -------- | ------------ |
+| courseId  | int    | 否       | 课程id       |
 | authtoken | string | 否       | 登录用户令牌 |
 | keyword   | string | 否       | 关键字       |
 
 返回：
 
-| 字段       | 类型          | 说明     |
-| ---------- | ------------- | -------- |
-| retcode    | int           | 返回码   |
-| info       | array[object] |          |
-| id         | int           | id       |
-| name       | string        | 名称     |
-| testId     | string        | 结束时间 |
-| range      | string        | 状态     |
-| totalCount | string        | 结果     |
+| 字段        | 类型          | 说明     |
+| ----------- | ------------- | -------- |
+| retcode     | int           | 返回码   |
+| info        | array[object] |          |
+| id          | int           | id       |
+| name        | string        | 名称     |
+| totalCount  | int           | 试卷总数 |
+| finishCount | int           | 完成数   |
+| startTime   | string        | 开始时间 |
+| finishTime  | DateTime      | 完成时间 |
+| fileName    | string        | 文件名称 |
+| filePath    | string        | 路径     |
+| result      | string        | 状态     |
+| message     | string        | 结果     |
+| fileSize    | string        | 文件大小 |
 
 ```json
 {
@@ -1692,80 +1699,28 @@ http://localhost:5000/api/Course/PaperTaskList?authtoken=&keyword
         {
             "id": 671,
             "name": "Java程序设计-作业十二试卷打印任务",
-            "testId": 6676,
-            "range": "ALL",
             "totalCount": 1,
             "finishCount": 1,
-            "createTime": "2020-04-10T20:22:28.003",
-            "createUser": 31308,
-            "createUserName": "陈勇",
             "startTime": "2020-04-10T20:22:28.003",
-            "beCreatePdfFile": false,
-            "createTempDir": "",
             "finishTime": "2020-04-10T20:22:30.023",
             "fileName": "e4165150e8525c02.zip",
             "filePath": "E:\\webiste\\XTest\\output\\paper\\zip\\e4165150e8525c02.zip",
             "result": "成功",
             "message": null,
-            "fileSize": "62.09 KB",
-            "option1": "Java程序设计-作业十二",
-            "option2": null,
-            "option3": null,
-            "option4": null,
-            "option5": null,
-            "test": null
+            "fileSize": "62.09 KB"
         },
         {
             "id": 669,
             "name": "Java程序设计-实验十试卷打印任务",
-            "testId": 6680,
-            "range": "ALL",
             "totalCount": 0,
             "finishCount": 0,
-            "createTime": "2020-04-02T17:08:46.607",
-            "createUser": 31308,
-            "createUserName": "陈勇",
             "startTime": "2020-04-13T17:49:57.48",
-            "beCreatePdfFile": false,
-            "createTempDir": "",
             "finishTime": "2020-04-13T17:49:57.62",
             "fileName": "8933448d4d336044.zip",
             "filePath": "E:\\webiste\\XTest\\output\\paper\\zip\\8933448d4d336044.zip",
             "result": "成功",
             "message": "",
-            "fileSize": "22.00 字节",
-            "option1": "Java程序设计-实验十",
-            "option2": null,
-            "option3": null,
-            "option4": null,
-            "option5": null,
-            "test": null
-        },
-        {
-            "id": 391,
-            "name": "C语言考试打印任务20190506112937",
-            "testId": 6877,
-            "range": "ALL",
-            "totalCount": 6,
-            "finishCount": 6,
-            "createTime": "2019-05-06T11:29:37.223",
-            "createUser": 31308,
-            "createUserName": "陈勇",
-            "startTime": "2019-05-06T11:29:37.223",
-            "beCreatePdfFile": false,
-            "createTempDir": "",
-            "finishTime": "2019-05-06T11:29:39.883",
-            "fileName": "7396a1ffef5245d8.zip",
-            "filePath": "E:\\webiste\\XTest\\output\\paper\\zip\\7396a1ffef5245d8.zip",
-            "result": "成功",
-            "message": null,
-            "fileSize": "139.50 KB",
-            "option1": "C语言考试打印任务20190506112937",
-            "option2": null,
-            "option3": null,
-            "option4": null,
-            "option5": null,
-            "test": null
+            "fileSize": "22.00 字节"
         }
     ],
     "pagecount": 0,
@@ -1780,26 +1735,148 @@ http://localhost:5000/api/Course/PaperTaskList?authtoken=&keyword
 }
 ```
 
-##### 2. 新建打印
+##### 2. 打印任务考试选项
 
-```
-http://api/createdPrint?courseId=1
+```http
+http://localhost:5000/api/Course/ChooseTest?courseId=422
 ```
 
 参数：
 
-| 参数名    | 类型          | 是否可空 | 说明   |
-| --------- | ------------- | -------- | ------ |
-| courseId  | int           | 否       | 课程id |
-| printInfo | array[object] |          |        |
+| 参数名   | 类型 | 是否可空 | 说明   |
+| -------- | ---- | -------- | ------ |
+| courseId | int  | 否       | 课程id |
 
 返回：
 
-| 字段    | 类型 | 说明   |
-| ------- | ---- | ------ |
-| retcode | int  | 返回码 |
+| 字段    | 类型          | 说明   |
+| ------- | ------------- | ------ |
+| retcode | int           | 返回码 |
+| info    | array[object] |        |
+| id      | int           | id     |
+| name    | string        | 名称   |
 
-##### 3. 重启打印
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 9828,
+            "name": "测试"
+        },
+        {
+            "id": 6676,
+            "name": "Java程序设计-作业十二"
+        },
+        {
+            "id": 6678,
+            "name": "Java程序设计-作业十一"
+        },
+        {
+            "id": 6681,
+            "name": "Java程序设计-作业十"
+        },
+        {
+            "id": 6682,
+            "name": "Java程序设计-作业九 "
+        },
+        {
+            "id": 6685,
+            "name": "Java程序设计-作业八"
+        },
+        {
+            "id": 6687,
+            "name": "Java程序设计-作业七"
+        },
+        {
+            "id": 6689,
+            "name": "Java程序设计-作业六"
+        },
+        {
+            "id": 6691,
+            "name": "Java程序设计-作业五"
+        },
+        {
+            "id": 6694,
+            "name": "Java程序设计-作业四"
+        },
+        {
+            "id": 6695,
+            "name": "Java程序设计-作业三"
+        },
+        {
+            "id": 6697,
+            "name": "Java程序设计-作业二"
+        },
+        {
+            "id": 6699,
+            "name": "Java程序设计-作业一测试"
+        },
+        {
+            "id": 6677,
+            "name": "Java程序设计-实验十二"
+        },
+        {
+            "id": 6679,
+            "name": "Java程序设计-实验十一"
+        },
+        {
+            "id": 6680,
+            "name": "Java程序设计-实验十"
+        },
+        {
+            "id": 6683,
+            "name": "Java程序设计-实验九"
+        },
+        {
+            "id": 6684,
+            "name": "Java程序设计-实验八"
+        },
+        {
+            "id": 6686,
+            "name": "Java程序设计-实验七"
+        },
+        {
+            "id": 6688,
+            "name": "Java程序设计-实验六"
+        },
+        {
+            "id": 6690,
+            "name": "Java程序设计-实验五"
+        },
+        {
+            "id": 6692,
+            "name": "Java程序设计-实验四"
+        },
+        {
+            "id": 6693,
+            "name": "Java程序设计-实验三"
+        },
+        {
+            "id": 6696,
+            "name": "Java程序设计-实验二"
+        },
+        {
+            "id": 6698,
+            "name": "Java程序设计-实验一"
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 3.添加打印任务
+
+##### 4. 重启打印
 
 ```
 http://api/resetPrint?id=1
@@ -1823,10 +1900,10 @@ http://api/resetPrint?id=1
 }
 ```
 
-##### 4. 删除打印
+##### 5. 删除打印
 
-```
-http://api/deletePrint?id=1
+```http
+http://localhost:5000/api/Course/DeletePaperTask?id=1
 ```
 
 参数：
@@ -1843,7 +1920,8 @@ http://api/deletePrint?id=1
 
 ```json 
 {
-   "retcode":0
+   "retcode":0,
+    "message":"删除成功"
 }
 ```
 

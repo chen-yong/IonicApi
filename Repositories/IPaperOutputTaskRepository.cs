@@ -9,9 +9,9 @@ namespace IonicApi.Repositories
     public interface IPaperOutputTaskRepository
     {
         Task<IEnumerable<PePaperOutputTask>> GetPaperTasksAsync(int userId);
-        Task<IEnumerable<PePaperOutputTask>> GetPaperTasksAsync(int userId, string keyword);
+        Task<IEnumerable<PePaperOutputTask>> GetPaperTasksAsync(int courseId, int userId, string keyword);
         Task<PePaperOutputTask> GetPaperTaskAsync(int Id);
-        void AddPaperTask(int courseId, PePaperOutputTask paperOutput);
+        void AddPaperTask(PePaperOutputTask paperOutput);
         void UpdatePaperTask(int id, PePaperOutputTask paperOutput);
         void DeletePaperTask(PePaperOutputTask paperOutput);
         Task<bool> PaperTaskExists(string name);

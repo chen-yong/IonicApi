@@ -15,9 +15,9 @@ namespace IonicApi.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public void AddPaperTask(int courseId, PePaperOutputTask paperOutput)
+        public void AddPaperTask(PePaperOutputTask paperOutput)
         {
-            throw new NotImplementedException();
+            _context.PePaperOutputTask.Add(paperOutput);
         }
 
         public void DeletePaperTask(PePaperOutputTask paperOutput)
@@ -35,9 +35,9 @@ namespace IonicApi.Repositories
             return await _context.PePaperOutputTask.Where(e => e.CreateUser == userId).ToListAsync();
         }
 
-        public async Task<IEnumerable<PePaperOutputTask>> GetPaperTasksAsync(int userId, string keyword)
+        public async Task<IEnumerable<PePaperOutputTask>> GetPaperTasksAsync(int courseId, int userId, string keyword)
         {
-            var tasks = _context.PePaperOutputTask.Where(e => e.CreateUser == userId);
+            var tasks = _context.PePaperOutputTask.Where(e => e.CreateUser == userId && e.Test.CourseId == courseId && e.Test.Mode != Config.TestMode.Test);
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.Trim();

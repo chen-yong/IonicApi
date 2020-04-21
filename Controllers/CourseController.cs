@@ -78,7 +78,7 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
         /// <summary>
-        /// 创建课程
+        /// 创建课程(未测试)
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <param name="course">课程实体</param>
@@ -117,7 +117,7 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 0;
                 ret.authtoken = authtoken;
-                var entity= await _courseRepository.GetDrawPlotsAsync(AuthtokenUtility.GetId(authtoken));
+                var entity = await _courseRepository.GetDrawPlotsAsync(AuthtokenUtility.GetId(authtoken));
                 ret.info = _mapper.Map<IEnumerable<DrawPlotOptions>>(entity);
             }
             else
@@ -189,10 +189,10 @@ namespace IonicApi.Controllers
         /// <param name="peTest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> AddHomeWork(string authtoken,int courseId,int type, TestAddDto test)
+        public async Task<ActionResult> AddHomeWork(string authtoken, int courseId, int type, TestAddDto test)
         {
             MapiData ret = new MapiData();
-            if (AuthtokenUtility.ValidToken(authtoken)) 
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
                 var course = await _courseRepository.CourseExistAsync(courseId);
                 if (!course)
@@ -246,9 +246,9 @@ namespace IonicApi.Controllers
             PeTest entity = await _courseRepository.GetTestAsync(id);
             if (entity != null)
             {
-                try 
+                try
                 {
-                     var dtoToPatch = _mapper.Map<TestEditDto>(entity);
+                    var dtoToPatch = _mapper.Map<TestEditDto>(entity);
                     // 需要处理验证错误
                     patchDocument.ApplyTo(dtoToPatch, ModelState);
 
@@ -477,7 +477,7 @@ namespace IonicApi.Controllers
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> PaperTaskList(string authtoken, string keyword)
+        public async Task<ActionResult> PaperTaskList(int courseId, string authtoken, string keyword)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -487,7 +487,7 @@ namespace IonicApi.Controllers
                 if (user)
                 {
                     ret.retcode = 0;
-                    var entity = await _outputTaskRepository.GetPaperTasksAsync(userId, keyword);
+                    var entity = await _outputTaskRepository.GetPaperTasksAsync(courseId, userId, keyword);
                     ret.info = _mapper.Map<IEnumerable<PaperOutputTaskDto>>(entity);
                 }
                 else
@@ -503,6 +503,86 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        /// <summary>
+        /// 试卷打印任务下的选择考试选项
+        /// </summary>
+        /// <param name="courseId">课程Id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> ChooseTest(int courseId)
+        {
+            MapiData ret = new MapiData();
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            if (course)
+            {
+                var choose = await _courseRepository.ChooseTest(courseId);
+                ret.info = _mapper.Map<IEnumerable<ChooseTestDto>>(choose);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 添加打印任务
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> AddPaperTask(int courseId, string authtoken, int testId, PePaperOutputTaskAddDto pePaper)
+        {
+            MapiData ret = new MapiData();
+            var course = await _courseRepository.CourseExistAsync(courseId);
+            PeTest test = await _courseRepository.GetTestAsync(testId);
+            if (course && AuthtokenUtility.ValidToken(authtoken) && test != null)
+            {
+                var entity = _mapper.Map<PePaperOutputTask>(pePaper);
+                entity.TestId = testId;
+                entity.Name = test.Name + "试卷打印任务";
+                entity.Option1 = test.Name;
+                entity.CreateUser = AuthtokenUtility.GetId(authtoken);
+                entity.CreateUserName = _userRepository.GetRealName(AuthtokenUtility.GetId(authtoken));
+                entity.CreateTime = DateTime.Now;
+                entity.BeCreatePdfFile = false;
+                entity.CreateTempDir = "";
+                entity.Range = "ALL";
+                entity.StartTime = DateTime.Now;
+                entity.TotalCount = test.PeUserTest.Count;
+                _outputTaskRepository.AddPaperTask(entity);
+                await _outputTaskRepository.SaveAsync();
+                ret.retcode = 0;
+                ret.message = "添加成功";
+                Action action = async () =>
+                {
+                    try
+                    {
+                        string zipFileName = "";
+                        entity.Result = "成功";
+                        entity.FileName = Path.GetFileName(zipFileName);
+                        entity.FilePath = zipFileName;
+                        entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
+                        entity.FinishCount = entity.TotalCount;
+                    }
+                    catch (Exception ex)
+                    {
+                        entity.Result = "失败";
+                        entity.Message = ex.Message;
+                    }
+                    finally
+                    {
+                        entity.FinishTime = DateTime.Now;
+                    }
+                    await _outputTaskRepository.SaveAsync();
+                };
+                await Task.Factory.StartNew(action);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
         /// <summary>
         /// 重新启动打印任务（未完成）
         /// </summary>
@@ -576,47 +656,6 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 11;
                 ret.message = "删除失败";
-            }
-            return Ok(ret);
-        }
-
-        /// <summary>
-        /// 添加打印任务（未做）
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<ActionResult> AddPaperTask(int id)
-        {
-            MapiData ret = new MapiData();
-            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
-            if (entity != null)
-            { 
-
-            }
-            else
-            {
-                ret.retcode = 11;
-                ret.message = "失败";
-            }
-            return Ok(ret);
-        }
-        /// <summary>
-        /// 编辑打印任务（未做）
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<ActionResult> EditPaperTask(int id)
-        {
-            MapiData ret = new MapiData();
-            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
-            if (entity != null)
-            {
-
-            }
-            else
-            {
-                ret.retcode = 11;
-                ret.message = "失败";
             }
             return Ok(ret);
         }

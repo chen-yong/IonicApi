@@ -19,6 +19,7 @@ namespace IonicApi.Profiles
             CreateMap<TestAddDto, PeTest>();
             CreateMap<TestEditDto, PeTest>();
             CreateMap<PeTest, TestEditDto>();
+            CreateMap<PeTest, ChooseTestDto>();
 
             CreateMap<PeCourseStudent, CourseStudentDto>();
 
@@ -37,6 +38,7 @@ namespace IonicApi.Profiles
 
             CreateMap<PeResource, ResourceDto>();
             CreateMap<PePaperOutputTask, PaperOutputTaskDto>();
+            CreateMap<PePaperOutputTaskAddDto, PePaperOutputTask>();
 
             CreateMap<PeDrawPlot, DrawPlotOptions>();
         }

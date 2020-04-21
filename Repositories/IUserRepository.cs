@@ -14,6 +14,7 @@ namespace IonicApi.Repositories
         Task<PeUser> GetUserAsync(int Id);
         PeUser GetUser(int Id);
         string GetUserName(int Id);
+        string GetRealName(int Id);
         void AddUser(PeUser user);
         void UpdateUser(PeUser user);
         void DeleteUser(PeUser user);

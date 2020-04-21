@@ -105,7 +105,10 @@ namespace IonicApi.Repositories
         {
             return await _context.PeTest.SingleOrDefaultAsync(e => e.Id == id && !e.IsDel);
         }
-
+        public async Task<IEnumerable<PeTest>> ChooseTest(int courseId)
+        {
+            return await _context.PeTest.Where(e => e.CourseId == courseId && !e.IsDel && e.Mode != Config.TestMode.Test).OrderBy(e => e.Mode).ThenByDescending(e => e.StartTime).ToListAsync();
+        }
         /// <summary>
         /// 获取练习，作业，考试，实验
         /// </summary>
@@ -123,9 +126,9 @@ namespace IonicApi.Repositories
         /// <param name="mode">mode类型：Mode=1考试 Mode=2练习 Mode=3作业 Mode=4实验</param>
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode,string keyword)
+        public async Task<IEnumerable<PeTest>> GetTestsAsync(int courseId, int mode, string keyword)
         {
-            var tests= _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == mode && !e.IsDel);
+            var tests = _context.PeTest.Where(e => e.CourseId == courseId && e.Mode == mode && !e.IsDel);
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.Trim();
@@ -196,8 +199,8 @@ namespace IonicApi.Repositories
             var shareResources = _context.PeResource.Where(e => e.IsShared && !e.IsDel);
             //非共享资源
             var privateResources = from a in _context.PeResource
-                            where a.ParentId == parentId && !a.IsDel && (from b in _context.PeCourseResource where b.CourseId == courseId select b.ResourceId).Contains(a.Id)
-                            select a;
+                                   where a.ParentId == parentId && !a.IsDel && (from b in _context.PeCourseResource where b.CourseId == courseId select b.ResourceId).Contains(a.Id)
+                                   select a;
             //资源合并，时间倒序排序
             var resources = shareResources.Concat(privateResources).OrderByDescending(e => e.CreateTime);
             //关键词检索
@@ -211,7 +214,7 @@ namespace IonicApi.Repositories
 
         public async Task<bool> ResourceExistsAsync(int id)
         {
-            return await _context.PeResource.AnyAsync(e=>e.Id==id);
+            return await _context.PeResource.AnyAsync(e => e.Id == id);
         }
 
         public void AddResource(int courseId, PeResource peResource)
@@ -231,17 +234,17 @@ namespace IonicApi.Repositories
 
         public async Task<PeResource> GetResourceAsync(int id)
         {
-            return await _context.PeResource.SingleOrDefaultAsync(e => e.Id == id&&!e.IsDel);
+            return await _context.PeResource.SingleOrDefaultAsync(e => e.Id == id && !e.IsDel);
         }
 
         public async Task<bool> UserTestExists(int testId)
         {
-            return await _context.PeUserTest.AnyAsync(e=>e.TestId==testId);
+            return await _context.PeUserTest.AnyAsync(e => e.TestId == testId);
         }
 
         public async Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId)
         {
-            return await _context.PeUserTest.Where(e=>e.TestId==testId).ToListAsync();
+            return await _context.PeUserTest.Where(e => e.TestId == testId).ToListAsync();
         }
 
         public async Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId)
@@ -279,7 +282,7 @@ namespace IonicApi.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<PeDrawPlot>> GetDrawPlotsAsync(int userId)
         {
-            return await _context.PeDrawPlot.Where(e => (!e.IsDel &&(e.CreateUserId == userId || e.Shared == 1))).OrderBy(e=>e.UpdateTime).ToListAsync();
+            return await _context.PeDrawPlot.Where(e => (!e.IsDel && (e.CreateUserId == userId || e.Shared == 1))).OrderBy(e => e.UpdateTime).ToListAsync();
         }
     }
 }

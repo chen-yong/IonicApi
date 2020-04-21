@@ -80,6 +80,10 @@ namespace IonicApi.Repositories
         {
             return _context.PeUser.SingleOrDefault(e => e.Id == Id).UserName;
         }
+        public string GetRealName(int Id)
+        {
+            return _context.PeUser.SingleOrDefault(e => e.Id == Id).RealName;
+        }
 
         public void AddUser(PeUser user)
         {
