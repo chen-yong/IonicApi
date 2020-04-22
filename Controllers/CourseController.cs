@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ICSharpCode.SharpZipLib.Zip;
 using IonicApi.Common;
 using IonicApi.Dtos;
 using IonicApi.Models;
 using IonicApi.Modes;
 using IonicApi.Repositories;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PagedList;
@@ -23,14 +26,18 @@ namespace IonicApi.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IPaperOutputTaskRepository _outputTaskRepository;
         private readonly IMapper _mapper;
+        //通过网站相对路径获取物理实际路径
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IPaperOutputTaskRepository paperOutRepository, IMapper mapper)
+        public CourseController(ICourseRepository courseRepository, IUserRepository userRepository, IPaperOutputTaskRepository paperOutRepository, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _outputTaskRepository = paperOutRepository ?? throw new ArgumentNullException(nameof(paperOutRepository));
             //注册AutoMapper
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            //文件路径
+            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
         #region 课程
         /// <summary>
@@ -77,30 +84,31 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
         /// <summary>
         /// 创建课程(未测试)
         /// </summary>
         /// <param name="userId">用户ID</param>
         /// <param name="course">课程实体</param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult> CreateCourse(int userId, CourseAddDto course)
-        {
-            MapiData ret = new MapiData();
-            if (!await _userRepository.UserExistsAsync(userId))
-            {
-                ret.retcode = 11;
-            }
-            else
-            {
-                var entity = _mapper.Map<PeCourse>(course);
-                _courseRepository.AddCourse(userId, entity);
-                _mapper.Map<CourseAddDto>(entity);
-                await _courseRepository.SaveAsync();
-                ret.retcode = 0;
-            }
-            return Ok(ret);
-        }
+        //[HttpPost]
+        //public async Task<ActionResult> CreateCourse(int userId, CourseAddDto course)
+        //{
+        //    MapiData ret = new MapiData();
+        //    if (!await _userRepository.UserExistsAsync(userId))
+        //    {
+        //        ret.retcode = 11;
+        //    }
+        //    else
+        //    {
+        //        var entity = _mapper.Map<PeCourse>(course);
+        //        _courseRepository.AddCourse(userId, entity);
+        //        _mapper.Map<CourseAddDto>(entity);
+        //        await _courseRepository.SaveAsync();
+        //        ret.retcode = 0;
+        //    }
+        //    return Ok(ret);
+        //}
 
         #endregion
 
@@ -436,10 +444,11 @@ namespace IonicApi.Controllers
         /// <summary>
         /// 创建文件夹（未完成）
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="Name"></param>
+        /// <param name="id">父子标志默认0</param>
+        /// <param name="authtoken">登录令牌</param>
+        /// <param name="Name">文件夹名称</param>
         /// <returns></returns>
-        public ActionResult CreateDirectory(int id, string Name, int courseId)
+        public ActionResult CreateDirectory(int id, string authtoken, string Name, int courseId)
         {
             MapiData ret = new MapiData();
             PeResource entity = new PeResource();
@@ -452,13 +461,13 @@ namespace IonicApi.Controllers
                 entity.IsDir = true;
                 entity.CreateTime = DateTime.Now;
                 entity.Password = "";
-                entity.UserId = 1;
+                entity.UserId = AuthtokenUtility.GetId(authtoken);
                 entity.Size = 0;
                 //entity.Url = VirtualPathUtility.Combine(VirtualRootPath, entity.FileName);
-                //_userRepository
                 entity.PeCourseResource.Add(new PeCourseResource { CourseId = courseId });
                 _userRepository.SaveAsync();
                 ret.retcode = 0;
+                ret.message = "文件夹创建成功";
             }
             catch
             {
@@ -659,6 +668,53 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+        #endregion
+
+        #region zipFileName
+        //public string zipFileName(PePaperOutputTask task)
+        //{
+        //    string relativePath = "";
+        //    string absolutePath = "";
+        //    if (!Directory.Exists(absolutePath)) Directory.CreateDirectory(absolutePath);
+        //    string zipFileName = Path.Combine(absolutePath, GUIDUtility.GenerateCharID() + ".zip");
+        //    IEnumerable<PeUserTest> todolist = task.Test.PeUserTest;
+        //    using (ZipFile zip = new ZipFile())
+        //    {
+        //        foreach (var item in todolist)
+        //        {
+        //            TestOneModel model = new TestOneModel();
+        //            string content;
+        //            model.UserTest = item;
+        //            model.Test = item.Test;
+        //            model.PrintTitle = task.Option1;
+        //            model.PrintSubTitle = task.Option2;
+        //            if (!model.UserTest.PeUserTestQuestion.Any())
+        //            {
+        //                model.TopicSet = new List<PeTopic>();
+        //            }
+        //            else
+        //            {
+        //                model.TopicSet = item.PeUserTestQuestion.Select(e => e.PeTopic).Distinct().OrderBy(e => e.Ord);
+        //            }
+
+        //            foreach (var topic in model.TopicSet)
+        //            {
+        //                topic.SelectedQuestionSet = item.PeUserTestQuestion.Where(e => e.TopicId == topic.Id);
+        //            }
+        //            PaperOneView paper = new PaperOneView();
+        //            content = paper.Render(model);
+        //            foreach (var file in paper.Files)
+        //            {
+        //                ZipEntry _entry = zip.AddFile(file.Value, "files");
+        //                _entry.FileName = "files/" + file.Key;
+        //            }
+        //            ZipEntry entry = zip.AddEntry(item.XH + ".pdf", xhtml2pdf.Converter.FromHtmlText(content));
+        //        }
+        //        zip.Save(zipFileName);
+        //    }
+
+        //        return zipFileName;
+        //}
         #endregion
     }
 }
