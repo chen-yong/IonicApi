@@ -1,5 +1,3 @@
-
-
 ionic APP API
 
 ## 接口说明
@@ -1324,23 +1322,62 @@ http://localhost:5000/api/Course/DeleteWork?id=9827
 }
 ```
 
-#####  4. 批阅(未做)
+#####  4. 批阅
 
-```
-http://api/readWork?workId=1
+获得带阅卷的学生作业，实验信息列表
+
+```http 
+http://localhost:5000/api/Course/JudgeList?testId=6699
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| workId | int  | 否       | 课程id |
+| 参数名 | 类型 | 是否可空 | 说明               |
+| ------ | ---- | -------- | ------------------ |
+| testId | int  | 否       | 作业、实验、练习Id |
 
 返回：
 
+| 字段                | 类型          | 说明                     |
+| ------------------- | ------------- | ------------------------ |
+| retcode             | int           | 返回码                   |
+| info                | array[object] |                          |
+| id                  | int           | id                       |
+| userTestNo          | string        | 学号                     |
+| userTrueName        | string        | 学生姓名                 |
+| logonIp             | string        | 登录IP                   |
+| submitTime          | DateTime      | 提交时间（null：未交卷） |
+| finishQuestionCount | int           | 答题数                   |
+| totalScore          | double        | 总分                     |
+| score               | double        | 得分                     |
+| status              | bool          | 状态（是否阅卷）         |
+
 ```json
 {  
- 	"retcode" : 0
+ 	retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 317220,
+            "userTestNo": "2015210405064",
+            "userTrueName": "张伟芳",
+            "logonIp": "172.22.124.95",
+            "submitTime": null,
+            "finishQuestionCount": 0,
+            "totalScore": 40.0,
+            "score": 0.0,
+            "status": true
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
 }
 ```
 
@@ -1489,9 +1526,9 @@ http://api/Course/Rename?id=1961&name=
 }
 ```
 
-##### 
+#### 5.成绩
 
-#### 5.作业,实验,考试成绩
+##### 1.作业,实验,考试成绩
 
 先获取课程下的学生列表（见学生列表）方法，再根据学生id获取成绩
 
@@ -1520,7 +1557,7 @@ http://localhost:5000/api/Course/ScoreInfo?courseId=422&type=3&userId=20518
     "retcode": 0,
     "authtoken": null,
     "info": {
-        "java程序设计-作业一测试": "0",
+        "java程序设计-作业一": "0",
         "java程序设计-作业二": "0",
         "java程序设计-作业三": "0",
         "java程序设计-作业四": "0",
@@ -1546,7 +1583,7 @@ http://localhost:5000/api/Course/ScoreInfo?courseId=422&type=3&userId=20518
 }
 ```
 
-#### 6.成绩汇总
+##### 2.成绩汇总
 
 ```http
 http://localhost:5000/api/Course/StudentGrade?courseId=422&id=20518
@@ -1613,51 +1650,7 @@ http://localhost:5000/api/Course/StudentGrade?courseId=422&id=20518
 }
 ```
 
-#### 7.试卷打印
-
-```
-http://api/printTest?courseId=1
-```
-
-参数：
-
-| 参数名   | 类型 | 是否可空 | 说明   |
-| -------- | ---- | -------- | ------ |
-| courseId | int  | 否       | 课程id |
-
-返回：
-
-| 字段        | 类型          | 说明           |
-| ----------- | ------------- | -------------- |
-| retcode     | int           | 返回码         |
-| pagecount   | int           | 数据总共有几页 |
-| recordcount | int           | 总共记录数     |
-| isfirst     | bool          | 是否是第一页   |
-| hasnext     | bool          | 是否还有下一页 |
-| printInfo   | array[object] |                |
-| id          | int           | 打印试卷id     |
-| name        | string        | 打印试卷名称   |
-
-```json
-{
-   "retcode":0,
-    "pagecount" : 1, 
-    "recordcount" : 1, 
-    "isfirst" : false, 
-    "hasnext" : true, 
-    "printInfo":[
-    	{
-    	  "id":1,
-    	  "name":"试卷1",
-    	},
-    	{
-    	  "id":2,
-    	  "name":"试卷2",
-    	},
-    	……
-    ]
-}
-```
+#### 6.试卷打印
 
 #####  1.打印考试列表（搜索）
 
@@ -1876,7 +1869,54 @@ http://localhost:5000/api/Course/ChooseTest?courseId=422
 
 ##### 3.添加打印任务
 
-##### 4. 重启打印
+[post]
+
+```http
+http://localhost:5000/api/Course/AddPaperTask?courseId=422&authtoken=&testId=9828
+```
+
+| 参数名    | 类型          | 是否可空 | 说明               |
+| --------- | ------------- | -------- | ------------------ |
+| courseId  | int           | 否       | 课程Id             |
+| authtoken | string        | 否       | 用户登录令牌       |
+| testId    | int           | 否       | 打印任务考试选项Id |
+| pePaper   | array[object] |          |                    |
+| option2   | string        | 是       | 副标题             |
+
+发送格式：Body+raw+Json
+
+```json
+{
+	"option2":"test"
+}
+```
+
+返回:
+
+| 字段    | 类型 | 说明   |
+| ------- | ---- | ------ |
+| retcode | int  | 返回码 |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "添加成功"
+}
+```
+
+
+
+##### 4. 重启打印（未做）
 
 ```
 http://api/resetPrint?id=1

@@ -41,6 +41,7 @@ namespace IonicApi.Repositories
 
         Task<bool> UserTestExists(int testId);
         Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId);
+        Task<IEnumerable<PeUserTest>> GetUserTestListAsync(int testId);
         Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId);
         Task<string> GetTestScoreAsync(int testId,int userId);
 

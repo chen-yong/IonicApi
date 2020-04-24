@@ -23,7 +23,6 @@ namespace IonicApi.Profiles
 
             CreateMap<PeCourseStudent, CourseStudentDto>();
 
-            //CreateMap<PeUser, StudentDto>();
             CreateMap<PeCourseStudent, CJHZDto>().ForMember(
                 destinationMember: dest => dest.FinalGrade,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => Math.Round(
@@ -41,6 +40,10 @@ namespace IonicApi.Profiles
             CreateMap<PePaperOutputTaskAddDto, PePaperOutputTask>();
 
             CreateMap<PeDrawPlot, DrawPlotOptions>();
+
+            CreateMap<PeUserTest, UserTestDto>().ForMember(
+                    dest => dest.FinishQuestionCount,
+                    opt => opt.MapFrom(src => src.PeUserTestQuestion.Count(e => !string.IsNullOrEmpty(e.Answer) || !string.IsNullOrEmpty(e.AnswerExt)))); 
         }
     }
 }

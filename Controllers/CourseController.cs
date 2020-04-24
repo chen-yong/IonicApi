@@ -308,6 +308,44 @@ namespace IonicApi.Controllers
 
         #endregion
 
+        #region 阅卷
+        /// <summary>
+        /// 作业，实验阅卷列表
+        /// </summary>
+        /// <param name="testId">作业，实验Id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> JudgeList(int testId)
+        {
+            MapiData ret = new MapiData();
+            var userTest = await _courseRepository.UserTestExists(testId);
+            if (userTest)
+            {
+                var entity = await _courseRepository.GetUserTestListAsync(testId);
+                ret.info = _mapper.Map<IEnumerable<UserTestDto>>(entity);
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+        public async Task<ActionResult> JadgeTest(int testId)
+        {
+            MapiData ret = new MapiData();
+            var userTest = await _courseRepository.UserTestExists(testId);
+            if (userTest)
+            { 
+            
+            }
+            else
+            {
+                ret.retcode = 11;
+            }
+            return Ok(ret);
+        }
+
+        #endregion
+
         #region 成绩
         /// <summary>
         /// 单个学生作业，实验，考试成绩
@@ -473,6 +511,15 @@ namespace IonicApi.Controllers
             {
                 ret.retcode = 11;
             }
+            return Ok(ret);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> UploadFile()
+        {
+            MapiData ret = new MapiData();
+            List<PeResource> uploadFiles = new List<PeResource>();
+
             return Ok(ret);
         }
 
@@ -716,5 +763,6 @@ namespace IonicApi.Controllers
         //        return zipFileName;
         //}
         #endregion
+
     }
 }

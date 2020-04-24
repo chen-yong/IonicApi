@@ -247,6 +247,19 @@ namespace IonicApi.Repositories
             return await _context.PeUserTest.Where(e => e.TestId == testId).ToListAsync();
         }
 
+        public async Task<IEnumerable<PeUserTest>> GetUserTestListAsync(int testId)
+        {
+            var test = _context.PeTest.First(e => e.Id == testId);
+            if (test.Mode != 1 && test.CourseId.HasValue)
+            {
+                return await _context.PeUserTest.Where(e => e.TestId == testId && e.User.PeCourseStudent.Any(z => z.CourseId == test.CourseId)).ToListAsync();
+            }
+            else
+            {
+                return await _context.PeUserTest.Where(e => e.TestId == testId).OrderBy(e => e.UserId).ToListAsync();
+            }
+        }
+
         public async Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId)
         {
             return await _context.PeUserTest.Where(e => e.UserTestNo == userId.ToString()).ToListAsync();
