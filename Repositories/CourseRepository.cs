@@ -242,9 +242,9 @@ namespace IonicApi.Repositories
             return await _context.PeUserTest.AnyAsync(e => e.TestId == testId);
         }
 
-        public async Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId)
+        public async Task<PeUserTest> GetUserTestAsync(int id)
         {
-            return await _context.PeUserTest.Where(e => e.TestId == testId).ToListAsync();
+            return await _context.PeUserTest.SingleOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<IEnumerable<PeUserTest>> GetUserTestListAsync(int testId)

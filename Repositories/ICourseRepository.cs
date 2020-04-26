@@ -40,7 +40,7 @@ namespace IonicApi.Repositories
         void DeleteResource(int id);
 
         Task<bool> UserTestExists(int testId);
-        Task<IEnumerable<PeUserTest>> GetUserTestAsync(int testId);
+        Task<PeUserTest> GetUserTestAsync(int id);
         Task<IEnumerable<PeUserTest>> GetUserTestListAsync(int testId);
         Task<IEnumerable<PeUserTest>> GetUserTestsAsync(int userId);
         Task<string> GetTestScoreAsync(int testId,int userId);

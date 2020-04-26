@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ICSharpCode.SharpZipLib.Zip;
 using IonicApi.Common;
+using IonicApi.Common.Judge;
 using IonicApi.Dtos;
 using IonicApi.Models;
 using IonicApi.Modes;
@@ -329,17 +330,76 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
-        public async Task<ActionResult> JadgeTest(int testId)
+        public async Task<ActionResult> JadgeTest(int id)
         {
             MapiData ret = new MapiData();
-            var userTest = await _courseRepository.UserTestExists(testId);
-            if (userTest)
-            { 
-            
-            }
-            else
+            JudgeOneModel model = new JudgeOneModel();
+
+            try
             {
-                ret.retcode = 11;
+                PeUserTest ut = await _courseRepository.GetUserTestAsync(id);
+                List<Task<JudgeResult>> tasks = new List<Task<JudgeResult>>();
+                foreach (var item in ut.PeUserTestQuestion)
+                {
+                    var proxy = JudgerUtility.UTQProxy(item, ut);
+                    IJudger judger = JudgerUtility.CreateJudgerByReflection(item.Question.Topic.BasicTopic.JudgeClassName);
+                    if (judger is IJudgerAsync)
+                    {
+                        tasks.Add(Task.Run<JudgeResult>(async () =>
+                        {
+                            JudgeResult r = await ((IJudgerAsync)judger).JudgeAsync(proxy);
+                            r.TopicId = proxy.Question.TopicId;
+                            r.TopicName = proxy.Question.Topic.Name;
+                            r.BundleId = proxy.Question.BundleRank;
+                            r.Ord = proxy.Question.Ord;
+                            r.QuestionId = proxy.QuestionId;
+                            double s = r.FullScore > 0 ? Math.Round(proxy.Question.Score * (r.GotScore / r.FullScore), 2) : 0;
+                            item.Score = s;
+                            if (item.BestScore < s)
+                            {
+                                item.BestScore = s;
+                            }
+                            model.QuestionJudgeResultSet.Add(r);
+                            return r;
+                        }));
+                    }
+                    else
+                    {
+                        JudgeResult r = judger.Judge(proxy);
+                        r.TopicId = proxy.Question.TopicId;
+                        r.TopicName = proxy.Question.Topic.Name;
+                        r.BundleId = proxy.Question.BundleRank;
+                        r.Ord = proxy.Question.Ord;
+                        r.QuestionId = proxy.QuestionId;
+                        double s = r.FullScore > 0 ? Math.Round(proxy.Question.Score * (r.GotScore / r.FullScore), 2) : 0;
+                        item.Score = s;
+                        if (item.BestScore < s)
+                        {
+                            item.BestScore = s;
+                        }
+                        model.QuestionJudgeResultSet.Add(r);
+                    }
+                }
+                await Task.WhenAll<JudgeResult>(tasks);
+                ut.Score = Math.Round(ut.PeUserTestQuestion.Sum(e => (e.Score ?? 0)), 2);
+                ut.ScoreAlter = ut.Test.SetScore.HasValue ? Math.Round((ut.Score * ut.Test.SetScore / ut.TotalScore) ?? 0, 2) : ut.Score;
+                if (ut.Test.DelayEndTime.HasValue && ut.IsSubmitDelay.HasValue && ut.IsSubmitDelay.Value)
+                {
+                    ut.ScoreAlter = ut.ScoreAlter * (ut.Test.DelayPercentOfScore ?? 100) / 100;
+                }
+                ut.Status = true;
+                ut.Property08 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
+                ut.JudgeReport = model.JudgeReport;
+                model.Score = ut.ScoreAlter ?? 0;
+                await _courseRepository.SaveAsync();
+                ret.info = model;
+                ret.message = "阅卷成功";
+            }
+            catch (Exception ex)
+            {
+                ret.retcode = 12;
+                ret.message = "阅卷失败";
+                ret.debug = ex.ToString();
             }
             return Ok(ret);
         }
