@@ -44,7 +44,7 @@ namespace IonicApi.Controllers
         /// <summary>
         /// 根据登录人authtoken获取课程信息
         /// </summary>
-        /// <param name="authtoken"></param>
+        /// <param name="authtoken">authtoken</param>
         /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult> GetCoursesList(string authtoken)
@@ -58,7 +58,8 @@ namespace IonicApi.Controllers
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = "令牌失效";
             }
             return Ok(ret);
         }
@@ -66,22 +67,31 @@ namespace IonicApi.Controllers
         /// <summary>
         /// 获取课程详细信息
         /// </summary>
+        /// <param name="authtoken">authtoken</param>
         /// <param name="id">课程Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> GetCourse(int id)
+        public async Task<ActionResult> GetCourse(string authtoken,int id)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(id);
-            if (course)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                ret.retcode = 0;
-                var courses = await _courseRepository.GetCourseAsync(id);
-                ret.info = _mapper.Map<IEnumerable<CourseDto>>(courses);
+                var course = await _courseRepository.CourseExistAsync(id);
+                if (course)
+                {
+                    ret.retcode = 0;
+                    var courses = await _courseRepository.GetCourseAsync(id);
+                    ret.info = _mapper.Map<IEnumerable<CourseDto>>(courses);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = "令牌失效";
             }
             return Ok(ret);
         }
@@ -149,25 +159,33 @@ namespace IonicApi.Controllers
         /// <param name="count">每页数量</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> HomeWorkList(int courseId, int type, string keyword, int page, int count)
+        public async Task<ActionResult> HomeWorkList(string authtoken,int courseId, int type, string keyword, int page, int count)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                var entity = await _courseRepository.GetTestsAsync(courseId, type, keyword);
-                IPagedList<PeTest> list = new PagedList<PeTest>(entity, page, count);
-                var test = _mapper.Map<IEnumerable<TestDto>>(list);
-                ret.retcode = 0;
-                ret.pagecount = list.PageCount;
-                ret.recordcount = list.TotalItemCount;
-                ret.isfirst = list.IsFirstPage;
-                ret.hasnext = list.HasNextPage;
-                ret.info = test;
+                var course = await _courseRepository.CourseExistAsync(courseId);
+                if (course)
+                {
+                    var entity = await _courseRepository.GetTestsAsync(courseId, type, keyword);
+                    IPagedList<PeTest> list = new PagedList<PeTest>(entity, page, count);
+                    var test = _mapper.Map<IEnumerable<TestDto>>(list);
+                    ret.retcode = 0;
+                    ret.pagecount = list.PageCount;
+                    ret.recordcount = list.TotalItemCount;
+                    ret.isfirst = list.IsFirstPage;
+                    ret.hasnext = list.HasNextPage;
+                    ret.info = test;
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -177,16 +195,24 @@ namespace IonicApi.Controllers
         /// <param name="id">作业Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> HomeWork(int id)
+        public async Task<ActionResult> HomeWork(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            var homeWork = await _courseRepository.GetTestAsync(id);
-            if (homeWork == null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                ret.retcode = 11;
+                var homeWork = await _courseRepository.GetTestAsync(id);
+                if (homeWork == null)
+                {
+                    ret.retcode = 11;
+                }
+                ret.retcode = 0;
+                ret.info = homeWork;
             }
-            ret.retcode = 0;
-            ret.info = homeWork;
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
             return Ok(ret);
         }
 
@@ -249,38 +275,46 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPatch]
-        public async Task<ActionResult> EditHomeWork(int id, JsonPatchDocument<TestEditDto> patchDocument)
+        public async Task<ActionResult> EditHomeWork(string authtoken, int id, JsonPatchDocument<TestEditDto> patchDocument)
         {
             MapiData ret = new MapiData();
-            PeTest entity = await _courseRepository.GetTestAsync(id);
-            if (entity != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                try
+                PeTest entity = await _courseRepository.GetTestAsync(id);
+                if (entity != null)
                 {
-                    var dtoToPatch = _mapper.Map<TestEditDto>(entity);
-                    // 需要处理验证错误
-                    patchDocument.ApplyTo(dtoToPatch, ModelState);
-
-                    if (!TryValidateModel(dtoToPatch))
+                    try
                     {
-                        return ValidationProblem(ModelState);
-                    }
+                        var dtoToPatch = _mapper.Map<TestEditDto>(entity);
+                        // 需要处理验证错误
+                        patchDocument.ApplyTo(dtoToPatch, ModelState);
 
-                    _mapper.Map(dtoToPatch, entity);
-                    _courseRepository.UpdateTest(entity);
-                    ret.retcode = 0;
-                    ret.message = "修改成功";
-                    await _courseRepository.SaveAsync();
+                        if (!TryValidateModel(dtoToPatch))
+                        {
+                            return ValidationProblem(ModelState);
+                        }
+
+                        _mapper.Map(dtoToPatch, entity);
+                        _courseRepository.UpdateTest(entity);
+                        ret.retcode = 0;
+                        ret.message = "修改成功";
+                        await _courseRepository.SaveAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        ret.retcode = 11;
+                        ret.info = e;
+                    }
                 }
-                catch (Exception e)
+                else
                 {
                     ret.retcode = 11;
-                    ret.info = e;
                 }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -290,19 +324,27 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> DeleteWork(int id)
+        public async Task<ActionResult> DeleteWork(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            PeTest entity = await _courseRepository.GetTestAsync(id);
-            if (entity != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                entity.IsDel = true;
-                await _userRepository.SaveAsync();
-                ret.retcode = 0;
+                PeTest entity = await _courseRepository.GetTestAsync(id);
+                if (entity != null)
+                {
+                    entity.IsDel = true;
+                    await _userRepository.SaveAsync();
+                    ret.retcode = 0;
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -315,39 +357,72 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="testId">作业，实验Id</param>
         /// <returns></returns>
-        public async Task<ActionResult> JudgeList(int testId)
+        public async Task<ActionResult> JudgeList(string authtoken, int testId)
         {
             MapiData ret = new MapiData();
-            var userTest = await _courseRepository.UserTestExists(testId);
-            if (userTest)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                var entity = await _courseRepository.GetUserTestListAsync(testId);
-                ret.info = _mapper.Map<IEnumerable<UserTestDto>>(entity);
+                var userTest = await _courseRepository.UserTestExists(testId);
+                if (userTest)
+                {
+                    var entity = await _courseRepository.GetUserTestListAsync(testId);
+                    ret.info = _mapper.Map<IEnumerable<UserTestDto>>(entity);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
-        public async Task<ActionResult> JadgeTest(int id)
+
+        /// <summary>
+        /// 阅卷（有bug）
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> JadgeTest(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            JudgeOneModel model = new JudgeOneModel();
-
-            try
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                PeUserTest ut = await _courseRepository.GetUserTestAsync(id);
-                List<Task<JudgeResult>> tasks = new List<Task<JudgeResult>>();
-                foreach (var item in ut.PeUserTestQuestion)
+                JudgeOneModel model = new JudgeOneModel();
+                try
                 {
-                    var proxy = JudgerUtility.UTQProxy(item, ut);
-                    IJudger judger = JudgerUtility.CreateJudgerByReflection(item.Question.Topic.BasicTopic.JudgeClassName);
-                    if (judger is IJudgerAsync)
+                    PeUserTest ut = await _courseRepository.GetUserTestAsync(id);
+                    List<Task<JudgeResult>> tasks = new List<Task<JudgeResult>>();
+                    foreach (var item in ut.PeUserTestQuestion)
                     {
-                        tasks.Add(Task.Run<JudgeResult>(async () =>
+                        var proxy = JudgerUtility.UTQProxy(item, ut);
+                        IJudger judger = JudgerUtility.CreateJudgerByReflection(item.Question.Topic.BasicTopic.JudgeClassName);
+                        if (judger is IJudgerAsync)
                         {
-                            JudgeResult r = await ((IJudgerAsync)judger).JudgeAsync(proxy);
+                            tasks.Add(Task.Run<JudgeResult>(async () =>
+                            {
+                                JudgeResult r = await ((IJudgerAsync)judger).JudgeAsync(proxy);
+                                r.TopicId = proxy.Question.TopicId;
+                                r.TopicName = proxy.Question.Topic.Name;
+                                r.BundleId = proxy.Question.BundleRank;
+                                r.Ord = proxy.Question.Ord;
+                                r.QuestionId = proxy.QuestionId;
+                                double s = r.FullScore > 0 ? Math.Round(proxy.Question.Score * (r.GotScore / r.FullScore), 2) : 0;
+                                item.Score = s;
+                                if (item.BestScore < s)
+                                {
+                                    item.BestScore = s;
+                                }
+                                model.QuestionJudgeResultSet.Add(r);
+                                return r;
+                            }));
+                        }
+                        else
+                        {
+                            JudgeResult r = judger.Judge(proxy);
                             r.TopicId = proxy.Question.TopicId;
                             r.TopicName = proxy.Question.Topic.Name;
                             r.BundleId = proxy.Question.BundleRank;
@@ -360,46 +435,34 @@ namespace IonicApi.Controllers
                                 item.BestScore = s;
                             }
                             model.QuestionJudgeResultSet.Add(r);
-                            return r;
-                        }));
-                    }
-                    else
-                    {
-                        JudgeResult r = judger.Judge(proxy);
-                        r.TopicId = proxy.Question.TopicId;
-                        r.TopicName = proxy.Question.Topic.Name;
-                        r.BundleId = proxy.Question.BundleRank;
-                        r.Ord = proxy.Question.Ord;
-                        r.QuestionId = proxy.QuestionId;
-                        double s = r.FullScore > 0 ? Math.Round(proxy.Question.Score * (r.GotScore / r.FullScore), 2) : 0;
-                        item.Score = s;
-                        if (item.BestScore < s)
-                        {
-                            item.BestScore = s;
                         }
-                        model.QuestionJudgeResultSet.Add(r);
                     }
+                    await Task.WhenAll<JudgeResult>(tasks);
+                    ut.Score = Math.Round(ut.PeUserTestQuestion.Sum(e => (e.Score ?? 0)), 2);
+                    ut.ScoreAlter = ut.Test.SetScore.HasValue ? Math.Round((ut.Score * ut.Test.SetScore / ut.TotalScore) ?? 0, 2) : ut.Score;
+                    if (ut.Test.DelayEndTime.HasValue && ut.IsSubmitDelay.HasValue && ut.IsSubmitDelay.Value)
+                    {
+                        ut.ScoreAlter = ut.ScoreAlter * (ut.Test.DelayPercentOfScore ?? 100) / 100;
+                    }
+                    ut.Status = true;
+                    ut.Property08 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
+                    ut.JudgeReport = model.JudgeReport;
+                    model.Score = ut.ScoreAlter ?? 0;
+                    await _courseRepository.SaveAsync();
+                    ret.info = model;
+                    ret.message = "阅卷成功";
                 }
-                await Task.WhenAll<JudgeResult>(tasks);
-                ut.Score = Math.Round(ut.PeUserTestQuestion.Sum(e => (e.Score ?? 0)), 2);
-                ut.ScoreAlter = ut.Test.SetScore.HasValue ? Math.Round((ut.Score * ut.Test.SetScore / ut.TotalScore) ?? 0, 2) : ut.Score;
-                if (ut.Test.DelayEndTime.HasValue && ut.IsSubmitDelay.HasValue && ut.IsSubmitDelay.Value)
+                catch (Exception ex)
                 {
-                    ut.ScoreAlter = ut.ScoreAlter * (ut.Test.DelayPercentOfScore ?? 100) / 100;
+                    ret.retcode = 12;
+                    ret.message = "阅卷失败";
+                    ret.debug = ex.ToString();
                 }
-                ut.Status = true;
-                ut.Property08 = string.Format("{0:yyyy-MM-dd HH:mm:ss}", DateTime.Now);
-                ut.JudgeReport = model.JudgeReport;
-                model.Score = ut.ScoreAlter ?? 0;
-                await _courseRepository.SaveAsync();
-                ret.info = model;
-                ret.message = "阅卷成功";
             }
-            catch (Exception ex)
+            else
             {
-                ret.retcode = 12;
-                ret.message = "阅卷失败";
-                ret.debug = ex.ToString();
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -414,25 +477,33 @@ namespace IonicApi.Controllers
         /// <param name="type">类型</param>
         /// <param name="userId">学生Id</param>
         /// <returns></returns>
-        public async Task<ActionResult> ScoreInfo(int courseId, int type, int userId)
+        public async Task<ActionResult> ScoreInfo(string authtoken, int courseId, int type, int userId)
         {
             MapiData ret = new MapiData();
-            var tests = await _courseRepository.GetTestsAsync(courseId, type);
-            if (tests != null)
+            if (AuthtokenUtility.ValidToken(authtoken)) 
             {
-                Dictionary<string, string> dic = new Dictionary<string, string>();
-                string str = "";
-                foreach (var test in tests)
+                var tests = await _courseRepository.GetTestsAsync(courseId, type);
+                if (tests != null)
                 {
-                    str = await _courseRepository.GetTestScoreAsync(test.Id, userId);
-                    dic.Add(test.Name, str);
+                    Dictionary<string, string> dic = new Dictionary<string, string>();
+                    string str = "";
+                    foreach (var test in tests)
+                    {
+                        str = await _courseRepository.GetTestScoreAsync(test.Id, userId);
+                        dic.Add(test.Name, str);
+                    }
+                    ret.retcode = 0;
+                    ret.info = dic;
                 }
-                ret.retcode = 0;
-                ret.info = dic;
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -444,19 +515,27 @@ namespace IonicApi.Controllers
         /// <param name="id">学生Id</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> StudentGrade(int courseId, int id)
+        public async Task<ActionResult> StudentGrade(string authtoken, int courseId, int id)
         {
             MapiData ret = new MapiData();
-            var grade = await _courseRepository.GradeExists(courseId);
-            if (grade)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                ret.retcode = 0;
-                var entity = await _courseRepository.GradeAsync(courseId, id);
-                ret.info = _mapper.Map<IEnumerable<CJHZDto>>(entity);
+                var grade = await _courseRepository.GradeExists(courseId);
+                if (grade)
+                {
+                    ret.retcode = 0;
+                    var entity = await _courseRepository.GradeAsync(courseId, id);
+                    ret.info = _mapper.Map<IEnumerable<CJHZDto>>(entity);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -471,19 +550,27 @@ namespace IonicApi.Controllers
         /// <param name="keyword">关键词</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> SearchResource(int courseId, int parentId, string keyword)
+        public async Task<ActionResult> SearchResource(string authtoken, int courseId, int parentId, string keyword)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                ret.retcode = 0;
-                var entity = await _courseRepository.GetResourcesAsync(courseId, parentId, keyword);
-                ret.info = _mapper.Map<IEnumerable<ResourceDto>>(entity);
+                var course = await _courseRepository.CourseExistAsync(courseId);
+                if (course)
+                {
+                    ret.retcode = 0;
+                    var entity = await _courseRepository.GetResourcesAsync(courseId, parentId, keyword);
+                    ret.info = _mapper.Map<IEnumerable<ResourceDto>>(entity);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -494,19 +581,27 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> DeleteResource(int id)
+        public async Task<ActionResult> DeleteResource(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            PeResource entity = await _courseRepository.GetResourceAsync(id);
-            if (entity != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                entity.IsDel = true;
-                await _userRepository.SaveAsync();
-                ret.retcode = 0;
+                PeResource entity = await _courseRepository.GetResourceAsync(id);
+                if (entity != null)
+                {
+                    entity.IsDel = true;
+                    await _userRepository.SaveAsync();
+                    ret.retcode = 0;
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -518,24 +613,32 @@ namespace IonicApi.Controllers
         /// <param name="name">名称</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> Rename(int id, string name)
+        public async Task<ActionResult> Rename(string authtoken, int id, string name)
         {
             MapiData ret = new MapiData();
-            PeResource entity = await _courseRepository.GetResourceAsync(id);
-            if (entity != null && !string.IsNullOrEmpty(name))
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                //后缀名
-                string[] array = entity.FileName.Split(".");
-                string postfix = array[array.Length - 1];
-                entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(name)) + "." + postfix;
-                await _userRepository.SaveAsync();
-                ret.retcode = 0;
-                ret.message = "重命名成功";
+                PeResource entity = await _courseRepository.GetResourceAsync(id);
+                if (entity != null && !string.IsNullOrEmpty(name))
+                {
+                    //后缀名
+                    string[] array = entity.FileName.Split(".");
+                    string postfix = array[array.Length - 1];
+                    entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(name)) + "." + postfix;
+                    await _userRepository.SaveAsync();
+                    ret.retcode = 0;
+                    ret.message = "重命名成功";
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "参数错误";
+                }
             }
             else
             {
-                ret.retcode = 11;
-                ret.message = "参数错误";
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -549,27 +652,35 @@ namespace IonicApi.Controllers
         public ActionResult CreateDirectory(int id, string authtoken, string Name, int courseId)
         {
             MapiData ret = new MapiData();
-            PeResource entity = new PeResource();
-            try
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                entity.ParentId = id;
-                entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(Name));
-                entity.FileType = "DIR";
-                entity.FileIcon = "dir";
-                entity.IsDir = true;
-                entity.CreateTime = DateTime.Now;
-                entity.Password = "";
-                entity.UserId = AuthtokenUtility.GetId(authtoken);
-                entity.Size = 0;
-                //entity.Url = VirtualPathUtility.Combine(VirtualRootPath, entity.FileName);
-                entity.PeCourseResource.Add(new PeCourseResource { CourseId = courseId });
-                _userRepository.SaveAsync();
-                ret.retcode = 0;
-                ret.message = "文件夹创建成功";
+                PeResource entity = new PeResource();
+                try
+                {
+                    entity.ParentId = id;
+                    entity.FileName = FileUtils.FilterDangerCharacter(FileUtils.RemoveBlank(Name));
+                    entity.FileType = "DIR";
+                    entity.FileIcon = "dir";
+                    entity.IsDir = true;
+                    entity.CreateTime = DateTime.Now;
+                    entity.Password = "";
+                    entity.UserId = AuthtokenUtility.GetId(authtoken);
+                    entity.Size = 0;
+                    //entity.Url = VirtualPathUtility.Combine(VirtualRootPath, entity.FileName);
+                    entity.PeCourseResource.Add(new PeCourseResource { CourseId = courseId });
+                    _userRepository.SaveAsync();
+                    ret.retcode = 0;
+                    ret.message = "文件夹创建成功";
+                }
+                catch
+                {
+                    ret.retcode = 11;
+                }
             }
-            catch
+            else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -624,18 +735,26 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <returns></returns>
-        public async Task<ActionResult> ChooseTest(int courseId)
+        public async Task<ActionResult> ChooseTest(string authtoken, int courseId)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            if (course)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                var choose = await _courseRepository.ChooseTest(courseId);
-                ret.info = _mapper.Map<IEnumerable<ChooseTestDto>>(choose);
+                var course = await _courseRepository.CourseExistAsync(courseId);
+                if (course)
+                {
+                    var choose = await _courseRepository.ChooseTest(courseId);
+                    ret.info = _mapper.Map<IEnumerable<ChooseTestDto>>(choose);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -649,53 +768,61 @@ namespace IonicApi.Controllers
         public async Task<ActionResult> AddPaperTask(int courseId, string authtoken, int testId, PePaperOutputTaskAddDto pePaper)
         {
             MapiData ret = new MapiData();
-            var course = await _courseRepository.CourseExistAsync(courseId);
-            PeTest test = await _courseRepository.GetTestAsync(testId);
-            if (course && AuthtokenUtility.ValidToken(authtoken) && test != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                var entity = _mapper.Map<PePaperOutputTask>(pePaper);
-                entity.TestId = testId;
-                entity.Name = test.Name + "试卷打印任务";
-                entity.Option1 = test.Name;
-                entity.CreateUser = AuthtokenUtility.GetId(authtoken);
-                entity.CreateUserName = _userRepository.GetRealName(AuthtokenUtility.GetId(authtoken));
-                entity.CreateTime = DateTime.Now;
-                entity.BeCreatePdfFile = false;
-                entity.CreateTempDir = "";
-                entity.Range = "ALL";
-                entity.StartTime = DateTime.Now;
-                entity.TotalCount = test.PeUserTest.Count;
-                _outputTaskRepository.AddPaperTask(entity);
-                await _outputTaskRepository.SaveAsync();
-                ret.retcode = 0;
-                ret.message = "添加成功";
-                Action action = async () =>
+                var course = await _courseRepository.CourseExistAsync(courseId);
+                PeTest test = await _courseRepository.GetTestAsync(testId);
+                if (course && test != null)
                 {
-                    try
-                    {
-                        string zipFileName = "";
-                        entity.Result = "成功";
-                        entity.FileName = Path.GetFileName(zipFileName);
-                        entity.FilePath = zipFileName;
-                        entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
-                        entity.FinishCount = entity.TotalCount;
-                    }
-                    catch (Exception ex)
-                    {
-                        entity.Result = "失败";
-                        entity.Message = ex.Message;
-                    }
-                    finally
-                    {
-                        entity.FinishTime = DateTime.Now;
-                    }
+                    var entity = _mapper.Map<PePaperOutputTask>(pePaper);
+                    entity.TestId = testId;
+                    entity.Name = test.Name + "试卷打印任务";
+                    entity.Option1 = test.Name;
+                    entity.CreateUser = AuthtokenUtility.GetId(authtoken);
+                    entity.CreateUserName = _userRepository.GetRealName(AuthtokenUtility.GetId(authtoken));
+                    entity.CreateTime = DateTime.Now;
+                    entity.BeCreatePdfFile = false;
+                    entity.CreateTempDir = "";
+                    entity.Range = "ALL";
+                    entity.StartTime = DateTime.Now;
+                    entity.TotalCount = test.PeUserTest.Count;
+                    _outputTaskRepository.AddPaperTask(entity);
                     await _outputTaskRepository.SaveAsync();
-                };
-                await Task.Factory.StartNew(action);
+                    ret.retcode = 0;
+                    ret.message = "添加成功";
+                    Action action = async () =>
+                    {
+                        try
+                        {
+                            string zipFileName = "";
+                            entity.Result = "成功";
+                            entity.FileName = Path.GetFileName(zipFileName);
+                            entity.FilePath = zipFileName;
+                            entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
+                            entity.FinishCount = entity.TotalCount;
+                        }
+                        catch (Exception ex)
+                        {
+                            entity.Result = "失败";
+                            entity.Message = ex.Message;
+                        }
+                        finally
+                        {
+                            entity.FinishTime = DateTime.Now;
+                        }
+                        await _outputTaskRepository.SaveAsync();
+                    };
+                    await Task.Factory.StartNew(action);
+                }
+                else
+                {
+                    ret.retcode = 11;
+                }
             }
             else
             {
-                ret.retcode = 11;
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -704,49 +831,57 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<ActionResult> ResetPaperTask(int id)
+        public async Task<ActionResult> ResetPaperTask(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
-            if (entity != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                entity.StartTime = DateTime.Now;
-                entity.Message = "";
-                entity.Result = "";
-                entity.FinishTime = null;
-                ret.retcode = 0;
-                await _outputTaskRepository.SaveAsync();
-                Action action = async () =>
-                  {
-                      try
-                      {
-                          //未做 zipFileName
-                          string zipFileName = "";
-                          entity.Result = "成功";
-                          entity.FileName = Path.GetFileName(zipFileName);
-                          entity.FilePath = zipFileName;
-                          entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
-                          entity.FinishCount = entity.TotalCount;
-                      }
-                      catch (Exception ex)
-                      {
-                          entity.Result = "失败";
-                          entity.Message = ex.Message;
-                      }
-                      finally
-                      {
-                          entity.FinishTime = DateTime.Now;
-                      }
-                      await _outputTaskRepository.SaveAsync();
-                  };
-                await Task.Factory.StartNew(action);
-                ret.retcode = 0;
-                ret.message = "重启成功";
+                PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+                if (entity != null)
+                {
+                    entity.StartTime = DateTime.Now;
+                    entity.Message = "";
+                    entity.Result = "";
+                    entity.FinishTime = null;
+                    ret.retcode = 0;
+                    await _outputTaskRepository.SaveAsync();
+                    Action action = async () =>
+                    {
+                        try
+                        {
+                            //未做 zipFileName
+                            string zipFileName = "";
+                            entity.Result = "成功";
+                            entity.FileName = Path.GetFileName(zipFileName);
+                            entity.FilePath = zipFileName;
+                            entity.FileSize = FileUtils.DisplaySize(FileUtils.GetSize(zipFileName));
+                            entity.FinishCount = entity.TotalCount;
+                        }
+                        catch (Exception ex)
+                        {
+                            entity.Result = "失败";
+                            entity.Message = ex.Message;
+                        }
+                        finally
+                        {
+                            entity.FinishTime = DateTime.Now;
+                        }
+                        await _outputTaskRepository.SaveAsync();
+                    };
+                    await Task.Factory.StartNew(action);
+                    ret.retcode = 0;
+                    ret.message = "重启成功";
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "重启失败";
+                }
             }
             else
             {
-                ret.retcode = 11;
-                ret.message = "重启失败";
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }
@@ -757,21 +892,29 @@ namespace IonicApi.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> DeletePaperTask(int id)
+        public async Task<ActionResult> DeletePaperTask(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
-            if (entity != null)
+            if (AuthtokenUtility.ValidToken(authtoken))
             {
-                _outputTaskRepository.DeletePaperTask(entity);
-                await _outputTaskRepository.SaveAsync();
-                ret.retcode = 0;
-                ret.message = "删除成功";
+                PePaperOutputTask entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+                if (entity != null)
+                {
+                    _outputTaskRepository.DeletePaperTask(entity);
+                    await _outputTaskRepository.SaveAsync();
+                    ret.retcode = 0;
+                    ret.message = "删除成功";
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "删除失败";
+                }
             }
             else
             {
-                ret.retcode = 11;
-                ret.message = "删除失败";
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
             }
             return Ok(ret);
         }

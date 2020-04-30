@@ -232,14 +232,15 @@ http://localhost:5000/api/Course/GetCoursesList?authtoken=
 #####  2.单个课程
 
 ```http
-http://localhost:5000/api/Course/GetCourse?id=422
+http://localhost:5000/api/Course/GetCourse?authtoken=&id=422
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 课程Id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       |        |
+| id        | int    | 否       | 课程Id |
 
 返回：
 
@@ -311,17 +312,18 @@ http://localhost:5000/api/Course/GetCourse?id=422
 ##### 1.学生列表（搜索）
 
 ```http
-http://localhost:5000/api/Users/StudentList?courseId=422&keyword&page=1&count=10
+http://localhost:5000/api/Users/StudentList?authtoken=&courseId=422&keyword&page=1&count=10
 ```
 
 参数：
 
-| 参数名   | 类型   | 是否可空 | 说明     |
-| -------- | ------ | -------- | -------- |
-| courseId | int    | 否       | 课程Id   |
-| keyword  | string | 是       | 关键字   |
-| page     | int    | 否       | 页码     |
-| count    | int    | 否       | 每页数量 |
+| 参数名    | 类型   | 是否可空 | 说明     |
+| --------- | ------ | -------- | -------- |
+| authtoken | string | 否       | 令牌     |
+| courseId  | int    | 否       | 课程Id   |
+| keyword   | string | 是       | 关键字   |
+| page      | int    | 否       | 页码     |
+| count     | int    | 否       | 每页数量 |
 
 返回：
 
@@ -466,13 +468,14 @@ http://localhost:5000/api/Users/GetStudent?id=29687
 [post]
 
 ```http 
-http://api/Users/AddCourseStudent?courseId=422
+http://api/Users/AddCourseStudent?authtoken=&courseId=422
 ```
 
 参数：
 
 | 参数名         | 类型          | 是否可空 | 说明                   |
 | -------------- | ------------- | -------- | ---------------------- |
+| authtoken      | string        | 否       | 令牌                   |
 | courseId       | int           | 否       | 课程id                 |
 | addUser        | array[object] |          |                        |
 | userName       | string        | 否       | 账号                   |
@@ -523,7 +526,7 @@ http://api/Users/AddCourseStudent?courseId=422
 ##### 3.编辑学生
 
 ```http
-http://api/Users/EditUser?id=35899
+http://api/Users/EditUser?authtoken=&id=35899
 ```
 
    [HttpPatch]
@@ -536,9 +539,10 @@ https://www.cnblogs.com/bijinshan/p/9140111.html
 
 参数 params：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 学生id |
 
 Headers ：
 
@@ -638,14 +642,15 @@ http://api/DeleteUser?id=
 ##### 5.重置密码
 
 ```http
-http://api/RetsetPwd?id
+http://api/RetsetPwd?authtoken=&id
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 学生id |
 
 返回：
 
@@ -664,18 +669,19 @@ http://api/RetsetPwd?id
 ##### 1. 列表（搜索）
 
 ```http
-http://localhost:5000/api/Course/HomeWorkList?courseId=422&type=3&keyword&page=1&count=10
+http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&keyword&page=1&count=10
 ```
 
 参数：
 
-| 参数名   | 类型   | 是否可空 | 说明                    |
-| -------- | ------ | -------- | ----------------------- |
-| courseId | int    | 否       | 课程id                  |
-| type     | int    | 否       | 1考试 2练习 3作业 4实验 |
-| keyword  | string | 是       | 关键字                  |
-| page     | int    | 否       | 页码                    |
-| count    | int    | 否       | 每页条数                |
+| 参数名    | 类型   | 是否可空 | 说明                    |
+| --------- | ------ | -------- | ----------------------- |
+| authtoken | string | 否       | 令牌                    |
+| courseId  | int    | 否       | 课程id                  |
+| type      | int    | 否       | 1考试 2练习 3作业 4实验 |
+| keyword   | string | 是       | 关键字                  |
+| page      | int    | 否       | 页码                    |
+| count     | int    | 否       | 每页条数                |
 
 返回：
 
@@ -1240,14 +1246,15 @@ http://api/course/AddHomeWork?authtoken=&courseId=422&type=3
 [HttpPatch]
 
 ```http
-http://localhost:5000/api/Course/EditHomeWork?id=6699
+http://localhost:5000/api/Course/EditHomeWork?authtoken=&id=6699
 ```
 
   参数 params：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 作业id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 作业id |
 
 Headers ：
 
@@ -1301,14 +1308,15 @@ Body:
 ##### 3. 删除
 
 ```http
-http://localhost:5000/api/Course/DeleteWork?id=9827
+http://localhost:5000/api/Course/DeleteWork?authtoken=&id=9827
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明 |
-| ------ | ---- | -------- | ---- |
-| id     | int  | 否       | id   |
+| 参数名    | 类型   | 是否可空 | 说明 |
+| --------- | ------ | -------- | ---- |
+| authtoken | string | 否       | 令牌 |
+| id        | int    | 否       | id   |
 
 返回：
 
@@ -1327,14 +1335,15 @@ http://localhost:5000/api/Course/DeleteWork?id=9827
 获得带阅卷的学生作业，实验信息列表
 
 ```http 
-http://localhost:5000/api/Course/JudgeList?testId=6699
+http://localhost:5000/api/Course/JudgeList?authtoken=&testId=6699
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明               |
-| ------ | ---- | -------- | ------------------ |
-| testId | int  | 否       | 作业、实验、练习Id |
+| 参数名    | 类型   | 是否可空 | 说明               |
+| --------- | ------ | -------- | ------------------ |
+| authtoken | string | 否       | 令牌               |
+| testId    | int    | 否       | 作业、实验、练习Id |
 
 返回：
 
@@ -1386,16 +1395,17 @@ http://localhost:5000/api/Course/JudgeList?testId=6699
 ##### 1. 获取资源列表（搜索）
 
 ```http
-http://localhost:5000/api/Course/ResourceList?courseId=422&parentId=0
+http://localhost:5000/api/Course/ResourceList?authtoken=&courseId=422&parentId=0
 ```
 
 参数：
 
-| 参数名   | 类型   | 是否可空 | 说明             |
-| -------- | ------ | -------- | ---------------- |
-| courseId | int    | 否       | 课程id           |
-| parentId | int    | 否       | 资源父子关联标识 |
-| keyword  | string | 是       | 关键字           |
+| 参数名    | 类型   | 是否可空 | 说明             |
+| --------- | ------ | -------- | ---------------- |
+| authtoken | string | 否       | 令牌             |
+| courseId  | int    | 否       | 课程id           |
+| parentId  | int    | 否       | 资源父子关联标识 |
+| keyword   | string | 是       | 关键字           |
 
 返回：
 
@@ -1453,16 +1463,17 @@ http://localhost:5000/api/Course/ResourceList?courseId=422&parentId=0
 
 ##### 2. 上传文件（未做）
 
-```
-http://api/upFile?courseId=1
+```http
+http://api/upFile?authtoken=&courseId=1
 ```
 
 参数：
 
-| 参数名   | 类型          | 是否可空 | 说明         |
-| -------- | ------------- | -------- | ------------ |
-| courseId | int           | 否       | 课程id       |
-| fileData | array[object] | 否       | 长传文件信息 |
+| 参数名    | 类型          | 是否可空 | 说明         |
+| --------- | ------------- | -------- | ------------ |
+| authtoken | string        | 否       | 令牌         |
+| courseId  | int           | 否       | 课程id       |
+| fileData  | array[object] | 否       | 长传文件信息 |
 
 返回：
 
@@ -1479,14 +1490,15 @@ http://api/upFile?courseId=1
 ##### 3. 删除资源
 
 ```http
-http://api/Course/DeleteResource/id=1
+http://api/Course/DeleteResource?authtoken=&id=1
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 资源id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 资源id |
 
 返回：
 
@@ -1503,15 +1515,16 @@ http://api/Course/DeleteResource/id=1
 ##### 4.文件重命名
 
 ```http
-http://api/Course/Rename?id=1961&name=
+http://api/Course/Rename?authtoken=&id=1961&name=
 ```
 
 参数：
 
-| 参数名 | 类型   | 是否可空 | 说明   |
-| ------ | ------ | -------- | ------ |
-| id     | int    | 否       | 资源id |
-| name   | string | 否       | 重命名 |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 资源id |
+| name      | string | 否       | 重命名 |
 
 返回：
 
@@ -1533,16 +1546,17 @@ http://api/Course/Rename?id=1961&name=
 先获取课程下的学生列表（见学生列表）方法，再根据学生id获取成绩
 
 ```http
-http://localhost:5000/api/Course/ScoreInfo?courseId=422&type=3&userId=20518
+http://localhost:5000/api/Course/ScoreInfo?authtoken=&courseId=422&type=3&userId=20518
 ```
 
 参数：
 
-| 参数名   | 类型 | 是否可空 | 说明   |
-| -------- | ---- | -------- | ------ |
-| courseId | int  | 否       | 课程id |
-| type     | int  | 否       | 类型   |
-| userId   | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| courseId  | int    | 否       | 课程id |
+| type      | int    | 否       | 类型   |
+| userId    | int    | 否       | 学生id |
 
 返回：
 
@@ -1586,17 +1600,18 @@ http://localhost:5000/api/Course/ScoreInfo?courseId=422&type=3&userId=20518
 ##### 2.成绩汇总
 
 ```http
-http://localhost:5000/api/Course/StudentGrade?courseId=422&id=20518
+http://localhost:5000/api/Course/StudentGrade?authtoken=&courseId=422&id=20518
 ```
 
 先获取课程下的学生列表（见学生列表）方法，再根据学生id获取成绩汇总
 
 参数：
 
-| 参数名   | 类型 | 是否可空 | 说明   |
-| -------- | ---- | -------- | ------ |
-| courseId | int  | 否       | 课程id |
-| Id       | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| courseId  | int    | 否       | 课程id |
+| Id        | int    | 否       | 学生id |
 
 返回：
 
@@ -1655,13 +1670,14 @@ http://localhost:5000/api/Course/StudentGrade?courseId=422&id=20518
 #####  1.打印考试列表（搜索）
 
 ```http
-http://localhost:5000/api/Course/PaperTaskList?courseId=422&authtoken=&keyword
+http://localhost:5000/api/Course/PaperTaskList?authtoken=&courseId=422&authtoken=&keyword
 ```
 
 参数：
 
 | 参数名    | 类型   | 是否可空 | 说明         |
 | --------- | ------ | -------- | ------------ |
+| authtoken | string | 否       | 令牌         |
 | courseId  | int    | 否       | 课程id       |
 | authtoken | string | 否       | 登录用户令牌 |
 | keyword   | string | 否       | 关键字       |
@@ -1731,14 +1747,15 @@ http://localhost:5000/api/Course/PaperTaskList?courseId=422&authtoken=&keyword
 ##### 2. 打印任务考试选项
 
 ```http
-http://localhost:5000/api/Course/ChooseTest?courseId=422
+http://localhost:5000/api/Course/ChooseTest?authtoken=&courseId=422
 ```
 
 参数：
 
-| 参数名   | 类型 | 是否可空 | 说明   |
-| -------- | ---- | -------- | ------ |
-| courseId | int  | 否       | 课程id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| courseId  | int    | 否       | 课程id |
 
 返回：
 
@@ -1872,11 +1889,12 @@ http://localhost:5000/api/Course/ChooseTest?courseId=422
 [post]
 
 ```http
-http://localhost:5000/api/Course/AddPaperTask?courseId=422&authtoken=&testId=9828
+http://localhost:5000/api/Course/AddPaperTask?authtoken=&courseId=422&authtoken=&testId=9828
 ```
 
 | 参数名    | 类型          | 是否可空 | 说明               |
 | --------- | ------------- | -------- | ------------------ |
+| authtoken | string        | 否       | 领牌               |
 | courseId  | int           | 否       | 课程Id             |
 | authtoken | string        | 否       | 用户登录令牌       |
 | testId    | int           | 否       | 打印任务考试选项Id |
@@ -1943,14 +1961,15 @@ http://api/resetPrint?id=1
 ##### 5. 删除打印
 
 ```http
-http://localhost:5000/api/Course/DeletePaperTask?id=1
+http://localhost:5000/api/Course/DeletePaperTask?authtoken=&id=1
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明       |
-| ------ | ---- | -------- | ---------- |
-| id     | int  | 否       | 打印试卷id |
+| 参数名    | 类型   | 是否可空 | 说明       |
+| --------- | ------ | -------- | ---------- |
+| authtoken | string | 否       | 领牌       |
+| id        | int    | 否       | 打印试卷id |
 
 返回：
 
