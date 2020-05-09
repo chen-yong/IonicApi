@@ -58,7 +58,7 @@ retcode£º
 ### 1.µÇÂ¼
 
 ```http 
-http://api/Login/Login?username=&password=
+http://localhost:5000/api/Launch/Login?username=&password=
 ```
 
 ²ÎÊý£º
@@ -121,7 +121,7 @@ http://api/Login/Login?username=&password=
 
 
 
-```json
+```http
 http://localhost:5000/api/Course/GetCoursesList?authtoken=
 ```
 
