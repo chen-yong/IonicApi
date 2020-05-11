@@ -86,6 +86,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -180,6 +181,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -204,6 +206,7 @@ namespace IonicApi.Controllers
                 if (homeWork == null)
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
                 ret.retcode = 0;
                 ret.info = homeWork;
@@ -309,6 +312,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -335,10 +339,12 @@ namespace IonicApi.Controllers
                     entity.IsDel = true;
                     await _userRepository.SaveAsync();
                     ret.retcode = 0;
+                    ret.message = "删除成功";
                 }
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -371,6 +377,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -498,6 +505,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -530,6 +538,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -565,6 +574,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -596,6 +606,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -675,6 +686,7 @@ namespace IonicApi.Controllers
                 catch
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -720,6 +732,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -749,6 +762,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -817,6 +831,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else

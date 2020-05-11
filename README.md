@@ -413,14 +413,15 @@ http://localhost:5000/api/Users/StudentList?authtoken=&courseId=422&keyword&page
 ##### 2.学生详情
 
 ```http 
-http://localhost:5000/api/Users/GetStudent?id=29687
+http://localhost:5000/api/Users/GetStudent?authtoken=&id=29687
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 学生id |
 
 返回:
 
@@ -616,14 +617,15 @@ Body:
 ##### 4.删除学生
 
 ```http
-http://api/DeleteUser?id=
+http://api/Users/DeleteUser?authtoken=&id=
 ```
 
 参数：
 
-| 参数名 | 类型 | 是否可空 | 说明   |
-| ------ | ---- | -------- | ------ |
-| id     | int  | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 学生id |
 
 返回:
 
@@ -642,7 +644,7 @@ http://api/DeleteUser?id=
 ##### 5.重置密码
 
 ```http
-http://api/RetsetPwd?authtoken=&id
+http://api/Users/RetsetPwd?authtoken=&id
 ```
 
 参数：

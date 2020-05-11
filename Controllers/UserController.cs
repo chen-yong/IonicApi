@@ -63,6 +63,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -95,6 +96,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -179,13 +181,15 @@ namespace IonicApi.Controllers
                 PeUser entity = await _userRepository.GetUserAsync(id);
                 if (entity != null)
                 {
-                    entity.Password = StringUtils.md5HashString("123456");
+                    entity.Password = StringUtils.md5HashString("123456").ToUpper();
                     ret.retcode = 0;
+                    ret.message = "密码重置成功";
                     await _userRepository.SaveAsync();
                 }
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
@@ -214,10 +218,12 @@ namespace IonicApi.Controllers
                     entity.UserIdentity01 = "0";
                     await _userRepository.SaveAsync();
                     ret.retcode = 0;
+                    ret.message = "参数错误";
                 }
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "删除成功";
                 }
             }
             else
@@ -271,6 +277,7 @@ namespace IonicApi.Controllers
                 else
                 {
                     ret.retcode = 11;
+                    ret.message = "参数错误";
                 }
             }
             else
