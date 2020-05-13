@@ -5,6 +5,7 @@ namespace IonicApi.Dtos
 {
     public class TestDto
     {
+        public string Id { get; set; }
         public string Nid { get; set; }
         /// <summary>
         /// 名称
@@ -36,7 +37,6 @@ namespace IonicApi.Dtos
         /// 创建者Id
         /// </summary>
         [Display(Name = "创建者Id")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public int CreateUserId { get; set; }
         /// <summary>
         /// 创建时间
@@ -47,13 +47,11 @@ namespace IonicApi.Dtos
         /// 开始时间
         /// </summary>
         [Display(Name = "开始时间")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public DateTime? StartTime { get; set; }
         /// <summary>
         /// 截止时间
         /// </summary>
         [Display(Name = "结束时间")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public DateTime? EndTime { get; set; }
         public int? RestTime { get; set; }
         public int? LunchTime { get; set; }
@@ -78,7 +76,6 @@ namespace IonicApi.Dtos
         /// 策略Id
         /// </summary>
         [Display(Name = "策略Id")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public int? DrawPlotId { get; set; }
         public int? TestTemplateId { get; set; }
         /// <summary>
@@ -99,7 +96,6 @@ namespace IonicApi.Dtos
         /// 总分
         /// </summary>
         [Display(Name = "总分")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public double? SetScore { get; set; }
         /// <summary>
         /// 查卷时标准答案可见
@@ -110,7 +106,6 @@ namespace IonicApi.Dtos
         /// 成绩展示:1展示，2不展示
         /// </summary>
         [Display(Name = "成绩展示")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
         public int? ScoreAppear { get; set; }
         /// <summary>
         /// 补交截止
