@@ -209,7 +209,7 @@ namespace IonicApi.Controllers
                     ret.message = "参数错误";
                 }
                 ret.retcode = 0;
-                ret.info = homeWork;
+                ret.info = _mapper.Map<TestDto>(homeWork);
             }
             else
             {
@@ -697,6 +697,10 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        /// <summary>
+        /// 未做
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> UploadFile()
         {

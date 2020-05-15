@@ -6,19 +6,19 @@ namespace IonicApi.Dtos
     public class TestDto
     {
         public string Id { get; set; }
-        public string Nid { get; set; }
+        //public string Nid { get; set; }
         /// <summary>
         /// 名称
         /// </summary>
         [Display(Name = "名称")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
-        [MaxLength(100, ErrorMessage = "{0}的最大长度不可以超过{1}")]
+        //[Required(ErrorMessage = "{0}这个字段是必填的")]
+        //[MaxLength(100, ErrorMessage = "{0}的最大长度不可以超过{1}")]
         public string Name { get; set; }
         /// <summary>
         /// 类型：1考试 2练习 3作业 4实验
         /// </summary>
         [Display(Name = "类型")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        //[Required(ErrorMessage = "{0}这个字段是必填的")]
         public int Mode { get; set; }
         public bool IsOpen { get; set; }
         /// <summary>
@@ -53,8 +53,8 @@ namespace IonicApi.Dtos
         /// </summary>
         [Display(Name = "结束时间")]
         public DateTime? EndTime { get; set; }
-        public int? RestTime { get; set; }
-        public int? LunchTime { get; set; }
+        //public int? RestTime { get; set; }
+        //public int? LunchTime { get; set; }
         /// <summary>
         /// 禁止复制题目
         /// </summary>
@@ -71,13 +71,13 @@ namespace IonicApi.Dtos
         /// 学生端阅卷后标准答案可见
         /// </summary>
         public bool? KeyVisible { get; set; }
-        public bool? AutoSubmitOnTimeLimit { get; set; }
+        //public bool? AutoSubmitOnTimeLimit { get; set; }
         /// <summary>
         /// 策略Id
         /// </summary>
         [Display(Name = "策略Id")]
         public int? DrawPlotId { get; set; }
-        public int? TestTemplateId { get; set; }
+        //public int? TestTemplateId { get; set; }
         /// <summary>
         /// 课程ID
         /// </summary>
@@ -88,10 +88,13 @@ namespace IonicApi.Dtos
         /// 作业互评
         /// </summary>
         public bool? EnableMutualJudge { get; set; }
+        /// <summary>
+        /// 互评截止时间
+        /// </summary>
         public DateTime? MutualJudgeEndTime { get; set; }
-        public bool? IsMutualJudgeGroupingPublished { get; set; }
-        public DateTime? TimeMutualJudgeGroupingPublish { get; set; }
-        public int? MutualJudgeGroupingSize { get; set; }
+        //public bool? IsMutualJudgeGroupingPublished { get; set; }
+        //public DateTime? TimeMutualJudgeGroupingPublish { get; set; }
+        //public int? MutualJudgeGroupingSize { get; set; }
         /// <summary>
         /// 总分
         /// </summary>
@@ -115,6 +118,9 @@ namespace IonicApi.Dtos
         /// 补交得分比例
         /// </summary>
         public double? DelayPercentOfScore { get; set; }
+        /// <summary>
+        /// IP地址访问检查
+        /// </summary>
         public bool IpallowAccessCheck { get; set; }
     }
 }
