@@ -748,6 +748,29 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
+        /// 获取单个打印任务的信息
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> PaperTask(string authtoken, int id)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                ret.retcode = 0;
+                var entity = await _outputTaskRepository.GetPaperTaskAsync(id);
+                ret.info = _mapper.Map<PaperOutputTaskDto>(entity);
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
+        /// <summary>
         /// 试卷打印任务下的选择考试选项
         /// </summary>
         /// <param name="courseId">课程Id</param>

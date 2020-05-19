@@ -702,6 +702,43 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
     "authtoken": null,
     "info": [
         {
+            "id": "9828",
+            "nid": "1fdd2f68d8fc883c",
+            "name": "测试",
+            "mode": 3,
+            "isOpen": true,
+            "timeLimit": 0,
+            "retryTimes": 0,
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2020-04-20T20:25:30.243",
+            "startTime": "2020-04-20T00:00:00",
+            "endTime": "2020-04-21T23:59:00",
+            "restTime": null,
+            "lunchTime": null,
+            "forbiddenCopy": true,
+            "forbiddenMouseRightMenu": true,
+            "enableClientJudge": true,
+            "keyVisible": true,
+            "autoSubmitOnTimeLimit": false,
+            "drawPlotId": 2710,
+            "testTemplateId": null,
+            "courseId": 422,
+            "enableMutualJudge": null,
+            "mutualJudgeEndTime": null,
+            "isMutualJudgeGroupingPublished": null,
+            "timeMutualJudgeGroupingPublish": null,
+            "mutualJudgeGroupingSize": null,
+            "setScore": 100.0,
+            "viewOneWithAnswerKey": false,
+            "ord": 0,
+            "scoreAppear": 1,
+            "delayEndTime": null,
+            "delayPercentOfScore": null,
+            "ipallowAccessCheck": false
+        },
+        {
+            "id": "6676",
             "nid": "73fed0602562cb1e",
             "name": "Java程序设计-作业十二",
             "mode": 3,
@@ -737,6 +774,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6678",
             "nid": "d53660f85ca2db1e",
             "name": "Java程序设计-作业十一",
             "mode": 3,
@@ -772,6 +810,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6681",
             "nid": "27adec3f3f88af1e",
             "name": "Java程序设计-作业十",
             "mode": 3,
@@ -807,6 +846,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6682",
             "nid": "3e54754d19e34b1e",
             "name": "Java程序设计-作业九 ",
             "mode": 3,
@@ -842,6 +882,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6685",
             "nid": "c304e3f9dd02cb1e",
             "name": "Java程序设计-作业八",
             "mode": 3,
@@ -877,6 +918,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6687",
             "nid": "18a90f31862cb1e",
             "name": "Java程序设计-作业七",
             "mode": 3,
@@ -912,6 +954,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6689",
             "nid": "eff935b78243cb1e",
             "name": "Java程序设计-作业六",
             "mode": 3,
@@ -947,6 +990,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6691",
             "nid": "933b7bd255decb1e",
             "name": "Java程序设计-作业五",
             "mode": 3,
@@ -982,6 +1026,7 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "ipallowAccessCheck": false
         },
         {
+            "id": "6694",
             "nid": "95ccda2b75515b1e",
             "name": "Java程序设计-作业四",
             "mode": 3,
@@ -1015,45 +1060,10 @@ http://localhost:5000/api/Course/HomeWorkList?authtoken=&courseId=422&type=3&key
             "delayEndTime": null,
             "delayPercentOfScore": null,
             "ipallowAccessCheck": false
-        },
-        {
-            "nid": "e7419f115b06cb1e",
-            "name": "Java程序设计-作业三",
-            "mode": 3,
-            "isOpen": true,
-            "timeLimit": 0,
-            "retryTimes": 0,
-            "memo": null,
-            "createUserId": 31308,
-            "createTime": "2019-04-16T13:46:19.243",
-            "startTime": "2018-09-28T00:00:00",
-            "endTime": "2018-10-10T23:59:00",
-            "restTime": null,
-            "lunchTime": null,
-            "forbiddenCopy": true,
-            "forbiddenMouseRightMenu": true,
-            "enableClientJudge": false,
-            "keyVisible": false,
-            "autoSubmitOnTimeLimit": null,
-            "drawPlotId": 1819,
-            "testTemplateId": null,
-            "courseId": 422,
-            "enableMutualJudge": false,
-            "mutualJudgeEndTime": null,
-            "isMutualJudgeGroupingPublished": null,
-            "timeMutualJudgeGroupingPublish": null,
-            "mutualJudgeGroupingSize": null,
-            "setScore": 100.0,
-            "viewOneWithAnswerKey": false,
-            "ord": null,
-            "scoreAppear": null,
-            "delayEndTime": null,
-            "delayPercentOfScore": null,
-            "ipallowAccessCheck": false
         }
     ],
     "pagecount": 2,
-    "recordcount": 12,
+    "recordcount": 13,
     "isfirst": true,
     "hasnext": true,
     "items": [],
@@ -1243,7 +1253,97 @@ http://api/course/AddHomeWork?authtoken=&courseId=422&type=3
 }
 ```
 
-##### 2. 编辑(详情)
+##### 4.获取单个作业，实验，练习详情
+
+```http
+http://localhost:5000/api/Course/HomeWork?authtoken=97F02636E249793A37CED81599713373CF32DF9495F10BDD397063C90385D876&id=9828
+```
+
+| 参数名    | 类型   | 是否可空 | 说明               |
+| --------- | ------ | -------- | ------------------ |
+| authtoken | string | 否       | 令牌               |
+| id        | int    | 否       | 作业，实验，练习id |
+
+返回：
+
+| 字段                    | 类型          | 说明                          |
+| ----------------------- | ------------- | ----------------------------- |
+| retcode                 | int           | 返回码                        |
+| info                    | array[object] |                               |
+| id                      | int           | id                            |
+| name                    | string        | 名称                          |
+| mode                    | int           | 类型：1考试 2练习 3作业 4实验 |
+| isOpen                  | bool          | 是否打开                      |
+| timeLimit               | int           | 限时完成                      |
+| retryTimes              | int           | 尝试次数                      |
+| memo                    | string        | 说明                          |
+| createUserId            | int           | 创建者Id                      |
+| createTime              | dateTime      | 创建时间                      |
+| startTime               | dateTime      | 开始时间                      |
+| endTime                 | dateTime      | 结束时间                      |
+| forbiddenCopy           | bool          | 禁止复制题目                  |
+| forbiddenMouseRightMenu | bool          | 禁止右键                      |
+| enableClientJudge       | bool          | 开启学生端阅卷                |
+| keyVisible              | bool          | 学生端阅卷后标准答案可见      |
+| drawPlotId              | int           | 策略Id                        |
+| courseId                | int           | 课程Id                        |
+| enableMutualJudge       | bool          | 作业互评                      |
+| mutualJudgeEndTime      | dateTime      | 互评截止时间                  |
+| setScore                | double        | 总分                          |
+| viewOneWithAnswerKey    | bool          | 查卷时标准答案可见            |
+| ord                     | int           | 排序                          |
+| scoreAppear             | int           | 成绩展示：1展示，2不展示      |
+| delayEndTime            | dateTime      | 补交截止时间                  |
+| delayPercentOfScore     | double        | 补交得分比例                  |
+| ipallowAccessCheck      | bool          | IP地址访问检查                |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": "9828",
+        "name": "测试",
+        "mode": 3,
+        "isOpen": true,
+        "timeLimit": 0,
+        "retryTimes": 0,
+        "memo": "",
+        "createUserId": 31308,
+        "createTime": "2020-04-20T20:25:30.243",
+        "startTime": "2020-04-20T00:00:00",
+        "endTime": "2020-04-21T23:59:00",
+        "forbiddenCopy": true,
+        "forbiddenMouseRightMenu": true,
+        "enableClientJudge": true,
+        "keyVisible": true,
+        "drawPlotId": 2710,
+        "courseId": 422,
+        "enableMutualJudge": null,
+        "mutualJudgeEndTime": null,
+        "setScore": 100.0,
+        "viewOneWithAnswerKey": false,
+        "ord": 0,
+        "scoreAppear": 1,
+        "delayEndTime": null,
+        "delayPercentOfScore": null,
+        "ipallowAccessCheck": false
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+
+
+##### 5. 编辑(详情)
 
 [HttpPatch]
 
@@ -1307,7 +1407,7 @@ Body:
 }
 ```
 
-##### 3. 删除
+##### 6. 删除
 
 ```http
 http://localhost:5000/api/Course/DeleteWork?authtoken=&id=9827
@@ -1332,7 +1432,7 @@ http://localhost:5000/api/Course/DeleteWork?authtoken=&id=9827
 }
 ```
 
-#####  4. 批阅
+#####  7. 批阅
 
 获得带阅卷的学生作业，实验信息列表
 
@@ -1746,7 +1846,69 @@ http://localhost:5000/api/Course/PaperTaskList?authtoken=&courseId=422&authtoken
 }
 ```
 
-##### 2. 打印任务考试选项
+##### 2.获取单个打印任务信息
+
+```http
+http://localhost:5000/api/Course/PaperTask?authtoken=97F02636E249793A37CED81599713373CF32DF9495F10BDD397063C90385D876&id=671
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明 |
+| --------- | ------ | -------- | ---- |
+| authtoken | string | 否       | 令牌 |
+| id        | int    | 否       | id   |
+
+返回：
+
+| 字段        | 类型          | 说明     |
+| ----------- | ------------- | -------- |
+| retcode     | int           | 返回码   |
+| info        | array[object] |          |
+| id          | int           | id       |
+| name        | string        | 名称     |
+| totalCount  | int           | 试卷总数 |
+| finishCount | int           | 完成数   |
+| startTime   | string        | 开始时间 |
+| finishTime  | DateTime      | 完成时间 |
+| fileName    | string        | 文件名称 |
+| filePath    | string        | 路径     |
+| result      | string        | 状态     |
+| message     | string        | 结果     |
+| fileSize    | string        | 文件大小 |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 671,
+        "name": "Java程序设计-作业十二试卷打印任务",
+        "totalCount": 1,
+        "finishCount": 1,
+        "startTime": "2020-04-10T20:22:28.003",
+        "finishTime": "2020-04-10T20:22:30.023",
+        "fileName": "e4165150e8525c02.zip",
+        "filePath": "E:\\webiste\\XTest\\output\\paper\\zip\\e4165150e8525c02.zip",
+        "result": "成功",
+        "message": null,
+        "fileSize": "62.09 KB"
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+
+
+##### 3. 打印任务考试选项
 
 ```http
 http://localhost:5000/api/Course/ChooseTest?authtoken=&courseId=422
@@ -1886,17 +2048,16 @@ http://localhost:5000/api/Course/ChooseTest?authtoken=&courseId=422
 }
 ```
 
-##### 3.添加打印任务
+##### 4.添加打印任务
 
 [post]
 
 ```http
-http://localhost:5000/api/Course/AddPaperTask?authtoken=&courseId=422&authtoken=&testId=9828
+http://localhost:5000/api/Course/AddPaperTask?courseId=422&authtoken=&testId=9828
 ```
 
 | 参数名    | 类型          | 是否可空 | 说明               |
 | --------- | ------------- | -------- | ------------------ |
-| authtoken | string        | 否       | 领牌               |
 | courseId  | int           | 否       | 课程Id             |
 | authtoken | string        | 否       | 用户登录令牌       |
 | testId    | int           | 否       | 打印任务考试选项Id |
@@ -1936,7 +2097,7 @@ http://localhost:5000/api/Course/AddPaperTask?authtoken=&courseId=422&authtoken=
 
 
 
-##### 4. 重启打印（未做）
+##### 5. 重启打印（未做）
 
 ```
 http://api/resetPrint?id=1
@@ -1960,7 +2121,7 @@ http://api/resetPrint?id=1
 }
 ```
 
-##### 5. 删除打印
+##### 6. 删除打印
 
 ```http
 http://localhost:5000/api/Course/DeletePaperTask?authtoken=&id=1
