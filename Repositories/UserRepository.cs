@@ -21,7 +21,7 @@ namespace IonicApi.Repositories
         /// </summary>
         /// <param name="courseId">课程Id</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeUser>> GetUsersAsync(int courseId)
+        public async Task<IEnumerable<PeUser>> GetUsersAsync(int courseId) 
         {
             //select * from PE__user where Id in(select userId from PE__CourseStudent where courseId=courseId )
             // linq 子查询
@@ -60,6 +60,7 @@ namespace IonicApi.Repositories
         /// <returns></returns>
         public async Task<PeUser> GetUserAsync(string account, string pwd)
         {
+            //用户名或邮箱是account，且密码是pwd，且用户状态UserIdentity01没有被删除
             return await _context.PeUser.SingleOrDefaultAsync(e => (e.UserName == account || e.Email == account) && e.Password == pwd && e.UserIdentity01 != AppConstants.UserStatus.Deleted);
         }
 

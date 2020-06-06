@@ -5,8 +5,8 @@ namespace IonicApi.Models
 {
     public partial class PeUser
     {
-        public bool IsVaild { get { return UserIdentity01 == "1"; } }
-        public bool IsTeacher { get { return UserIdentity03 == "2"; } }
+        public bool IsVaild { get { return UserIdentity01 == "1"; } }  //是否被删除，是否还存在
+        public bool IsTeacher { get { return UserIdentity03 == "2"; } }  
         public string UserType { get { return IsTeacher ? "教师" : "学生"; } }
         public string SearchKey { get { return RealName + "//" + UserName; } }
         public PeUser()
@@ -47,19 +47,19 @@ namespace IonicApi.Models
         public string Mobile { get; set; }
         public string CardNo { get; set; }
         public string UserIdentity00 { get; set; }
-        public string UserIdentity01 { get; set; }
+        public string UserIdentity01 { get; set; }  //是否被软删除（禁用）
         public string UserIdentity02 { get; set; }
-        public string UserIdentity03 { get; set; }
+        public string UserIdentity03 { get; set; }  //是不是学生：1.学生；2.老师
         public string Zip { get; set; }
         public string Address { get; set; }
-        public string Avatar { get; set; }
+        public string Avatar { get; set; }  //用户头像
         public string Introduction { get; set; }
-        public string Property00 { get; set; }
-        public string Property01 { get; set; }
-        public string Property02 { get; set; }
-        public string Property03 { get; set; }
+        public string Property00 { get; set; }  //班级
+        public string Property01 { get; set; }  //校区
+        public string Property02 { get; set; }  //学院、系
+        public string Property03 { get; set; }   
         public string Property04 { get; set; }
-        public string Property05 { get; set; }
+        public string Property05 { get; set; }  //QQ
         public string Property06 { get; set; }
         public string Property07 { get; set; }
         public string Property08 { get; set; }

@@ -25,7 +25,7 @@ namespace IonicApi.Controllers
         public LaunchController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            //注册AutoMapper
+            //注册AutoMapper，相互映射dto用
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -66,7 +66,7 @@ namespace IonicApi.Controllers
                                     id=user.Id,
                                     name = user.RealName,
                                     gender = user.Sex,
-                                    cls = user.Property00,
+                                    cls = user.Property00, //班级
                                     phone = user.Mobile,
                                     email = user.Email,
                                     qq = user.Property05,

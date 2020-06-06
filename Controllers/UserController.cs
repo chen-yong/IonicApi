@@ -84,9 +84,9 @@ namespace IonicApi.Controllers
         public async Task<ActionResult> GetStudent(string authtoken, int id)
         {
             MapiData ret = new MapiData();
-            if (AuthtokenUtility.ValidToken(authtoken))
+            if (AuthtokenUtility.ValidToken(authtoken)) //用户登录的时候会生成authtoken令牌
             {
-                var user = await _userRepository.UserExistsAsync(id);
+                var user = await _userRepository.UserExistsAsync(id);  //该id的学生是否存在
                 if (user)
                 {
                     var entity = await _userRepository.GetUserAsync(id);
@@ -121,7 +121,7 @@ namespace IonicApi.Controllers
             if (AuthtokenUtility.ValidToken(authtoken))
             {
                 var entity = _mapper.Map<PeUser>(addUser);
-                PeUser user = _userRepository.GetUser(entity.UserName);
+                PeUser user = _userRepository.GetUser(entity.UserName); //数据库里username是长长一串，唯一表示
                 //新账号
                 if (user == null)
                 {
@@ -150,7 +150,7 @@ namespace IonicApi.Controllers
                     {
                         user.PeCourseStudent.Add(new PeCourseStudent
                         {
-                            CourseId = courseId
+                            CourseId = courseId //这里为什么不需要关联该学生的id
                         });
                         ret.retcode = 0;
                         ret.message = "学生关联到课程中成功";
@@ -240,6 +240,8 @@ namespace IonicApi.Controllers
         /// <param name="authtoken">authtoken</param>
         /// <param name="id"></param>
         /// <param name="patchDocument">更新操作</param>
+        /// 
+        /// patchDocument中UserEditDto用户名UserName 和 密码 Password必须要写（postman中首字母小写）
         /// <returns></returns>
         [HttpPatch]
         public async Task<ActionResult> EditUser(string authtoken, int id, [FromBody] JsonPatchDocument<UserEditDto> patchDocument)
@@ -265,6 +267,53 @@ namespace IonicApi.Controllers
                         _userRepository.UpdateUser(entity);
                         ret.retcode = 0;
                         ret.message = "修改成功";
+                        await _userRepository.SaveAsync();
+                    }
+                    catch (Exception e)
+                    {
+                        ret.retcode = 11;
+                        ret.info = e;
+                    }
+
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "参数错误";
+                }
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult> EditAdmin(string authtoken, int id, [FromBody] JsonPatchDocument<AdminEditDto> patchDocument)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                PeUser entity = await _userRepository.GetUserAsync(id);
+                if (entity != null)
+                {
+                    try
+                    {
+                        var dtoToPatch = _mapper.Map<AdminEditDto>(entity);
+                        // 需要处理验证错误
+                        patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+                        if (!TryValidateModel(dtoToPatch))
+                        {
+                            return ValidationProblem(ModelState);
+                        }
+
+                        _mapper.Map(dtoToPatch, entity);
+                        _userRepository.UpdateUser(entity);
+                        ret.retcode = 0;
+                        ret.message = "用户修改成功";
                         await _userRepository.SaveAsync();
                     }
                     catch (Exception e)

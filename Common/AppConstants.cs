@@ -25,7 +25,7 @@ namespace IonicApi.Common
             public const string Admin = "0";
         }
         /// <summary>
-        /// PE__User UserIdentity01
+        /// PE__User UserIdentity01  ，该字段表示用户状态，是否已经被删除
         /// </summary>
         public static class UserStatus
         {

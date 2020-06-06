@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
+/// <summary>
+/// 数据库设置文件，数据表映射谢在这里
+/// </summary>
 namespace IonicApi.Models
 {
     public partial class PureExam_DevContext : DbContext
@@ -15,6 +18,9 @@ namespace IonicApi.Models
         {
         }
 
+        /// <summary>
+        /// 把下面的实体映射到数据库对应的表中
+        /// </summary>
         public virtual DbSet<Email> Email { get; set; }
         public virtual DbSet<PeAdvancedJudgeCriterion> PeAdvancedJudgeCriterion { get; set; }
         public virtual DbSet<PeBasicTopic> PeBasicTopic { get; set; }
