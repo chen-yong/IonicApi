@@ -338,6 +338,4 @@ namespace IonicApi.Controllers
         }
 
     }
-
-
 }

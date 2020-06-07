@@ -2149,5 +2149,243 @@ http://localhost:5000/api/Course/DeletePaperTask?authtoken=&id=1
 
 
 
+#### 7.手工组卷
 
+##### 1.手工组卷列表
+
+```http
+http://localhost:5000/api/DrawPlot/DrawPlotsList?authtoken=97F02636E249793A37CED81599713373CF32DF9495F10BDD397063C90385D876&createdUserId=31308
+```
+
+参数：
+
+| 参数名        | 类型   | 是否可空 | 说明                       |
+| ------------- | ------ | -------- | -------------------------- |
+| authtoken     | string | 否       | 领牌                       |
+| createdUserId | int    | 否       | 创建者id（当前登录用户id） |
+
+返回：
+
+| 字段    | 类型          | 说明   |
+| ------- | ------------- | ------ |
+| retcode | int           | 返回码 |
+| info    | array[object] |        |
+
+```
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 2400,
+            "labId": 282,
+            "dptype": "TestPaper",
+            "name": "计算机基础手工组卷",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-17T13:55:25.327",
+            "updateTime": "2019-04-17T13:55:25.327",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2409,
+            "labId": 158,
+            "dptype": "TestPaper",
+            "name": "C语言手工组卷2",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-18T09:45:14.737",
+            "updateTime": "2019-04-18T09:45:14.737",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2410,
+            "labId": 420,
+            "dptype": "TestPaper",
+            "name": "C语言测试策略",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-18T16:21:04.387",
+            "updateTime": "2019-04-18T16:21:04.387",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2427,
+            "labId": 306,
+            "dptype": "TestPaper",
+            "name": "test",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-24T14:14:08.317",
+            "updateTime": "2019-04-24T14:14:08.317",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2458,
+            "labId": 158,
+            "dptype": "TestPaper",
+            "name": "策略A",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-29T16:07:39.827",
+            "updateTime": "2019-04-29T16:07:39.827",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2459,
+            "labId": 158,
+            "dptype": "TestPaper",
+            "name": "new",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-04-29T16:12:52.637",
+            "updateTime": "2019-04-29T16:12:52.637",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2467,
+            "labId": 420,
+            "dptype": "TestPaper",
+            "name": "1",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-05-06T12:24:57.143",
+            "updateTime": "2019-05-06T12:24:57.143",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        },
+        {
+            "id": 2570,
+            "labId": 158,
+            "dptype": "TestPaper",
+            "name": "测试0729",
+            "memo": "",
+            "createUserId": 31308,
+            "createTime": "2019-07-29T13:23:52.92",
+            "updateTime": "2019-07-29T13:23:52.92",
+            "shared": 0,
+            "isDel": false,
+            "questionRandom": false,
+            "settingObject": null,
+            "cataId": 1,
+            "ord": null,
+            "diffPaperCount": null,
+            "cata": null,
+            "lab": null,
+            "peDrawPlotOfBundle": null,
+            "peDrawPlotOfKnowledge": null,
+            "peDrawPlotOfTestPaper": null,
+            "peDrawPlotShared": [],
+            "peTest": [],
+            "peUserTestPaper": []
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
 
