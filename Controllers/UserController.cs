@@ -13,6 +13,7 @@ using IonicApi.Dtos;
 using IonicApi.Common;
 using Microsoft.AspNetCore.JsonPatch;
 using PagedList;
+using Microsoft.AspNetCore.Cors;
 
 namespace IonicApi.Controllers
 {
@@ -98,6 +99,28 @@ namespace IonicApi.Controllers
                     ret.retcode = 11;
                     ret.message = "参数错误";
                 }
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
+        /// <summary>
+        /// 根据authtoken令牌获取个人信息
+        /// </summary>
+        /// <param name="authtoken">authtoken</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> GetUserByAuthtoken(string authtoken)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken)) //用户登录的时候会生成authtoken令牌
+            {
+                ret.retcode = 0;
+                var user = await _userRepository.GetUserAsync(authtoken);
+                ret.info = _mapper.Map<UserDto>(user);
             }
             else
             {
@@ -290,8 +313,18 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
-        [HttpPatch]
-        public async Task<ActionResult> EditAdmin(string authtoken, int id, [FromBody] JsonPatchDocument<AdminEditDto> patchDocument)
+        /// <summary>
+        /// 个人信息跟新
+        /// </summary>
+        /// <param name="authtoken">authtoken</param>
+        /// <param name="id">用户id</param>
+        /// <param name="editUser">更新操作</param>
+        /// 
+        /// patchDocument中UserEditDto用户名UserName必须要写（postman中首字母小写）
+        /// <returns></returns>
+        /// 
+        [HttpPost]
+        public async Task<ActionResult> EditAdmin(string authtoken, int id, [FromBody] AdminEditDto editUser)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -301,17 +334,24 @@ namespace IonicApi.Controllers
                 {
                     try
                     {
-                        var dtoToPatch = _mapper.Map<AdminEditDto>(entity);
-                        // 需要处理验证错误
-                        patchDocument.ApplyTo(dtoToPatch, ModelState);
-
-                        if (!TryValidateModel(dtoToPatch))
-                        {
-                            return ValidationProblem(ModelState);
+                        if ( editUser.UserName != null ){
+                            entity.UserName = editUser.UserName;
                         }
-
-                        _mapper.Map(dtoToPatch, entity);
-                        _userRepository.UpdateUser(entity);
+                        if (editUser.Sex != null) {
+                            entity.Sex = editUser.Sex;
+                        }
+                        if (editUser.Mobile != null){
+                            entity.Mobile = editUser.Mobile;
+                        }
+                        if (editUser.Email != null){
+                            entity.Email = editUser.Email;
+                        } 
+                        if (editUser.Address != null){
+                            entity.Address = editUser.Address;
+                        }
+                        if (editUser.Property05 != null){
+                            entity.Property05 = editUser.Property05;
+                        }
                         ret.retcode = 0;
                         ret.message = "用户修改成功";
                         await _userRepository.SaveAsync();
@@ -337,7 +377,44 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        /// <summary>
+        /// 修改个人密码
+        /// </summary>
+        /// <param name="authtoken">authtoken</param>
+        /// <param name="id">用户id</param>
+        /// <param name="editPwd">更新操作</param>
+        /// 
+        /// editPwd中UPwdEditDto的新密码Password必填（postman中首字母小写）
+        /// <returns></returns>
+        /// http://localhost:5000/api/Users/EditPwd?authtoken=&id=
+        [HttpPost] 
+        public async Task<ActionResult> EditPwd(string authtoken, int id, PwdEditDto editPwd)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                PeUser entity = await _userRepository.GetUserAsync(id);
+                if (entity  != null)
+                {
+                    entity.Password = StringUtils.md5HashString(editPwd.Password).ToUpper();
+                    ret.retcode = 0;
+                    ret.message = "密码修改成功";
+                    await _userRepository.SaveAsync();
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "参数错误";
+                }
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
+
+
     }
-
-
 }

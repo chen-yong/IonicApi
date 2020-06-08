@@ -12,6 +12,7 @@ namespace IonicApi.Repositories
         Task<IEnumerable<PeUser>> GetUsersAsync(int courseId,string keyword);
         Task<PeUser> GetUserAsync(string account, string pwd);
         Task<PeUser> GetUserAsync(int Id);
+        Task<PeUser> GetUserAsync(string authtoken);
         PeUser GetUser(int Id);
         string GetUserName(int Id);
         string GetRealName(int Id);

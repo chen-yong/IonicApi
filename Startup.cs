@@ -38,6 +38,13 @@ namespace IonicApi
                 setup.SerializerSettings.ContractResolver =
                     new CamelCasePropertyNamesContractResolver();
             }).AddXmlDataContractSerializerFormatters();
+
+            //配置跨域处理，允许所有来源：
+            services.AddCors(options =>
+            options.AddPolicy("cors",
+            p => p.AllowAnyOrigin())
+            );
+
             //添加AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IBaseRepository, BaseRepository>();
@@ -63,6 +70,7 @@ namespace IonicApi
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseCors("cors");//跨域
 
             app.UseEndpoints(endpoints =>
             {

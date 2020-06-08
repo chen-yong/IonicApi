@@ -15,12 +15,13 @@ namespace IonicApi.Profiles
             CreateMap<PeUser, UserDto>();
             CreateMap<UserAddDto, PeUser>();
             CreateMap<UserEditDto, PeUser>();
-
             CreateMap<AdminEditDto, PeUser>();
-            CreateMap<PeUser, AdminEditDto>();
+            CreateMap<PwdEditDto, PeUser>();
 
+            CreateMap<PeUser, AdminEditDto>();
             CreateMap<PeUser, UserEditDto>();
             CreateMap<PeUser, StudentDto>();
+            CreateMap<PeUser, PwdEditDto>();
         }
     }
 

@@ -31,7 +31,6 @@ namespace IonicApi.Repositories
             usersList = usersList.Where(e => e.UserIdentity01 != AppConstants.UserStatus.Deleted).OrderBy(e => e.Id);
             return await usersList.ToListAsync();
         }
-
         /// <summary>
         /// 根据用户名或者真实姓名查询
         /// </summary>
@@ -73,6 +72,17 @@ namespace IonicApi.Repositories
         {
             return await _context.PeUser.SingleOrDefaultAsync(e => e.Id == Id);
         }
+        /// <summary>
+        /// 获取登录令牌获取用户信息
+        /// </summary>
+        /// <param name="authtoken">登录令牌</param>
+        /// <returns></returns>
+        public async Task<PeUser> GetUserAsync(string authtoken)
+        {
+            int userId = AuthtokenUtility.GetId(authtoken);
+            return await _context.PeUser.SingleOrDefaultAsync(e => e.Id == userId);
+        }
+
         public PeUser GetUser(int Id)
         {
             return  _context.PeUser.SingleOrDefault(e => e.Id == Id);
