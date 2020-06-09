@@ -52,6 +52,7 @@ namespace IonicApi
             services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<IPaperOutputTaskRepository, PaperOutputTaskRepository>();
             services.AddScoped<IPeDrawPlotRepository, PeDrawPlotRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             //连接数据库
             var sqlConnection = Configuration.GetConnectionString("SqlServerConnection");

@@ -63,26 +63,26 @@ http://localhost:5000/api/Launch/Login?username=&password=
 
 参数：
 
-| 参数名   | 类型   | 是否可空 | 备注 |
-| -------- | ------ | -------- | ---- |
-| username | string | 否       | 账号 |
-| password | string | 否       | 密码 |
+| 参数名   | 类型   | 是否可空 | 备注 | PE-User表                         |
+| -------- | ------ | -------- | ---- | --------------------------------- |
+| username | string | 否       | 账号 | UserName或Email（其实一个就够了） |
+| password | string | 否       | 密码 | Password                          |
 
 返回：
 
-| 字段      | 类型          | 说明     |
-| --------- | ------------- | -------- |
-| retcode   | int           | 返回码   |
-| authtoken | string        | 登录证书 |
-| info      | array[object] |          |
-| id        | int           | 用户id   |
-| name      | string        | 姓名     |
-| gender    | int           | 性别     |
-| phone     | string        | 手机号   |
-| qq        | string        | qq       |
-| addr      | string        | 地址     |
-| schoolId  | int           | 学校Id   |
-| school    | string        | 学校     |
+| 字段      | 类型          | 说明     |            |
+| --------- | ------------- | -------- | ---------- |
+| retcode   | int           | 返回码   |            |
+| authtoken | string        | 登录证书 |            |
+| info      | array[object] |          | PE-User表  |
+| id        | int           | 用户id   | Id         |
+| name      | string        | 姓名     | RealName   |
+| gender    | int           | 性别     | Sex        |
+| phone     | string        | 手机号   | Mobile     |
+| qq        | string        | qq       | Property05 |
+| addr      | string        | 地址     | Address    |
+| schoolId  | int           | 学校Id   | SchoolId   |
+| school    | string        | 学校     | School     |
 
 ```json
 {
@@ -133,13 +133,13 @@ http://localhost:5000/api/Course/GetCoursesList?authtoken=
 
 返回：
 
-| 字段    | 类型          | 说明     |
-| ------- | ------------- | -------- |
-| retcode | int           | 返回码   |
-| info    | array[object] |          |
-| id      | int           | 课程id   |
-| name    | string        | 课程名称 |
-| intro   | string        | 课程简介 |
+| 字段    | 类型          | 说明                          |
+| ------- | ------------- | ----------------------------- |
+| retcode | int           | 返回码                        |
+| info    | array[object] | （对应PE-Course表，字段同名） |
+| id      | int           | 课程id                        |
+| name    | string        | 课程名称                      |
+| intro   | string        | 课程简介                      |
 
 ```json
 {
@@ -244,13 +244,13 @@ http://localhost:5000/api/Course/GetCourse?authtoken=&id=422
 
 返回：
 
-| 字段    | 类型          | 说明     |
-| ------- | ------------- | -------- |
-| retcode | int           | 返回码   |
-| info    | array[object] |          |
-| id      | int           | 课程id   |
-| name    | string        | 课程名称 |
-| intro   | string        | 课程简介 |
+| 字段    | 类型          | 说明                          |
+| ------- | ------------- | ----------------------------- |
+| retcode | int           | 返回码                        |
+| info    | array[object] | （对应PE-Course表，字段同名） |
+| id      | int           | 课程id                        |
+| name    | string        | 课程名称                      |
+| intro   | string        | 课程简介                      |
 
 ```json
 {
@@ -317,26 +317,26 @@ http://localhost:5000/api/Users/StudentList?authtoken=&courseId=422&keyword&page
 
 参数：
 
-| 参数名    | 类型   | 是否可空 | 说明     |
-| --------- | ------ | -------- | -------- |
-| authtoken | string | 否       | 令牌     |
-| courseId  | int    | 否       | 课程Id   |
-| keyword   | string | 是       | 关键字   |
-| page      | int    | 否       | 页码     |
-| count     | int    | 否       | 每页数量 |
+| 参数名    | 类型   | 是否可空 | 说明                                   |
+| --------- | ------ | -------- | -------------------------------------- |
+| authtoken | string | 否       | 令牌                                   |
+| courseId  | int    | 否       | 课程Id（PE_CourseStudent中的CourseId） |
+| keyword   | string | 是       | 关键字                                 |
+| page      | int    | 否       | 页码                                   |
+| count     | int    | 否       | 每页数量                               |
 
 返回：
 
-| 字段     | 类型          | 说明   |
-| -------- | ------------- | ------ |
-| retcode  | int           | 返回码 |
-| info     | array[object] |        |
-| id       | int           | 学生id |
-| userName | string        | 姓名   |
-| userNO   | string        | 学号   |
-| realName | string        | 姓名   |
-| sex      | string        | 性别   |
-| mobile   | string        | 手机号 |
+| 字段     | 类型          | 说明                          |
+| -------- | ------------- | ----------------------------- |
+| retcode  | int           | 返回码                        |
+| info     | array[object] | PE_User数据表中对应的同名字段 |
+| id       | int           | 学生id                        |
+| userName | string        | 姓名                          |
+| userNO   | string        | 学号                          |
+| realName | string        | 姓名                          |
+| sex      | string        | 性别                          |
+| mobile   | string        | 手机号                        |
 
 ```json
 {
@@ -418,10 +418,10 @@ http://localhost:5000/api/Users/GetStudent?authtoken=&id=29687
 
 参数：
 
-| 参数名    | 类型   | 是否可空 | 说明   |
-| --------- | ------ | -------- | ------ |
-| authtoken | string | 否       | 令牌   |
-| id        | int    | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明                        |
+| --------- | ------ | -------- | --------------------------- |
+| authtoken | string | 否       | 令牌                        |
+| id        | int    | 否       | 学生id（PE_User数据表中Id） |
 
 返回:
 
@@ -464,6 +464,85 @@ http://localhost:5000/api/Users/GetStudent?authtoken=&id=29687
 }
 ```
 
+##### 2用户详情
+
+[get]
+
+```http 
+http://localhost:5000/api/Users/GetUserByAuthtoken?authtoken=
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明 |      |
+| --------- | ------ | -------- | ---- | ---- |
+| authtoken | string | 否       | 令牌 |      |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注                                    |
+| ----------- | ------ | -------- | --------------------------------------- |
+| retcode     | 返回码 | 否       | 说明见上                                |
+| authtoken   | string | 是       | 用户登录标识（记录id）                  |
+| info        | object | 是       | 返回数据(PE_User数据表中对应的同名字段) |
+| pagecount   | int    | 是       | 总页码数                                |
+| recordcount | int    | 是       | 数据总条数                              |
+| isfirst     | bool   | 是       | 是否是第一页                            |
+| hasnext     | bool   | 是       | 是否有下一页                            |
+| items       | object | 是       |                                         |
+| debug       | string | 是       | 调试信息                                |
+| id          | int    | 是       | id                                      |
+| message     | string | 是       | 返回信息                                |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 31308,
+        "userName": "chenyong",
+        "userNO": "2018112011006",
+        "password": "E10ADC3949BA59ABBE56E057F20F883E",
+        "realName": "陈勇",
+        "sex": "男",
+        "brithday": "0001-01-01T00:00:00",
+        "email": "10086@gmail",
+        "mobile": "0571-28865731",
+        "userIdentity00": null,
+        "userIdentity01": "1",
+        "userIdentity02": null,
+        "userIdentity03": "2",
+        "zip": null,
+        "address": "杭州师范大学仓前校区",
+        "avatar": null,
+        "introduction": null,
+        "property00": null,
+        "property01": null,
+        "property02": null,
+        "property03": null,
+        "property04": null,
+        "property05": "10086",
+        "property06": "641AA374F3CFB9FB28A9A2CBFFB9CA3F",
+        "property07": null,
+        "property08": null,
+        "property09": null,
+        "schoolId": "5453742274816630924",
+        "school": null
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
+
 ##### 2.添加学生
 
 [post]
@@ -474,17 +553,17 @@ http://api/Users/AddCourseStudent?authtoken=&courseId=422
 
 参数：
 
-| 参数名         | 类型          | 是否可空 | 说明                   |
-| -------------- | ------------- | -------- | ---------------------- |
-| authtoken      | string        | 否       | 令牌                   |
-| courseId       | int           | 否       | 课程id                 |
-| addUser        | array[object] |          |                        |
-| userName       | string        | 否       | 账号                   |
-| realName       | string        | 否       | 真实姓名               |
-| userIdentity00 | string        | 是       | 学院、系               |
-| property02     | string        | 是       | 班级                   |
-| sex            | string        | 是       | 性别（男，女，默认男） |
-| mobile         | string        | 是       | 电话                   |
+| 参数名         | 类型          | 是否可空 | 说明                                                        |
+| -------------- | ------------- | -------- | ----------------------------------------------------------- |
+| authtoken      | string        | 否       | 令牌                                                        |
+| courseId       | int           | 否       | 课程id                                                      |
+| addUser        | array[object] |          | 用username在PE_User中先判断用户是否存在，不存在则先添加用户 |
+| userName       | string        | 否       | 账号                                                        |
+| realName       | string        | 否       | 真实姓名                                                    |
+| userIdentity00 | string        | 是       | 学院、系                                                    |
+| property02     | string        | 是       | 班级                                                        |
+| sex            | string        | 是       | 性别（男，女，默认男）                                      |
+| mobile         | string        | 是       | 电话                                                        |
 
 发送格式：Body+raw+Json
 
@@ -612,6 +691,64 @@ Body:
 }
 ```
 
+##### 3.2编辑用户个人信息（参数userName必须要有）
+
+```http
+http://localhost:5000/api/Users/EditAdmin?authtoken=&id=1
+```
+
+   [HttpPost]（以后更新全部用post）
+
+参数 params：
+
+| 参数名    | 类型   | 是否可空 | 说明                     |
+| --------- | ------ | -------- | ------------------------ |
+| authtoken | string | 否       | 令牌                     |
+| id        | int    | 否       | 学生id （PE_User中的id） |
+
+Headers ：
+
+| key          | value                     |
+| ------------ | ------------------------- |
+| Content-Type | application/Body+raw+Json |
+
+Body: 
+
+```json
+{
+    "userName": "yhj",
+    "sex": "男",
+    "mobile": "28865371",
+    "email": "1033552@gmail",
+    "address": "杭师大",
+    "property05": "1033558982"
+}
+
+```
+
+返回:
+
+| 字段    | 类型 | 说明   |
+| ------- | ---- | ------ |
+| retcode | int  | 返回码 |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "用户修改成功"
+}
+```
+
 
 
 ##### 4.删除学生
@@ -622,10 +759,10 @@ http://api/Users/DeleteUser?authtoken=&id=
 
 参数：
 
-| 参数名    | 类型   | 是否可空 | 说明   |
-| --------- | ------ | -------- | ------ |
-| authtoken | string | 否       | 令牌   |
-| id        | int    | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明【软删除，将PE_User中对应用户的UserIdentity01设为0】 |
+| --------- | ------ | -------- | -------------------------------------------------------- |
+| authtoken | string | 否       | 令牌                                                     |
+| id        | int    | 否       | 学生id（PE_User中的id）                                  |
 
 返回:
 
@@ -643,16 +780,18 @@ http://api/Users/DeleteUser?authtoken=&id=
 
 ##### 5.重置密码
 
+[get]
+
 ```http
 http://api/Users/RetsetPwd?authtoken=&id
 ```
 
 参数：
 
-| 参数名    | 类型   | 是否可空 | 说明   |
-| --------- | ------ | -------- | ------ |
-| authtoken | string | 否       | 令牌   |
-| id        | int    | 否       | 学生id |
+| 参数名    | 类型   | 是否可空 | 说明                    |
+| --------- | ------ | -------- | ----------------------- |
+| authtoken | string | 否       | 令牌                    |
+| id        | int    | 否       | 学生id（PE_User中的id） |
 
 返回：
 
@@ -662,7 +801,54 @@ http://api/Users/RetsetPwd?authtoken=&id
 }
 ```
 
+##### 5.2 修改个人密码
 
+[post]
+
+```http
+http://localhost:5000/api/Users/EditPwd?authtoken=&id=31308
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明                    |
+| --------- | ------ | -------- | ----------------------- |
+| authtoken | string | 否       | 令牌                    |
+| id        | int    | 否       | 学生id（PE_User中的id） |
+
+Headers ：
+
+| key          | value                     |
+| ------------ | ------------------------- |
+| Content-Type | application/Body+raw+Json |
+
+Body: 
+
+```json
+{
+    "password": "123456"
+}
+
+```
+
+返回:
+
+```
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "密码修改成功"
+}
+```
 
 
 
@@ -2388,4 +2574,385 @@ http://localhost:5000/api/DrawPlot/DrawPlotsList?authtoken=97F02636E249793A37CED
     "message": null
 }
 ```
+
+
+
+
+
+##### 
+
+##### 8 邮箱页面
+
+1.获取用户收到的信件
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/GetReceiveMessage?authtoken=&userId=31308
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |      |
+| --------- | ------ | -------- | ------ | ---- |
+| authtoken | string | 否       | 令牌   |      |
+| userId    | int    | 否       | 用户id |      |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       | 收到的信件   |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 1342,
+            "code": "1342",
+            "sender": 29991,
+            "subject": "测试2",
+            "body": "123",
+            "isImportant": false,
+            "sendTime": "2020-06-09T10:02:19.25",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 1110,
+            "code": "1110",
+            "sender": 29992,
+            "subject": "辅导费",
+            "body": "地方",
+            "isImportant": false,
+            "sendTime": "2019-12-19T14:29:17.693",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 978,
+            "code": "978",
+            "sender": 20543,
+            "subject": "附件测试",
+            "body": "详情见附件",
+            "isImportant": true,
+            "sendTime": "2019-09-24T10:23:56.147",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 966,
+            "code": "966",
+            "sender": 20543,
+            "subject": "2",
+            "body": "2",
+            "isImportant": false,
+            "sendTime": "2019-09-23T14:04:42.203",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 965,
+            "code": "965",
+            "sender": 20543,
+            "subject": "1",
+            "body": "1",
+            "isImportant": false,
+            "sendTime": "2019-09-23T14:04:30.977",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 962,
+            "code": "962",
+            "sender": 20543,
+            "subject": "主题的字数长度显示问题测试1234567890",
+            "body": "测试：主题的字数长度显示问题测试1234567890",
+            "isImportant": true,
+            "sendTime": "2019-09-20T15:12:27.367",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 960,
+            "code": "960",
+            "sender": 20543,
+            "subject": "测试",
+            "body": "哈哈哈哈哈哈哈哈哈哈或哈哈哈哈哈哈哈哈哈哈或哈哈哈哈哈哈哈哈哈哈或哈哈哈哈哈哈哈哈哈哈或哈哈哈哈哈哈哈哈哈哈或吼吼吼吼吼吼吼吼吼&nbsp;&nbsp;",
+            "isImportant": true,
+            "sendTime": "2019-09-20T10:56:18.293",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 881,
+            "code": "881",
+            "sender": 20543,
+            "subject": "测试",
+            "body": "test",
+            "isImportant": false,
+            "sendTime": "2019-05-09T16:06:19.59",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 872,
+            "code": "872",
+            "sender": 20543,
+            "subject": "测试",
+            "body": "new测试",
+            "isImportant": false,
+            "sendTime": "2019-04-29T15:53:45.817",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 870,
+            "code": "870",
+            "sender": 20543,
+            "subject": "222",
+            "body": "测试",
+            "isImportant": false,
+            "sendTime": "2019-04-29T09:34:32.56",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 869,
+            "code": "869",
+            "sender": 20543,
+            "subject": "1111",
+            "body": "test",
+            "isImportant": false,
+            "sendTime": "2019-04-28T16:45:45.34",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 867,
+            "code": "867",
+            "sender": 20543,
+            "subject": "测试",
+            "body": "邮件未读提醒",
+            "isImportant": false,
+            "sendTime": "2019-04-28T14:34:05.243",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 863,
+            "code": "863",
+            "sender": 20543,
+            "subject": "1",
+            "body": "1",
+            "isImportant": true,
+            "sendTime": "2019-04-25T09:11:00.997",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 861,
+            "code": "861",
+            "sender": 20543,
+            "subject": "测试",
+            "body": "测试",
+            "isImportant": true,
+            "sendTime": "2019-04-23T11:30:16.267",
+            "isDel": false,
+            "isRecycle": false
+        }
+    ],
+    "pagecount": 2,
+    "recordcount": 14,
+    "isfirst": true,
+    "hasnext": true,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
+
+2.获取用户发出的信件
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/GetSendMessage?authtoken=&userId=31308
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |      |
+| --------- | ------ | -------- | ------ | ---- |
+| authtoken | string | 否       | 令牌   |      |
+| userId    | int    | 否       | 用户id |      |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       | 发出的信件   |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 964,
+            "code": "964",
+            "sender": 31308,
+            "subject": "12111",
+            "body": "1111111111111111111111222222222",
+            "isImportant": true,
+            "sendTime": "2019-09-23T13:15:58.88",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 879,
+            "code": "879",
+            "sender": 31308,
+            "subject": "测试",
+            "body": "1",
+            "isImportant": false,
+            "sendTime": "2019-05-05T15:51:18.187",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 871,
+            "code": "871",
+            "sender": 31308,
+            "subject": "测试",
+            "body": "1111",
+            "isImportant": false,
+            "sendTime": "2019-04-29T15:50:37.007",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 865,
+            "code": "865",
+            "sender": 31308,
+            "subject": "test",
+            "body": "11111",
+            "isImportant": false,
+            "sendTime": "2019-04-26T09:44:40.14",
+            "isDel": false,
+            "isRecycle": false
+        },
+        {
+            "id": 862,
+            "code": "862",
+            "sender": 31308,
+            "subject": "test",
+            "body": "测试",
+            "isImportant": true,
+            "sendTime": "2019-04-24T13:50:07.937",
+            "isDel": false,
+            "isRecycle": false
+        }
+    ],
+    "pagecount": 1,
+    "recordcount": 5,
+    "isfirst": true,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
+
+3.获取用户放在回收站中的收到信件
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/GetRecycleMessage?authtoken=&userId=31308
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |      |
+| --------- | ------ | -------- | ------ | ---- |
+| authtoken | string | 否       | 令牌   |      |
+| userId    | int    | 否       | 用户id |      |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注           |
+| ----------- | ------ | -------- | -------------- |
+| retcode     | 返回码 | 否       | 说明见上       |
+| authtoken   | string | 是       | 用户登录标识   |
+| info        | object | 是       | 回收站中的信件 |
+| pagecount   | int    | 是       | 总页码数       |
+| recordcount | int    | 是       | 数据总条数     |
+| isfirst     | bool   | 是       | 是否是第一页   |
+| hasnext     | bool   | 是       | 是否有下一页   |
+| items       | object | 是       |                |
+| debug       | string | 是       | 调试信息       |
+| id          | int    | 是       | id             |
+| message     | string | 是       | 返回信息       |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 1341,
+            "code": "1341",
+            "sender": 29991,
+            "subject": "测试",
+            "body": "测试一下能否接收到",
+            "isImportant": true,
+            "sendTime": "2020-06-08T19:16:40.827",
+            "isDel": false,
+            "isRecycle": false
+        }
+    ],
+    "pagecount": 1,
+    "recordcount": 1,
+    "isfirst": true,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
 
