@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace IonicApi.Dtos
 {
     /// 获取用户的对外展示的信息model
-    public class MessageDto
+    public class MessageAddDto
     {
         /// <summary>
         /// ID

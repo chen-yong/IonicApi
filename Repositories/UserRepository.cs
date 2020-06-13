@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace IonicApi.Repositories
@@ -81,6 +82,38 @@ namespace IonicApi.Repositories
         {
             int userId = AuthtokenUtility.GetId(authtoken);
             return await _context.PeUser.SingleOrDefaultAsync(e => e.Id == userId);
+        }
+
+        /// <summary>
+        /// 根据关键字和班级获取通讯录名单（用户名或真实名包含关键字的 【有效账户中老师和同班的人】）
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="property00">班级名</param>
+        /// <param name="keyword">关键字</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeUser>> GetUsersTongxunAsync (string authtoken ,string property00,string keyword)
+        {
+            // linq 子查询
+            //筛选可用用户
+            var usersList = from a in _context.PeUser
+                            where (a.UserIdentity01 == AppConstants.UserStatus.Normal)
+                            select a;
+            if (!string.IsNullOrEmpty(property00))
+            {
+                property00 = property00.Trim(); //如果班级不为空则找到身份是老师或者是同班的
+                usersList = usersList.Where(e => e.UserIdentity03 == AppConstants.UserType.Teacher || e.Property00.Contains(property00));
+            }else
+            {    //如果班级为空则只找老师
+                usersList = usersList.Where(e => e.UserIdentity03 == AppConstants.UserType.Teacher);
+            }
+            if (!string.IsNullOrEmpty(keyword))    
+            {
+                keyword = keyword.Trim();
+                usersList = usersList.Where(e => e.UserName.Contains(keyword) || e.RealName.Contains(keyword) 
+                      || e.UserIdentity00.Contains(keyword) || e.UserIdentity02.Contains(keyword));
+            }
+            usersList = usersList.OrderBy(e => e.Id);
+            return await usersList.ToListAsync();
         }
 
         public PeUser GetUser(int Id)

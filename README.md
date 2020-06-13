@@ -2956,3 +2956,498 @@ http://localhost:5000/api/Message/GetRecycleMessage?authtoken=&userId=31308
 
 ##### 
 
+4.获取邮件id获取Message的信息
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/GetMessageById?authtoken=&id=1343
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 邮件id |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注           |
+| ----------- | ------ | -------- | -------------- |
+| retcode     | 返回码 | 否       | 说明见上       |
+| authtoken   | string | 是       | 用户登录标识   |
+| info        | object | 是       | 信件的具体信息 |
+| pagecount   | int    | 是       | 总页码数       |
+| recordcount | int    | 是       | 数据总条数     |
+| isfirst     | bool   | 是       | 是否是第一页   |
+| hasnext     | bool   | 是       | 是否有下一页   |
+| items       | object | 是       |                |
+| debug       | string | 是       | 调试信息       |
+| id          | int    | 是       | id             |
+| message     | string | 是       | 返回信息       |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 1343,
+        "code": "1343",
+        "sender": 25262,
+        "subject": "搜索",
+        "body": "阿萨啊",
+        "isImportant": false,
+        "sendTime": "2020-06-09T16:30:50.24",
+        "isDel": false,
+        "isRecycle": false,
+        "senderNavigation": null,
+        "peMessageAttach": [],
+        "peMessageReceive": []
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
+
+5.获取邮件id获取MessageReceive的信息
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/GetMessageReceiveById?authtoken=&Id=1343
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 邮件id |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注              |
+| ----------- | ------ | -------- | ----------------- |
+| retcode     | 返回码 | 否       | 说明见上          |
+| authtoken   | string | 是       | 用户登录标识      |
+| info        | object | 是       | Receive的具体信息 |
+| pagecount   | int    | 是       | 总页码数          |
+| recordcount | int    | 是       | 数据总条数        |
+| isfirst     | bool   | 是       | 是否是第一页      |
+| hasnext     | bool   | 是       | 是否有下一页      |
+| items       | object | 是       |                   |
+| debug       | string | 是       | 调试信息          |
+| id          | int    | 是       | id                |
+| message     | string | 是       | 返回信息          |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "messageId": 1343,
+        "receiver": 25263,
+        "isReaded": true,
+        "isDel": false,
+        "isRecycle": false,
+        "message": null,
+        "receiverNavigation": null
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
+
+6.根据邮件id将MessageReceive放入回收站
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/DeleteMessagetoRecycle?authtoken=&id=1342
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 邮件id |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       |              |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "邮件成功放入回收站"
+}
+```
+
+##### 
+
+7.根据邮件id将MessageReceive彻底软删除
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/DeleteMessagetoEnd?authtoken=&id=1342
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| id        | int    | 否       | 邮件id |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       |              |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "邮件成功彻底删除"
+}
+```
+
+##### 
+
+8.根据邮件id将MessageReceive从回收站中移回到收件箱中       [get]请求
+
+```http 
+http://localhost:5000/api/Message/MessageBackReceive?authtoken=&id=1342
+```
+
+##### 
+
+9.根据邮件id将Message标为重要文件       [get]请求
+
+```http 
+http://localhost:5000/api/Message/MessageImportant?authtoken=&id=1342
+```
+
+##### 
+
+10.根据邮件id将Message标为不重要文件       [get]请求
+
+```http 
+http://localhost:5000/api/Message/MessageNoImportant?authtoken=&id=1342
+```
+
+##### 11.添加PeMessage邮件(添加的同时修改code和添加对应的receive，也就是说与get方法NewCodeAndAddPeMessageReceive联用)     【并返回新建的这个PeMessage数据】
+
+##### [post]
+
+```http 
+http://localhost:5000/api/Message/AddMessage?authtoken=
+```
+
+参数：   发送格式：Body+raw+Json
+
+```json
+{
+    "sender":31308, //发件人id
+    "subject":"测试是否数据库存储",
+    "body":"postman测试",
+    "isImportant":false
+}
+```
+
+返回:
+
+| 字段    | 类型 | 说明   |
+| ------- | ---- | ------ |
+| retcode | int  | 返回码 |
+
+```json 
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 1355,
+        "code": "1",
+        "sender": 31308,
+        "subject": "测试是否数据库存储3",
+        "body": "postman测试3",
+        "isImportant": false,
+        "sendTime": "2020-06-12T20:27:03.9564602+08:00",
+        "isDel": false,
+        "isRecycle": false
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "新增PeMessage邮件成功"
+}
+```
+
+##### 
+
+12.添加PeMessage邮件后将code改为与id一致 并且 创建相对应的PeMessageReceive表数据
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/NewCodeAndAddPeMessageReceive?authtoken=&id=1351&userid=29991
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明                 |
+| --------- | ------ | -------- | -------------------- |
+| authtoken | string | 否       | 令牌                 |
+| id        | int    | 否       | 邮件id（MessageId）  |
+| userid    | int    | 否       | 收件人id（Receiver） |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       | 空           |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": null,
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "该邮件的code已经与邮件id一致,并且相对应的PeMessageReceive表数据建立"
+}
+```
+
+##### 
+
+13.根据邮件id将邮件设为已读       [get]请求
+
+```http 
+http://localhost:5000/api/Message/MessageHasReaded?authtoken=&id=1351
+```
+
+##### 
+
+14.根据邮件id将发送的邮件软删除，PeMessage中的isDel=1       [get]请求
+
+```http 
+http://localhost:5000/api/Message/DeleteMessageHasSend?authtoken=&id=1351
+```
+
+##### 
+
+15.根据关键字和班级获取通讯录名单（用户名或真实名包含关键字的 【有效账户中老师和同班的人】）
+
+?     如果关键字和班级都是空的话就只有所有现有老师               
+
+ [get]请求 
+
+```http 
+http://localhost:5000/api/Message/GetTongxunlu?authtoken=&keyword=黄&property00=软工16
+```
+
+参数：
+
+| 参数名     | 类型   | 是否可空 | 说明         |
+| ---------- | ------ | -------- | ------------ |
+| authtoken  | string | 否       | 令牌         |
+| keyword    | string | 是       | 搜索的关键字 |
+| property00 | string | 是       | 所在的班级   |
+
+返回:
+
+| 参数名      | 类型   | 是否可空 | 备注         |
+| ----------- | ------ | -------- | ------------ |
+| retcode     | 返回码 | 否       | 说明见上     |
+| authtoken   | string | 是       | 用户登录标识 |
+| info        | object | 是       | 搜索到的人   |
+| pagecount   | int    | 是       | 总页码数     |
+| recordcount | int    | 是       | 数据总条数   |
+| isfirst     | bool   | 是       | 是否是第一页 |
+| hasnext     | bool   | 是       | 是否有下一页 |
+| items       | object | 是       |              |
+| debug       | string | 是       | 调试信息     |
+| id          | int    | 是       | id           |
+| message     | string | 是       | 返回信息     |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 23201,
+            "userName": "hyf123",
+            "userNO": null,
+            "password": "E10ADC3949BA59ABBE56E057F20F883E",
+            "realName": "黄玉峰",
+            "sex": null,
+            "brithday": "0001-01-01T00:00:00",
+            "email": null,
+            "mobile": null,
+            "userIdentity00": null,
+            "userIdentity01": "1",
+            "userIdentity02": null,
+            "userIdentity03": "2",
+            "zip": null,
+            "address": null,
+            "avatar": null,
+            "introduction": null,
+            "property00": null,
+            "property01": null,
+            "property02": null,
+            "property03": null,
+            "property04": null,
+            "property05": null,
+            "property06": null,
+            "property07": null,
+            "property08": null,
+            "property09": null,
+            "schoolId": null,
+            "school": null
+        },
+        {
+            "id": 24783,
+            "userName": "hangrui",
+            "userNO": null,
+            "password": "E10ADC3949BA59ABBE56E057F20F883E",
+            "realName": "黄锐",
+            "sex": null,
+            "brithday": "0001-01-01T00:00:00",
+            "email": null,
+            "mobile": null,
+            "userIdentity00": null,
+            "userIdentity01": "1",
+            "userIdentity02": null,
+            "userIdentity03": "2",
+            "zip": null,
+            "address": null,
+            "avatar": null,
+            "introduction": null,
+            "property00": null,
+            "property01": null,
+            "property02": null,
+            "property03": null,
+            "property04": null,
+            "property05": null,
+            "property06": "CC6EA763B557E16CD7AFAC3DE40C560C2F524AF1A838C517",
+            "property07": null,
+            "property08": null,
+            "property09": null,
+            "schoolId": null,
+            "school": null
+        }
+    ],
+    "pagecount": 1,
+    "recordcount": 2,
+    "isfirst": true,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "获得了所有可用老师的信息"
+}
+```
+
+##### 
+
+16.根据具体PeMessage的id和需要改变的code的值来将对应的PeMessage的code值改变
+
+[get]请求
+
+```http 
+http://localhost:5000/api/Message/ChangeCode?authtoken=&id=1363&code=1362/1363
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明                |
+| --------- | ------ | -------- | ------------------- |
+| authtoken | string | 否       | 令牌                |
+| id        | int    | 否       | 邮件id（MessageId） |
+| code      | int    | 否       | 改变后的code值      |

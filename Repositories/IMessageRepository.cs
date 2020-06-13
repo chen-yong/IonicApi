@@ -15,9 +15,16 @@ namespace IonicApi.Repositories
         Task<bool> MessageSendExistsAsync(int senderId);
         Task<bool> MessageReceiveExistsAsync(int receiverId);
         Task<bool> MessageRecycleExistsAsync(int receiverId);
-        
+
+
+        void AddPeMessage(PeMessage message);
+        void AddPeMessageReceive(PeMessageReceive messageReceive);
+
         Task<bool> SaveAsync();
 
-        PeMessage GetMessage(int Id);
+        Task<PeMessage> GetMessageAsync(int Id);
+        Task<PeMessageReceive> GetMessageReceiveAsync(int Id);
+
+
     }
 }

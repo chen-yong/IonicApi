@@ -34,6 +34,7 @@ namespace IonicApi.Repositories
             return await messageList.ToListAsync();
         }
 
+
         /// <summary>
         /// 查询某个用户收到的在回收站中的邮件
         /// </summary>
@@ -95,28 +96,62 @@ namespace IonicApi.Repositories
         }
 
         /// <summary>
-        /// 根据发收人ID判断是否存在发送的信件
+        /// 根据发收人ID判断是否存在发送的信件(未删除的信件)
         /// </summary>
         /// <param name="senderId"></param>
         /// <returns></returns>
         public async Task<bool> MessageSendExistsAsync(int senderId)
         {
-            return await _context.PeMessage.AnyAsync(e => (e.Sender == senderId));
+            return await _context.PeMessage.AnyAsync(e => (e.Sender == senderId && !e.IsDel));
         }
 
+        /// <summary>
+        /// 保存操作，进行数据库存储操作
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() >= 0;
         }
+
         /// <summary>
         /// 根据信件id获取信件信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public  PeMessage GetMessage(int id)
+        public async Task<PeMessage> GetMessageAsync(int id)
         {
-            return _context.PeMessage.SingleOrDefault(e => (e.Id == id));
+            return await _context.PeMessage.SingleOrDefaultAsync(e => (e.Id == id));
         }
+
+        /// <summary>
+        /// 根据邮件 id获取他的MessageReceive数据
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public async Task<PeMessageReceive> GetMessageReceiveAsync(int Id)
+        {
+            return await _context.PeMessageReceive.SingleOrDefaultAsync(e => (e.MessageId == Id));
+        }
+
+        /// <summary>
+        /// 新加一个PeMessage邮件
+        /// </summary>
+        /// <param name="message"></param>
+        public void AddPeMessage(PeMessage message)
+        {
+            _context.PeMessage.Add(message);
+        }
+
+        /// <summary>
+        /// 新加一个PeMessageReceive邮件
+        /// </summary>
+        /// <param name="messageReceive"></param>
+        public void AddPeMessageReceive(PeMessageReceive messageReceive)
+        {
+            _context.PeMessageReceive.Add(messageReceive);
+        }
+
 
     }
 }

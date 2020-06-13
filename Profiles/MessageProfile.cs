@@ -13,8 +13,12 @@ namespace IonicApi.Profiles
         public MessageProfile()
         {
             CreateMap<PeMessage, MessageDto>();
+            CreateMap<PeMessage, MessageAddDto>();
+            CreateMap<PeMessageReceive, MessageReceiveAddDto>();
 
             CreateMap<MessageDto, PeMessage>();
+            CreateMap<MessageAddDto, PeMessage>();
+            CreateMap<MessageReceiveAddDto,PeMessageReceive>();
         }
     }
 

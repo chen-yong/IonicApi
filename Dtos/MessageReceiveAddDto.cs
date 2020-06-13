@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 namespace IonicApi.Dtos
 {
     /// 获取用户的对外展示的信息model
-    public class MessageDto
+    public class MessageReceiveAddDto
     {
         /// <summary>
         /// ID
         /// </summary>
-        public int Id { get; set; }
-        public string Code { get; set; }
-        public int Sender { get; set; }
-        public string Subject { get; set; }
-        public string Body { get; set; }
-        public bool IsImportant { get; set; }
-        public DateTime SendTime { get; set; }
+        public int MessageId { get; set; }
+        public int Receiver { get; set; }
+        public bool IsReaded { get; set; }
         public bool IsDel { get; set; }
         public bool IsRecycle { get; set; }
 
