@@ -9,6 +9,9 @@ namespace IonicApi.Profiles
         public DrawPlotProfile()
         {
             CreateMap<PeDrawPlot, PeDrawPlotDto>();
+            CreateMap<PeQuestion, QuestionDto>();
+            CreateMap<PeUserTestPaperTopic, PaperTopicDto>();
+            
         }
     }
 }

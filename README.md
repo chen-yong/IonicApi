@@ -1,3 +1,5 @@
+
+
 ionic APP API
 
 ## 接口说明
@@ -2575,15 +2577,186 @@ http://localhost:5000/api/DrawPlot/DrawPlotsList?authtoken=97F02636E249793A37CED
 }
 ```
 
+##### 2.题型列表
+
+```http
+http://localhost:5000/api/DrawPlot/TestPaperTopic?authtoken=&drawplotId=2570
+```
+
+参数：
+
+| 参数名     | 类型   | 是否可空 | 说明       |
+| ---------- | ------ | -------- | ---------- |
+| authtoken  | string | 否       | 令牌       |
+| drawplotId | int    | 否       | 手工组卷id |
+
+返回：
+
+| 参数名    | 类型   | 说明   |
+| --------- | ------ | ------ |
+| retcode   | 返回码 |        |
+| authtoken | string |        |
+| info      | object |        |
+| name      | string | 题型   |
+| topicId   | int    | 题型Id |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "name": "判断题",
+            "topicId": 701
+        },
+        {
+            "name": "选择题",
+            "topicId": 702
+        },
+        {
+            "name": "概念填空题",
+            "topicId": 703
+        },
+        {
+            "name": "程序填空题",
+            "topicId": 704
+        },
+        {
+            "name": "程序改错题",
+            "topicId": 705
+        },
+        {
+            "name": "程序设计题",
+            "topicId": 706
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 3.题目
+
+```http
+http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=701&difficultyList=1&page=1&count=100
+```
+
+参数：
+
+| 参数名         | 类型   | 是否可空 | 说明                                          |
+| -------------- | ------ | -------- | --------------------------------------------- |
+| authtoken      | string | 否       | 令牌                                          |
+| labId          | int    | 否       | 策略Id                                        |
+| topicList      |        |          | 题型                                          |
+| difficultyList |        |          | 难度：1：简单 2：较简单 3：中等 4：较难 5：难 |
+| page           |        | 否       | 页码                                          |
+| count          |        | 否       | 数量                                          |
+
+返回：
+
+| 参数名            | 类型     | 说明               |
+| ----------------- | -------- | ------------------ |
+| retcode           | 返回码   |                    |
+| authtoken         | string   |                    |
+| info              | object   |                    |
+| id                | int      | 题目id             |
+| topicId           | int      | 策略id             |
+| bundleRank        | int      | 题号               |
+| questionFace      |          | 题目               |
+| score             | double   | 分数               |
+| optionA           | string   | 选项A              |
+| optionB           | string   | B                  |
+| optionC           | string   | C                  |
+| optionD           | string   | D                  |
+| answerKey         | string   | 答案               |
+| answerKeyExt      | string   | 解释               |
+| defaultAnswer     | string   | 默认答案           |
+| difficulty        | int      | 难度               |
+| knowledge         | string   | 全部知识点         |
+| ord               | int      | 题序               |
+| isDel             | bool     | 是否删除           |
+| maxTopKnowledgeId | int      | 顶级（子级）知识点 |
+| pagecount         | int      | 总页数             |
+| recordcount       | int      | 总数量             |
+| isfirst           | bool     | 是否是第一页       |
+| hasnext           | bool     | 是否有下一页       |
+| items             | object   | 是                 |
+| debug             | string   | 调试               |
+| id                | int      | id                 |
+| datetime          | datetime | 时间               |
+| message           | string   | 返回信息           |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+     "info": [
+        {
+            "id": 43738,
+            "labId": 158,
+            "topicId": 701,
+            "bundleRank": 1,
+            "questionFace": "C语言规定可以在程序中由用户指定任意一个函数作为主函数，程序将从此开始执行。",
+            "score": 1.0,
+            "optionA": "正确",
+            "optionB": "错误",
+            "optionC": "",
+            "optionD": "",
+            "answerKey": "B",
+            "answerKeyExt": null,
+            "defaultAnswer": null,
+            "difficulty": 2,
+            "knowledge": "6:",
+            "ord": 1,
+            "isDel": false,
+            "maxTopKnowledgeId": 826
+        },
+        {
+            "id": 43739,
+            "labId": 158,
+            "topicId": 701,
+            "bundleRank": 1,
+            "questionFace": "程序执行的效率与数据的存储结构相关。",
+            "score": 1.0,
+            "optionA": "正确",
+            "optionB": "错误",
+            "optionC": "",
+            "optionD": "",
+            "answerKey": "A",
+            "answerKeyExt": null,
+            "defaultAnswer": null,
+            "difficulty": 3,
+            "knowledge": "6:",
+            "ord": 2,
+            "isDel": false,
+            "maxTopKnowledgeId": 826
+        },……
+     ], 
+    "pagecount": 7,
+    "recordcount": 660,
+    "isfirst": true,
+    "hasnext": true,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+
+```
 
 
 
+ #### 8. 邮箱
 
-##### 
-
-##### 8 邮箱页面
-
-1.获取用户收到的信件
+##### 1.获取用户收到的信件
 
 [get]请求
 
@@ -2786,9 +2959,7 @@ http://localhost:5000/api/Message/GetReceiveMessage?authtoken=&userId=31308
 }
 ```
 
-##### 
-
-2.获取用户发出的信件
+##### 2.获取用户发出的信件
 
 [get]请求
 
@@ -2892,9 +3063,7 @@ http://localhost:5000/api/Message/GetSendMessage?authtoken=&userId=31308
 }
 ```
 
-##### 
-
-3.获取用户放在回收站中的收到信件
+#####  3.获取用户放在回收站中的收到信件 
 
 [get]请求
 
@@ -2954,9 +3123,7 @@ http://localhost:5000/api/Message/GetRecycleMessage?authtoken=&userId=31308
 }
 ```
 
-##### 
-
-4.获取邮件id获取Message的信息
+#####  4.获取邮件id获取Message的信息
 
 [get]请求
 
@@ -3017,9 +3184,7 @@ http://localhost:5000/api/Message/GetMessageById?authtoken=&id=1343
 }
 ```
 
-##### 
-
-5.获取邮件id获取MessageReceive的信息
+#####  5.获取邮件id获取MessageReceive的信息
 
 [get]请求
 
@@ -3075,9 +3240,7 @@ http://localhost:5000/api/Message/GetMessageReceiveById?authtoken=&Id=1343
 }
 ```
 
-##### 
-
-6.根据邮件id将MessageReceive放入回收站
+#####  6.根据邮件id将MessageReceive放入回收站
 
 [get]请求
 
@@ -3125,9 +3288,7 @@ http://localhost:5000/api/Message/DeleteMessagetoRecycle?authtoken=&id=1342
 }
 ```
 
-##### 
-
-7.根据邮件id将MessageReceive彻底软删除
+#####  7.根据邮件id将MessageReceive彻底软删除
 
 [get]请求
 
@@ -3175,25 +3336,19 @@ http://localhost:5000/api/Message/DeleteMessagetoEnd?authtoken=&id=1342
 }
 ```
 
-##### 
-
-8.根据邮件id将MessageReceive从回收站中移回到收件箱中       [get]请求
+#####  8.根据邮件id将MessageReceive从回收站中移回到收件箱中       [get]请求
 
 ```http 
 http://localhost:5000/api/Message/MessageBackReceive?authtoken=&id=1342
 ```
 
-##### 
-
-9.根据邮件id将Message标为重要文件       [get]请求
+#####  9.根据邮件id将Message标为重要文件       [get]请求
 
 ```http 
 http://localhost:5000/api/Message/MessageImportant?authtoken=&id=1342
 ```
 
-##### 
-
-10.根据邮件id将Message标为不重要文件       [get]请求
+#####  10.根据邮件id将Message标为不重要文件       [get]请求
 
 ```http 
 http://localhost:5000/api/Message/MessageNoImportant?authtoken=&id=1342
@@ -3251,9 +3406,7 @@ http://localhost:5000/api/Message/AddMessage?authtoken=
 }
 ```
 
-##### 
-
-12.添加PeMessage邮件后将code改为与id一致 并且 创建相对应的PeMessageReceive表数据
+#####  12.添加PeMessage邮件后将code改为与id一致 并且 创建相对应的PeMessageReceive表数据
 
 [get]请求
 
@@ -3302,25 +3455,19 @@ http://localhost:5000/api/Message/NewCodeAndAddPeMessageReceive?authtoken=&id=13
 }
 ```
 
-##### 
-
-13.根据邮件id将邮件设为已读       [get]请求
+#####  13.根据邮件id将邮件设为已读       [get]请求
 
 ```http 
 http://localhost:5000/api/Message/MessageHasReaded?authtoken=&id=1351
 ```
 
-##### 
-
-14.根据邮件id将发送的邮件软删除，PeMessage中的isDel=1       [get]请求
+#####  14.根据邮件id将发送的邮件软删除，PeMessage中的isDel=1       [get]请求
 
 ```http 
 http://localhost:5000/api/Message/DeleteMessageHasSend?authtoken=&id=1351
 ```
 
-##### 
-
-15.根据关键字和班级获取通讯录名单（用户名或真实名包含关键字的 【有效账户中老师和同班的人】）
+#####  15.根据关键字和班级获取通讯录名单（用户名或真实名包含关键字的 【有效账户中老师和同班的人】）
 
 ?     如果关键字和班级都是空的话就只有所有现有老师               
 
@@ -3434,9 +3581,7 @@ http://localhost:5000/api/Message/GetTongxunlu?authtoken=&keyword=黄&property00=
 }
 ```
 
-##### 
-
-16.根据具体PeMessage的id和需要改变的code的值来将对应的PeMessage的code值改变
+#####  16.根据具体PeMessage的id和需要改变的code的值来将对应的PeMessage的code值改变
 
 [get]请求
 
