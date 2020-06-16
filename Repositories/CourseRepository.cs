@@ -39,6 +39,23 @@ namespace IonicApi.Repositories
         {
             return await _context.PeCourse.SingleOrDefaultAsync(e => e.Id == courseId);
         }
+
+        /// <summary>
+        /// 【学生获取参与的课程】根据学生的id获取参与的所有课程
+        /// </summary>
+        /// <param name="userId">用户的id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeCourse>> GetCourseByStudentAsync(int userId)
+        {
+            // linq 子查询
+            var coursesList = from a in _context.PeCourse
+                            where (from b in _context.PeCourseStudent where b.UserId == userId select b.CourseId).Contains(a.Id)
+                            select a;
+
+            coursesList = coursesList.Where(e => e.Status == 0 && !e.IsDel).OrderByDescending(e => e.UpdateTime);
+            return await coursesList.ToListAsync();
+        }
+
         /// <summary>
         /// 课程是否存在
         /// </summary>

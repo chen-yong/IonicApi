@@ -10,6 +10,9 @@ namespace IonicApi.Repositories
     {
         Task<IEnumerable<PeCourse>> GetCoursesAsync(string authtoken);
         Task<IEnumerable<PeCourse>> GetCourseAsync(int courseId);
+
+        Task<IEnumerable<PeCourse>> GetCourseByStudentAsync(int userId);
+
         Task<PeCourse> GetCourse(int courseId);
         Task<bool> CourseExistAsync(int courseId);
         void AddCourse(int userId,PeCourse peCourse);

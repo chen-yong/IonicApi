@@ -117,7 +117,7 @@ http://localhost:5000/api/Launch/Login?username=&password=
 
 #### 1.课程
 
-##### 1.获取课程列表
+##### 1.获取教师课程列表
 
 
 
@@ -226,6 +226,119 @@ http://localhost:5000/api/Course/GetCoursesList?authtoken=
     "id": 0,
     "datetime": null,
     "message": null
+}
+```
+
+##### 1.2获取学生所参加的所有课程
+
+[get]请求
+
+```http
+http://localhost:5000/api/Course/GetCourseByStudent?authtoken=&userId=29991
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明         |
+| --------- | ------ | -------- | ------------ |
+| authtoken | string | 否       | 登录证书     |
+| userId    | int    | 否       | 学生的用户id |
+
+返回：
+
+| 字段    | 类型          | 说明                          |
+| ------- | ------------- | ----------------------------- |
+| retcode | int           | 返回码                        |
+| info    | array[object] | （对应PE-Course表，字段同名） |
+| id      | int           | 课程id                        |
+| name    | string        | 课程名称                      |
+| intro   | string        | 课程简介                      |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 562,
+            "name": "大学计算机基础-周三班2019-2020-2",
+            "teacher": 5906,
+            "teacher1": null,
+            "teacher2": null,
+            "teacher3": null,
+            "intro": "课程简介：“大学计算机基础”课程，32学时，2学分，通识课程（公选课），适合非计算机专业学生。主要内容：计算机基础与新一代信息技术简介；操作系统与因特网使用；办公自动化软件的高级运用。课程目标：掌握计算机科学与技术的基础知识、基本技能，提高学生应用计算机解决实际问题的能力。注重思维和素养培养，为学生的终生学习奠定基础，能够更好地使用计算机及相关技术来解决本专业领域问题。",
+            "createUserId": 5905,
+            "createTime": "2020-02-18T14:20:56.947",
+            "updateTime": "2020-02-18T14:21:55.57",
+            "moduleKownledge": false,
+            "moduleResource": false,
+            "moduleHomework": false,
+            "moduleMutualJudge": false,
+            "moduleExperiment": false,
+            "moduleSimulation": false,
+            "moduleDiscuss": false,
+            "logo1": "",
+            "logoText": "大学计算机基础-周三班2019-2020-2",
+            "logoBackgroundColor": "rgb(27, 161, 226)",
+            "isDel": false,
+            "isBan": null,
+            "status": 0,
+            "ord": null,
+            "pzycj": 0.0,
+            "psycj": 0.0,
+            "pkscj1": 0.0,
+            "pkscj2": 0.0,
+            "pkscj3": 0.0,
+            "pkscj4": 0.0,
+            "pkscj5": 0.0,
+            "isAuthor": true,
+            "copyTimes": 0
+        },
+        {
+            "id": 348,
+            "name": "广厦学院测试",
+            "teacher": 25086,
+            "teacher1": null,
+            "teacher2": null,
+            "teacher3": null,
+            "intro": null,
+            "createUserId": 25086,
+            "createTime": "2018-11-07T19:12:08.923",
+            "updateTime": "2018-11-07T19:20:25.803",
+            "moduleKownledge": false,
+            "moduleResource": false,
+            "moduleHomework": false,
+            "moduleMutualJudge": false,
+            "moduleExperiment": false,
+            "moduleSimulation": false,
+            "moduleDiscuss": false,
+            "logo1": "",
+            "logoText": "广厦学院测试",
+            "logoBackgroundColor": "rgb(27, 161, 226)",
+            "isDel": false,
+            "isBan": null,
+            "status": 0,
+            "ord": null,
+            "pzycj": 50.0,
+            "psycj": 0.0,
+            "pkscj1": 0.0,
+            "pkscj2": 50.0,
+            "pkscj3": 0.0,
+            "pkscj4": 0.0,
+            "pkscj5": 0.0,
+            "isAuthor": true,
+            "copyTimes": 1
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "成功获取学生参与的所有课程信息"
 }
 ```
 

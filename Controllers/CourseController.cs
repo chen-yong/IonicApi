@@ -98,6 +98,42 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
+        /// 根据学生用户id和登录令牌获取学生参加的所有课程
+        /// </summary>
+        /// <param name="authtoken">登录令牌</param>
+        /// <param name="userId">学生的用户ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<ActionResult> GetCourseByStudent(string authtoken, int userId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var user = await _userRepository.UserExistsAsync(userId);  //该id的学生是否存在
+                //var course = await _courseRepository.CourseExistAsync(id);
+                if (user)
+                {
+                    var courses = await _courseRepository.GetCourseByStudentAsync(userId);
+                    ret.info = _mapper.Map<IEnumerable<CourseDto>>(courses);
+                    ret.retcode = 0;
+                    ret.message = "成功获取学生参与的所有课程信息";
+                }
+                else
+                {
+                    ret.retcode = 11;
+                    ret.message = "参数错误";
+                }
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+
+        /// <summary>
         /// 创建课程(未测试)
         /// </summary>
         /// <param name="userId">用户ID</param>
