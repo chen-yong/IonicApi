@@ -77,15 +77,15 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="authtoken">令牌</param>
         /// <param name="labId">策略id</param>
-        /// <param name="topicList">题型id</param>
-        /// <param name="difficultyList"></param>
+        /// <param name="topicList">题型id，查询多个时用","隔开</param>
+        /// <param name="difficultyList">难度id，查询多个时用","隔开</param>
         /// <param name="page"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public async Task<ActionResult> QuestionList(string authtoken, int labId, string topicList, string difficultyList, int page = 1, int count = 10)
+        public async Task<ActionResult> QuestionList(/*string authtoken,*/ int labId, string topicList, string difficultyList, int page = 1, int count = 10)
         {
             MapiData ret = new MapiData();
-            if (AuthtokenUtility.ValidToken(authtoken))
+            //if (AuthtokenUtility.ValidToken(authtoken))
             {
                 var entity = await _drawPlotRepository.GetQuesListAsync(labId, topicList, difficultyList);
                 IPagedList<PeQuestion> list = new PagedList<PeQuestion>(entity, page, count);
@@ -97,11 +97,11 @@ namespace IonicApi.Controllers
                 ret.hasnext = list.HasNextPage;
                 ret.info = questionList;
             }
-            else
-            {
-                ret.retcode = 13;
-                ret.message = "令牌失效";
-            }
+            //else
+            //{
+            //    ret.retcode = 13;
+            //    ret.message = "令牌失效";
+            //}
             return Ok(ret);
         }
     }
