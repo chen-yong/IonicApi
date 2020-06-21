@@ -8,17 +8,17 @@ namespace IonicApi.Dtos
 {
     public class QuestionDto
     {
-        public QuestionDto()
-        {
-            PeAdvancedJudgeCriterion = new HashSet<PeAdvancedJudgeCriterion>();
-            PeDrawPlotOfTestPaperItem = new HashSet<PeDrawPlotOfTestPaperItem>();
-            PeQuestionKnowledge = new HashSet<PeQuestionKnowledge>();
-            PeQuestionMaterials = new HashSet<PeQuestionMaterials>();
-            PeQuestionMutualJudgeRegulation = new HashSet<PeQuestionMutualJudgeRegulation>();
-            PeQuestionSubQuestion = new HashSet<PeQuestionSubQuestion>();
-            PeUserTestPaperQuestions = new HashSet<PeUserTestPaperQuestions>();
-            PeUserTestQuestion = new HashSet<PeUserTestQuestion>();
-        }
+        //public QuestionDto()
+        //{
+        //    PeAdvancedJudgeCriterion = new HashSet<PeAdvancedJudgeCriterion>();
+        //    PeDrawPlotOfTestPaperItem = new HashSet<PeDrawPlotOfTestPaperItem>();
+        //    PeQuestionKnowledge = new HashSet<PeQuestionKnowledge>();
+        //    PeQuestionMaterials = new HashSet<PeQuestionMaterials>();
+        //    PeQuestionMutualJudgeRegulation = new HashSet<PeQuestionMutualJudgeRegulation>();
+        //    PeQuestionSubQuestion = new HashSet<PeQuestionSubQuestion>();
+        //    PeUserTestPaperQuestions = new HashSet<PeUserTestPaperQuestions>();
+        //    PeUserTestQuestion = new HashSet<PeUserTestQuestion>();
+        //}
 
         public int Id { get; set; }
         /// <summary>
