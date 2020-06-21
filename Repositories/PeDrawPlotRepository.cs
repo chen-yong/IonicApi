@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,6 +44,26 @@ namespace IonicApi.Repositories
         }
 
         /// <summary>
+        /// 计算字符串包含子串的个数
+        /// </summary>
+        /// <param name="str">字符串</param>
+        /// <param name="substring">子串</param>
+        /// <returns>个数</returns>
+        public int SubstringCount(string str, string substring)
+        {
+            int countStr = 0;
+            //字符串是否含有子串
+            if (str.Contains(substring))
+            {
+                //用空替换所有出现的子串
+                string strRelaced = str.Replace(substring,"");
+                //（字符串长度-替换后字符串的长度）/子串的长度
+                countStr = (str.Length - strRelaced.Length) / substring.Length;
+            }
+            return countStr;
+        }
+
+        /// <summary>
         /// 获取题目列表
         /// </summary>
         /// <param name="labId">策略id</param>
@@ -50,39 +71,59 @@ namespace IonicApi.Repositories
         /// <param name="difficulty">难度id</param>
         public async Task<IEnumerable<PeQuestion>> GetQuesListAsync(int labId,string topicList,string difficultyList)
         {
-            var questionList =  _context.PeQuestion.Where(e => e.LabId == labId && !e.IsDel);
-            //int num1 = Regex.Matches(topicList, ",").Count;
-            //题型列表
-            //if (!string.IsNullOrEmpty(topicList))
-            //{
-            //    if (num1 < 1)
-            //    {
-            //        questionList.Where(e => e.TopicId.ToString() == topicList);
-            //    }
-            //    else 
-            //    {
-            //        string[] topicArr = topicList.Split(',');
-            //        questionList.Contains(topicArr);
-            //    }
-            //}
-
-            //if (topicId > 0)
-            //{
-            //    questionList.Where(e => e.TopicId == topicId).OrderBy(e=>e.TopicId);
-            //}
-            //if (difficulty > 0)
-            //{
-            //    questionList.Where(e => e.Difficulty == difficulty);
-            //}
+            //根据策略id过滤题目
+            var questionList = _context.PeQuestion.Where(e => e.LabId == labId && !e.IsDel);
+            var questions = from a in _context.PeQuestion where a.TopicId.ToString().Contains(topicList) select a;
+            string topicStr = "";
+            string difficultyStr = "";
+            //题型id 用‘,’隔开
             if (!string.IsNullOrEmpty(topicList))
             {
-                questionList.Where(e => e.TopicId.ToString().Contains(topicList));
+                if (SubstringCount(topicList, ",") == 0)
+                {
+                    topicStr = topicList + ",";
+                }
+                else
+                {
+                    string[] topicArr = topicList.Split(',');
+                    foreach (var item in topicArr)
+                    {
+                        topicStr += item + ",";
+                    }
+                }
+                //去掉最后一位","
+                topicStr = topicStr.Substring(0, topicStr.Length - 1);
             }
+            if (!string.IsNullOrEmpty(topicStr))
+            {
+                string[] topicStrArr = topicStr.Split(',');
+                questionList = from a in questionList where topicStrArr.Contains(a.TopicId.ToString()) select a;
+            }
+            //难度id 用“,”隔开
             if (!string.IsNullOrEmpty(difficultyList))
             {
-                questionList.Where(e => e.Difficulty.ToString().Contains(difficultyList));
+                if (SubstringCount(difficultyList, ",") == 0)
+                {
+                    difficultyStr = difficultyList + ",";
+                }
+                else
+                {
+                    string[] diffArr = difficultyList.Split(',');
+                    foreach (var item in diffArr)
+                    {
+                        difficultyStr += item + ",";
+                    }
+                }
+                //去掉最后一位","
+                difficultyStr = difficultyStr.Substring(0, difficultyStr.Length - 1);
             }
-            questionList.GroupBy(e => e.TopicId);
+            if (!string.IsNullOrEmpty(difficultyStr))
+            {
+                string[] difficultyStrArr = difficultyStr.Split(',');
+                questionList = from a in questionList where difficultyStr.Contains(a.Difficulty.ToString()) select a;
+            }
+            //排序（题型，题序）
+            questionList.OrderBy(e=>e.TopicId).ThenBy(e=>e.Ord);
             return await questionList.ToListAsync(); 
         }
 

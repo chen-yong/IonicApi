@@ -77,8 +77,8 @@ namespace IonicApi.Controllers
         /// </summary>
         /// <param name="authtoken">令牌</param>
         /// <param name="labId">策略id</param>
-        /// <param name="topicList">题型id</param>
-        /// <param name="difficultyList"></param>
+        /// <param name="topicList">题型id，查询多个时用","隔开</param>
+        /// <param name="difficultyList">难度id，查询多个时用","隔开</param>
         /// <param name="page"></param>
         /// <param name="count"></param>
         /// <returns></returns>

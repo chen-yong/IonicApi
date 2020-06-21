@@ -2755,7 +2755,7 @@ http://localhost:5000/api/DrawPlot/TestPaperTopic?authtoken=&drawplotId=2570
 }
 ```
 
-##### 3.题目
+##### 3.题目（按题型，难度搜索）
 
 ```http
 http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=701&difficultyList=1&page=1&count=100
@@ -2763,14 +2763,18 @@ http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=7
 
 参数：
 
+注意：参数topicList和difficultyList  可以不传值，默认查所有，一个题型（难度）对应一个Id，可以传一个id或者多个id，传多个id中间时用“，”（英文逗号）连接且最后一个id后面不要加“，”
+
+列如：api/DrawPlot/QuestionList?labId=158&topicList=701，702&difficultyList=1，2，3，4,5&page=1&count=100
+
 | 参数名         | 类型   | 是否可空 | 说明                                          |
 | -------------- | ------ | -------- | --------------------------------------------- |
 | authtoken      | string | 否       | 令牌                                          |
 | labId          | int    | 否       | 策略Id                                        |
-| topicList      |        |          | 题型                                          |
-| difficultyList |        |          | 难度：1：简单 2：较简单 3：中等 4：较难 5：难 |
-| page           |        | 否       | 页码                                          |
-| count          |        | 否       | 数量                                          |
+| topicList      | string | 是       | 题型（见上获取题型id的API）                   |
+| difficultyList | string | 是       | 难度：1：简单 2：较简单 3：中等 4：较难 5：难 |
+| page           | int    | 否       | 页码                                          |
+| count          | int    | 否       | 数量                                          |
 
 返回：
 
