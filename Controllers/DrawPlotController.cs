@@ -52,7 +52,7 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 获取题型
+        /// 获取手工组卷具有的题型
         /// </summary>
         /// <param name="drawplotId">手工组卷Id</param>
         /// <returns></returns>
@@ -73,7 +73,28 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 题目（待完善）
+        /// 获取策略对应的题库具有的题型
+        /// </summary>
+        /// <param name="labId">手工组卷对应的题库的Id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> DrawPlotTopic(string authtoken, int labId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var topicList = await _drawPlotRepository.GetDrawPlotTopicListAsync(labId);
+                ret.info = _mapper.Map<IEnumerable<DrawPlotTopicDto>>(topicList);
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 题目（完善）
         /// </summary>
         /// <param name="authtoken">令牌</param>
         /// <param name="labId">策略id</param>

@@ -183,6 +183,30 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 根据策略id获取具体的策略信息
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="id">策略id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> GetDrawPlotById(string authtoken,int id)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                ret.retcode = 0;
+                var entity = await _courseRepository.GetDrawPlotByIdAsync(id);
+                ret.info = _mapper.Map<DrawPlotOptions>(entity);
+                ret.message = "根据策略id成功获取选题策略";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = ret.debug = "登录令牌失效";
+            }
+            return Ok(ret);
+        }
         #endregion
 
         #region 作业实验练习
@@ -308,13 +332,66 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        ///// <summary>
+        ///// 编辑作业
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //[HttpPatch]
+        //public async Task<ActionResult> EditHomeWork(string authtoken, int id, JsonPatchDocument<TestEditDto> patchDocument)
+        //{
+        //    MapiData ret = new MapiData();
+        //    if (AuthtokenUtility.ValidToken(authtoken))
+        //    {
+        //        PeTest entity = await _courseRepository.GetTestAsync(id);
+        //        if (entity != null)
+        //        {
+        //            try
+        //            {
+        //                var dtoToPatch = _mapper.Map<TestEditDto>(entity);
+        //                // 需要处理验证错误
+        //                patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+        //                if (!TryValidateModel(dtoToPatch))
+        //                {
+        //                    return ValidationProblem(ModelState);
+        //                }
+
+        //                _mapper.Map(dtoToPatch, entity);
+        //                _courseRepository.UpdateTest(entity);
+        //                ret.retcode = 0;
+        //                ret.message = "修改成功";
+        //                await _courseRepository.SaveAsync();
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                ret.retcode = 11;
+        //                ret.info = e;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            ret.retcode = 11;
+        //            ret.message = "参数错误";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ret.retcode = 13;
+        //        ret.message = ret.debug = "登录令牌失效";
+        //    }
+        //    return Ok(ret);
+        //}
+
         /// <summary>
-        /// 编辑作业
+        /// 编辑作业、实验、练习
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="authtoken"></param>
+        /// <param name="id">作业、实验、练习的id</param>
+        /// <param name="editHomework">需要修改的传过来的内容</param>
         /// <returns></returns>
-        [HttpPatch]
-        public async Task<ActionResult> EditHomeWork(string authtoken, int id, JsonPatchDocument<TestEditDto> patchDocument)
+        [HttpPost]
+        public async Task<ActionResult> EditHomeWork(string authtoken, int id, [FromBody] TestEditDto editHomework)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -324,19 +401,58 @@ namespace IonicApi.Controllers
                 {
                     try
                     {
-                        var dtoToPatch = _mapper.Map<TestEditDto>(entity);
-                        // 需要处理验证错误
-                        patchDocument.ApplyTo(dtoToPatch, ModelState);
-
-                        if (!TryValidateModel(dtoToPatch))
+                        if (editHomework.Name != null)
                         {
-                            return ValidationProblem(ModelState);
+                            entity.Name = editHomework.Name;
                         }
-
-                        _mapper.Map(dtoToPatch, entity);
-                        _courseRepository.UpdateTest(entity);
+                        if (editHomework.StartTime != null)
+                        {
+                            entity.StartTime = editHomework.StartTime;
+                        }
+                        if (editHomework.EndTime != null)
+                        {
+                            entity.EndTime = editHomework.EndTime;
+                        }
+                        if (editHomework.DelayEndTime != null)
+                        {
+                            entity.DelayEndTime = editHomework.DelayEndTime;
+                            entity.DelayPercentOfScore = editHomework.DelayPercentOfScore;
+                        }
+                        if (editHomework.Memo != null)
+                        {
+                            entity.Memo = editHomework.Memo;
+                        }
+                        if (editHomework.DrawPlotId != null)
+                        {
+                            entity.DrawPlotId = editHomework.DrawPlotId;
+                        }
+                        if (editHomework.SetScore != null)
+                        {
+                            entity.SetScore = editHomework.SetScore;
+                        }
+                        if (editHomework.ScoreAppear != null)
+                        {
+                            entity.ScoreAppear = editHomework.ScoreAppear;
+                        }
+                        if (editHomework.EnableClientJudge != null)
+                        {
+                            entity.EnableClientJudge = editHomework.EnableClientJudge;
+                        }
+                        if (editHomework.KeyVisible != null)
+                        {
+                            entity.KeyVisible = editHomework.KeyVisible;
+                        }
+                        entity.ViewOneWithAnswerKey = editHomework.ViewOneWithAnswerKey;       
+                        if (editHomework.ForbiddenCopy != null)
+                        {
+                            entity.ForbiddenCopy = editHomework.ForbiddenCopy;
+                        }
+                        if (editHomework.ForbiddenMouseRightMenu != null)
+                        {
+                            entity.ForbiddenMouseRightMenu = editHomework.ForbiddenMouseRightMenu;
+                        }
                         ret.retcode = 0;
-                        ret.message = "修改成功";
+                        ret.message = "作业、练习、实验修改成功";
                         await _courseRepository.SaveAsync();
                     }
                     catch (Exception e)
@@ -358,6 +474,7 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
         /// <summary>
         /// 删除作业，实验，练习
         /// </summary>
@@ -529,6 +646,7 @@ namespace IonicApi.Controllers
                 if (tests != null)
                 {
                     Dictionary<string, string> dic = new Dictionary<string, string>();
+
                     string str = "";
                     foreach (var test in tests)
                     {

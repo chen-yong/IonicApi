@@ -314,5 +314,11 @@ namespace IonicApi.Repositories
         {
             return await _context.PeDrawPlot.Where(e => (!e.IsDel && (e.CreateUserId == userId || e.Shared == 1))).OrderBy(e => e.UpdateTime).ToListAsync();
         }
+
+        public async Task<PeDrawPlot> GetDrawPlotByIdAsync(int Id)
+        {
+            return await _context.PeDrawPlot.SingleOrDefaultAsync(e => (!e.IsDel && e.Id == Id) );
+        }
+
     }
 }

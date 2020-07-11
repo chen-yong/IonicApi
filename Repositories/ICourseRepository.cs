@@ -49,5 +49,7 @@ namespace IonicApi.Repositories
         Task<string> GetTestScoreAsync(int testId,int userId);
 
         Task<IEnumerable<PeDrawPlot>> GetDrawPlotsAsync(int userId);
+        Task<PeDrawPlot> GetDrawPlotByIdAsync(int Id);
+
     }
 }

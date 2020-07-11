@@ -33,7 +33,7 @@ namespace IonicApi.Repositories
         }
 
         /// <summary>
-        /// 获取题型列表
+        /// 获取组卷的题型列表
         /// </summary>
         /// <param name="drawplotId">手工组卷Id</param>
         /// <returns></returns>
@@ -41,6 +41,16 @@ namespace IonicApi.Repositories
         {
             int id=_context.PeUserTestPaper.SingleOrDefault(e => e.DrawplotId == drawplotId && !e.IsDel).Id;
             return await _context.PeUserTestPaperTopic.Where(e => e.PaperId == id && !e.IsDel).OrderBy(e=>e.TopicId).ToListAsync();
+        }
+
+        /// <summary>
+        /// 获取策略对应的题库具有的题型列表
+        /// </summary>
+        /// <param name="drawplotId">手工组卷Id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeTopic>> GetDrawPlotTopicListAsync(int labId)
+        {
+            return await _context.PeTopic.Where(e => e.LabId == labId && !e.IsDel).OrderBy(e => e.Ord).ToListAsync();
         }
 
         /// <summary>

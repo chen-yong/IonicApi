@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IonicApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,23 +7,15 @@ using System.Threading.Tasks;
 namespace IonicApi.Dtos
 {
     /// <summary>
-    /// 抽题策略
+    /// 题型
     /// </summary>
-    public class DrawPlotOptions
+    public class DrawPlotTopicDto
     {
-        /// <summary>
-        /// 策略Id
-        /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// 策略名称
+        /// 题型
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// 题库id
-        /// </summary>
-        public int LabId { get; set; }   
 
     }
 }

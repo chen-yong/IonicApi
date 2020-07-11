@@ -23,11 +23,18 @@ namespace IonicApi.Repositories
         PeUserTestPaper GetPaper(int drawplotId);
 
         /// <summary>
-        /// 获取题型列表
+        /// 获取手工组卷的题型列表
         /// </summary>
         /// <param name="drawplotId">手工组卷Id</param>
         /// <returns></returns>
         Task<IEnumerable<PeUserTestPaperTopic>> GetTopicListAsync(int drawplotId);
+
+        /// <summary>
+        /// 获取策略对应的题库具有的题型列表
+        /// </summary>
+        /// <param name="labId">策略对应的题库Id</param>
+        /// <returns></returns>
+        Task<IEnumerable<PeTopic>> GetDrawPlotTopicListAsync(int labId);
 
         /// <summary>
         /// 获取题目

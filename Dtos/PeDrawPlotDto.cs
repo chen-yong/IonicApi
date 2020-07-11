@@ -8,11 +8,11 @@ namespace IonicApi.Dtos
 {
     public class PeDrawPlotDto
     {
-        public int Id { get; set; }
-        public int LabId { get; set; }
-        public string Dptype { get; set; }
-        public string Name { get; set; }
-        public string Memo { get; set; }
+        public int Id { get; set; }       //策略id
+        public int LabId { get; set; }    //题库id
+        public string Dptype { get; set; }   //策略类型（按套组卷、知识点组卷）
+        public string Name { get; set; }  //策略名称
+        public string Memo { get; set; }  //策略说明
         public int CreateUserId { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime UpdateTime { get; set; }
