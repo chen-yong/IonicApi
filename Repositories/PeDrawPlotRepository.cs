@@ -28,8 +28,7 @@ namespace IonicApi.Repositories
         }
         public PeUserTestPaper GetPaper(int drawplotId)
         {
-            PeUserTestPaper entity = _context.PeUserTestPaper.Where(e => e.DrawplotId == drawplotId && e.IsDel == false).FirstOrDefault();
-            return entity;
+            return _context.PeUserTestPaper.Where(e => e.DrawplotId == drawplotId && e.IsDel == false).FirstOrDefault();
         }
 
         /// <summary>
@@ -127,9 +126,105 @@ namespace IonicApi.Repositories
             return await questionList.ToListAsync(); 
         }
 
+        /// <summary>
+        /// 添加试卷记录信息
+        /// <param name="entity"></param>
+        /// </summary>
+        public int AddUserTestPaper(PeUserTestPaper entity)
+        {
+            _context.PeUserTestPaper.Add(entity);
+            SaveChanges();
+            int newId = entity.Id;
+            return newId;
+        }
+
+        /// <summary>
+        /// 添加题型记录信息
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public int AddUserTestPaperTopic(PeUserTestPaperTopic entity)
+        {
+            _context.PeUserTestPaperTopic.Add(entity);
+            SaveChanges();
+            int newId = entity.Id;
+            return newId;
+        }
+        /// <summary>
+        /// 添加题目记录
+        /// </summary>
+        /// <param name="entity"></param>
+        public void AddUserTestPaperQues(PeUserTestPaperQuestions entity)
+        {
+            _context.PeUserTestPaperQuestions.Add(entity);
+            SaveChanges();
+        }
+
+        /// <summary>
+        /// 获取指定试卷中题型表中题型信息
+        /// </summary>
+        /// <param name="topicId"></param>
+        /// <returns></returns>
+        public PeUserTestPaperTopic getByTopicId(int topicId, int paperId)
+        {
+            return _context.PeUserTestPaperTopic.Where(e => e.TopicId == topicId && e.PaperId == paperId && e.IsDel == false).FirstOrDefault();
+        }
+        /// <summary>
+        /// 根据id取题目
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public PeQuestion GetQuestion(int id)
+        {
+            return _context.PeQuestion.SingleOrDefault(e => e.Id == id);
+        }
+        /// <summary>
+        /// 改变Topic的排序
+        /// </summary>
+        /// <param name="model"></param>
+        public void updateTopicOrd(PeUserTestPaperTopic model)
+        {
+            PeUserTestPaperTopic entity = _context.PeUserTestPaperTopic.Where(e => e.Id == model.Id && e.IsDel == false).Single();
+            entity.Ord = model.Ord;
+            SaveChanges();
+        }
+        /// <summary>
+        /// 组卷中是否包含此题
+        /// </summary>
+        /// <param name="quesId"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public PeUserTestPaperQuestions IsPaperContains(int quesId, int Id)
+        {
+            return _context.PeUserTestPaperQuestions.Where(e => e.QuestionId == quesId && e.PaperId == Id && e.IsDel == false).FirstOrDefault();
+        }
+        /// <summary>
+        /// 保存试卷时，更新试卷中题目排列顺序
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="rank"></param>
+        public void udpateRank(PeUserTestPaperQuestions entity, int rank)
+        {
+            PeUserTestPaperQuestions questionEntity = _context.PeUserTestPaperQuestions.Where(e => e.Id == entity.Id && e.IsDel == false).Single();
+            questionEntity.Rank = rank;
+            questionEntity.Ord = rank.ToString();
+            SaveChanges();
+        }
+        /// <summary>
+        /// 异步保存
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() >= 0;
+        }
+        /// <summary>
+        /// 保存
+        /// </summary>
+        /// <returns></returns>
+        public  bool SaveChanges()
+        {
+            return  _context.SaveChanges() >= 0;
         }
 
     }

@@ -2786,7 +2786,7 @@ http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=7
 | id                | int      | 题目id             |
 | topicId           | int      | 策略id             |
 | bundleRank        | int      | 题号               |
-| questionFace      |          | 题目               |
+| questionFace      | string   | 题目               |
 | score             | double   | 分数               |
 | optionA           | string   | 选项A              |
 | optionB           | string   | B                  |
