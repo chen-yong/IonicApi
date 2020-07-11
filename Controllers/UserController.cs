@@ -258,17 +258,73 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+        ///// <summary>
+        ///// 更新学生（patch局部更新）
+        ///// </summary>
+        ///// <param name="authtoken">authtoken</param>
+        ///// <param name="id"></param>
+        ///// <param name="patchDocument">更新操作</param>
+        ///// 
+        ///// patchDocument中UserEditDto用户名UserName 和 密码 Password必须要写（postman中首字母小写）
+        ///// <returns></returns>
+        //[HttpPatch]
+        //public async Task<ActionResult> EditUser(string authtoken, int id, [FromBody] JsonPatchDocument<UserEditDto> patchDocument)
+        //{
+        //    MapiData ret = new MapiData();
+        //    if (AuthtokenUtility.ValidToken(authtoken))
+        //    {
+        //        PeUser entity = await _userRepository.GetUserAsync(id);
+        //        if (entity != null)
+        //        {
+        //            try
+        //            {
+        //                var dtoToPatch = _mapper.Map<UserEditDto>(entity);
+        //                // 需要处理验证错误
+        //                patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+        //                if (!TryValidateModel(dtoToPatch))
+        //                {
+        //                    return ValidationProblem(ModelState);
+        //                }
+
+        //                _mapper.Map(dtoToPatch, entity);
+        //                _userRepository.UpdateUser(entity);
+        //                ret.retcode = 0;
+        //                ret.message = "修改成功";
+        //                await _userRepository.SaveAsync();
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                ret.retcode = 11;
+        //                ret.info = e;
+        //            }
+
+        //        }
+        //        else
+        //        {
+        //            ret.retcode = 11;
+        //            ret.message = "参数错误";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ret.retcode = 13;
+        //        ret.message = ret.debug = "登录令牌失效";
+        //    }
+        //    return Ok(ret);
+        //}
+
         /// <summary>
-        /// 更新学生（patch局部更新）
+        /// 更新学生（post局部更新）
         /// </summary>
         /// <param name="authtoken">authtoken</param>
-        /// <param name="id"></param>
-        /// <param name="patchDocument">更新操作</param>
+        /// <param name="id">学生id（用户ID）</param>
+        /// <param name="editStudent">更新操作</param>
         /// 
-        /// patchDocument中UserEditDto用户名UserName 和 密码 Password必须要写（postman中首字母小写）
+        /// patchDocument中UserEditDto（postman中首字母小写）
         /// <returns></returns>
-        [HttpPatch]
-        public async Task<ActionResult> EditUser(string authtoken, int id, [FromBody] JsonPatchDocument<UserEditDto> patchDocument)
+        [HttpPost]
+        public async Task<ActionResult> EditUser(string authtoken, int id, [FromBody] UserEditDto editStudent)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -278,19 +334,33 @@ namespace IonicApi.Controllers
                 {
                     try
                     {
-                        var dtoToPatch = _mapper.Map<UserEditDto>(entity);
-                        // 需要处理验证错误
-                        patchDocument.ApplyTo(dtoToPatch, ModelState);
-
-                        if (!TryValidateModel(dtoToPatch))
+                        if (editStudent.UserName != null)
                         {
-                            return ValidationProblem(ModelState);
+                            entity.UserName = editStudent.UserName;
+                            entity.UserNo = editStudent.UserName;//学生的时候将UserName和UserNo设为一样
                         }
-
-                        _mapper.Map(dtoToPatch, entity);
-                        _userRepository.UpdateUser(entity);
+                        if (editStudent.RealName != null)
+                        {
+                            entity.RealName = editStudent.RealName;
+                        }
+                        if (editStudent.Sex != null)
+                        {
+                            entity.Sex = editStudent.Sex;
+                        }
+                        if (editStudent.Mobile != null)
+                        {
+                            entity.Mobile = editStudent.Mobile;
+                        }
+                        if (editStudent.Property00 != null)
+                        {
+                            entity.Property00 = editStudent.Property00;
+                        }
+                        if (editStudent.Property02 != null)
+                        {
+                            entity.Property02 = editStudent.Property02;
+                        }
                         ret.retcode = 0;
-                        ret.message = "修改成功";
+                        ret.message = "学生信息修改成功";
                         await _userRepository.SaveAsync();
                     }
                     catch (Exception e)
@@ -315,7 +385,7 @@ namespace IonicApi.Controllers
         }
 
         /// <summary>
-        /// 个人信息跟新
+        /// 个人信息更新
         /// </summary>
         /// <param name="authtoken">authtoken</param>
         /// <param name="id">用户id</param>

@@ -57,6 +57,15 @@ namespace IonicApi.Dtos
         /// </summary>
         public string Property05 { get; set; }
         /// <summary>
+        /// 班级
+        /// </summary>
+        public string Property00 { get; set; }
+        /// <summary>
+        /// 学院
+        /// </summary>
+        public string Property02 { get; set; }
+
+        /// <summary>
         /// 用户头像
         /// </summary>
         public string Avatar { get; set; }  

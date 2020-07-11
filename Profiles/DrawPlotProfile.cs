@@ -11,7 +11,8 @@ namespace IonicApi.Profiles
             CreateMap<PeDrawPlot, PeDrawPlotDto>();
             CreateMap<PeQuestion, QuestionDto>();
             CreateMap<PeUserTestPaperTopic, PaperTopicDto>();
-            
+
+            CreateMap<PeTopic, DrawPlotTopicDto>();
         }
     }
 }

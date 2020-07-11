@@ -17,7 +17,7 @@ namespace IonicApi.Dtos
         /// 类型：1考试 2练习 3作业 4实验
         /// </summary>
         [Display(Name = "类型")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        //[Required(ErrorMessage = "{0}这个字段是必填的")]
         public int Mode { get; set; }
         /// <summary>
         /// 开启
@@ -39,7 +39,7 @@ namespace IonicApi.Dtos
         /// 创建者Id
         /// </summary>
         [Display(Name = "创建者Id")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        //[Required(ErrorMessage = "{0}这个字段是必填的")]  没必要吧
         public int CreateUserId { get; set; }
         /// <summary>
         /// 创建时间
@@ -81,14 +81,14 @@ namespace IonicApi.Dtos
         /// 策略Id
         /// </summary>
         [Display(Name = "策略Id")]
-        //[Required(ErrorMessage = "{0}这个字段是必填的")]
+        [Required(ErrorMessage = "{0}这个字段是必填的")]  
         public int? DrawPlotId { get; set; }
         public int? TestTemplateId { get; set; }
         /// <summary>
         /// 课程ID
         /// </summary>
         [Display(Name = "课程Id")]
-        [Required(ErrorMessage = "{0}这个字段是必填的")]
+        //[Required(ErrorMessage = "{0}这个字段是必填的")] 没必要吧
         public int? CourseId { get; set; }
         /// <summary>
         /// 作业互评

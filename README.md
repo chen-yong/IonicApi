@@ -724,7 +724,7 @@ http://api/Users/AddCourseStudent?authtoken=&courseId=422
 http://api/Users/EditUser?authtoken=&id=35899
 ```
 
-   [HttpPatch]
+   [HttpPost]
 
 有关HttpPatch局部更新操作转下面的链接：
 
@@ -739,47 +739,30 @@ https://www.cnblogs.com/bijinshan/p/9140111.html
 | authtoken | string | 否       | 令牌   |
 | id        | int    | 否       | 学生id |
 
-Headers ：
+编辑内容参数：【这里将 userNO设为与userName一致】
 
-| key          | value                       |
-| ------------ | --------------------------- |
-| Content-Type | application/json-patch+json |
+| 参数名         | 类型   | 是否可空 | 说明                   |
+| -------------- | ------ | -------- | ---------------------- |
+| userName       | string | 否       | 账号【学生一般为学号】 |
+| realName       | string | 否       | 真实姓名               |
+| userIdentity00 | string | 是       | 学院、系               |
+| property02     | string | 是       | 班级                   |
+| sex            | string | 是       | 性别（男，女，默认男） |
+| mobile         | string | 是       | 电话                   |
+
+发送格式：Body+raw+Json
 
 Body: 
 
 ```json
-[
-	{
-		"op":"replace",
-		"path":"/userName",
-		"value":"chenyong1"
-	},
-	{
-		"op":"replace",
-		"path":"/RealName",
-		"value":"123"
-	},
-	{
-		"op":"replace",
-		"path":"/Password",
-		"value":"E10ADC3949BA59ABBE56E057F20F883E"
-	},
-	{
-		"op":"replace",
-		"path":"/sex",
-		"value":"男"
-	},
-	{
-		"op":"add",
-		"path":"/UserIdentity01",
-		"value":"1"
-	},
-		{
-		"op":"add",
-		"path":"/UserIdentity03",
-		"value":"1"
-	}
-]
+{
+	"userName":"胡康程",
+	"RealName":"胡康程",
+	"property00":"软工18级",
+	"property02":"国服",
+	"sex":"男",
+	"mobile":"1781686955"
+}
 
 ```
 
@@ -802,7 +785,7 @@ Body:
     "debug": null,
     "id": 0,
     "datetime": null,
-    "message": "修改成功"
+    "message": "学生信息修改成功"
 }
 ```
 
@@ -1475,6 +1458,46 @@ http://localhost:5000/api/Course/DrawPlotList?authtoken=
 }
 ```
 
+##### 2. 2 获取具体抽题策略(根据抽题策略id)
+
+```http
+http://localhost:5000/api/Course/GetDrawPlotById?authtoken=&id=2400
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明         |
+| --------- | ------ | -------- | ------------ |
+| authtoken | string | 否       | 用户登录令牌 |
+| id        | int    | 否       | 策略id       |
+
+返回：
+
+| 字段    | 类型 | 说明   |
+| ------- | ---- | ------ |
+| retcode | int  | 返回码 |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 2400,
+        "name": "计算机基础手工组卷",
+        "labId": 282
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "根据策略id成功获取选题策略"
+}
+```
+
 
 
 ##### 3. 添加
@@ -1491,7 +1514,7 @@ http://api/course/AddHomeWork?authtoken=&courseId=422&type=3
 | ----------------------- | ------------- | -------- | --------------------------------- |
 | authtoken               | string        | 否       | 用户登录令牌                      |
 | courseId                | int           | 否       | 课程id                            |
-| type                    | int           | 否       | 1考试 ，2练习 ，3作业，4实验      |
+| mode                    | int           | 否       | 1考试 ，2练习 ，3作业，4实验      |
 | test                    | array[object] |          |                                   |
 | name                    | string        | 否       | 名称                              |
 | drawPlotId              | int           | 否       | 抽题策略Id                        |
@@ -1646,10 +1669,10 @@ http://localhost:5000/api/Course/HomeWork?authtoken=97F02636E249793A37CED8159971
 
 ##### 5. 编辑(详情)
 
-[HttpPatch]
+[HttpPost]
 
 ```http
-http://localhost:5000/api/Course/EditHomeWork?authtoken=&id=6699
+http://localhost:5000/api/Course/EditHomeWork?authtoken=&id=9828
 ```
 
   参数 params：
@@ -1659,30 +1682,49 @@ http://localhost:5000/api/Course/EditHomeWork?authtoken=&id=6699
 | authtoken | string | 否       | 令牌   |
 | id        | int    | 否       | 作业id |
 
-Headers ：
+参数：
 
-| key          | value                       |
-| ------------ | --------------------------- |
-| Content-Type | application/json-patch+json |
+| 参数名                  | 类型          | 是否可空 | 说明                              |
+| ----------------------- | ------------- | -------- | --------------------------------- |
+| authtoken               | string        | 否       | 用户登录令牌                      |
+| courseId                | int           | 否       | 课程id                            |
+| mode                    | int           | 否       | 1考试 ，2练习 ，3作业，4实验      |
+| test                    | array[object] |          |                                   |
+| name                    | string        | 否       | 名称                              |
+| drawPlotId              | int           | 否       | 抽题策略Id                        |
+| startTime               | DateTime      | 否       | 开始时间                          |
+| endTime                 | DateTime      | 否       | 结束时间                          |
+| delayEndTime            | DateTime      | 是       | 补交截止时间                      |
+| delayPercentOfScore     | double        | 是       | 补交得分比例                      |
+| memo                    | string        | 是       | 说明                              |
+| enableMutualJudge       | bool          | 是       | 作业互评（默认0,不互评，1：互评） |
+| mutualJudgeEndTime      | DateTime      | 是       | 互评截止时间                      |
+| setScore                | double        | 否       | 设置总分                          |
+| scoreAppear             | int           | 否       | 成绩展示:1展示；2不展示           |
+| forbiddenCopy           | bool          | 是       | 禁止复制题目                      |
+| forbiddenMouseRightMenu | bool          | 是       | 禁止右键                          |
+| enableClientJudge       | bool          | 是       | 开启学生端阅卷                    |
+| keyVisible              | bool          | 是       | 查卷时标准答案可见                |
+
+发送格式：Body+raw+Json
 
 Body: 
 
 ```json
-[
-	{
-		"op":"replace",
-		"path":"/name",
-		"value":"Java程序设计-作业一测试"
-	},
-	{
-		"op":"replace",
-		"path":"/EndTime",
-		"value":"2019-12-22"
-	},
-    {
-        ……
-    }
-]
+{
+    "name": "JAVA程序设计-作业一",
+    "startTime": "2020-04-20T00:00:00",
+    "EndTime": "2020-04-21T23:59:00",
+    "DelayEndTime": "2020-04-21T23:59:00",
+    "DelayPercentOfScore": "50",    
+    "Memo":"暂无",
+    "DrawPlotId":"2400",
+    "ScoreAppear":"1",
+    "EnableClientJudge":"true",
+    "KeyVisible":"true",
+    "SetScore": "100"
+    
+}
 ```
 
  返回：
@@ -1733,7 +1775,7 @@ http://localhost:5000/api/Course/DeleteWork?authtoken=&id=9827
 }
 ```
 
-#####  7. 批阅
+#####  7. 批阅（##就这里还没）
 
 获得带阅卷的学生作业，实验信息列表
 
@@ -2690,7 +2732,7 @@ http://localhost:5000/api/DrawPlot/DrawPlotsList?authtoken=97F02636E249793A37CED
 }
 ```
 
-##### 2.题型列表
+##### 2.组卷的题型列表
 
 ```http
 http://localhost:5000/api/DrawPlot/TestPaperTopic?authtoken=&drawplotId=2570
@@ -2869,7 +2911,64 @@ http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=7
 
 ```
 
+##### 4.策略对应题库的题型列表
 
+```http
+http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| labId     | int    | 否       | 题库id |
+
+返回：
+
+| 参数名    | 类型   | 说明   |
+| --------- | ------ | ------ |
+| retcode   | 返回码 |        |
+| authtoken | string |        |
+| info      | object |        |
+| name      | string | 题型   |
+| topicId   | int    | 题型Id |
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 708,
+            "name": "判断题"
+        },
+        {
+            "id": 709,
+            "name": "选择题"
+        },
+        {
+            "id": 710,
+            "name": "填空题"
+        },
+        {
+            "id": 711,
+            "name": "阅读题"
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": null
+}
+```
+
+##### 
 
  #### 8. 邮箱
 
