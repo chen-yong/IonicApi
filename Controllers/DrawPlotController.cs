@@ -112,7 +112,7 @@ namespace IonicApi.Controllers
         /// <param name="drawplotId">手工组卷id</param>
         /// <param name="quesList">题目Id 多个时用","隔开</param>
         /// <returns></returns>
-        public ActionResult SaveQuestion(string authtoken, int drawplotId, string quesList)
+        public async Task<ActionResult> SaveQuestion(string authtoken, int drawplotId, string quesList)
         {
             MapiData ret = new MapiData();
             if (AuthtokenUtility.ValidToken(authtoken))
@@ -134,9 +134,10 @@ namespace IonicApi.Controllers
                         List<PeTopic> listTopic = new List<PeTopic>();
                         foreach (string quesId in quesSaved)
                         {
-                            if (quesId != null && quesId != "")
+                            if (!String.IsNullOrEmpty(quesId))
                             {
-                                PeTopic itemtopic = _drawPlotRepository.GetQuestion(int.Parse(quesId)).Topic;
+                                int TopicId = _drawPlotRepository.GetQuestion(int.Parse(quesId)).TopicId;
+                                PeTopic itemtopic =await _drawPlotRepository.GetTopicAsync(TopicId);
                                 if (!listTopic.Contains(itemtopic))
                                 {
                                     listTopic.Add(itemtopic);
@@ -160,7 +161,8 @@ namespace IonicApi.Controllers
                             {
                                 string quesId = quesSaved[i];
                                 //题目所属题型
-                                PeTopic itemtopic = _drawPlotRepository.GetQuestion(int.Parse(quesId)).Topic;
+                                int TopicId =  _drawPlotRepository.GetQuestion(int.Parse(quesId)).TopicId;
+                                PeTopic itemtopic =await _drawPlotRepository.GetTopicAsync(TopicId);
                                 PeQuestion itemques = _drawPlotRepository.GetQuestion(int.Parse(quesId));
                                 //题目列表中题型和数据库中题型相同时添加
                                 if (itemtopic.Name.Trim().Equals(topicitem.Name.Trim().ToString()))
@@ -184,15 +186,19 @@ namespace IonicApi.Controllers
                     //存在相关试卷。修改试卷内容
                     else
                     {
+                        //题型
                         List<PeTopic> listTopic = new List<PeTopic>();
-
                         foreach (string quesId in quesSaved)
                         {
-                            if (quesId != null && quesId != "")
+                            if (!String.IsNullOrEmpty(quesId))
                             {
-                                PeTopic itemtopic = _drawPlotRepository.GetQuestion(Int32.Parse(quesId)).Topic;
+                                //题目所属的题型
+                                int TopicId =  _drawPlotRepository.GetQuestion(int.Parse(quesId)).TopicId;
+                                PeTopic itemtopic = await _drawPlotRepository.GetTopicAsync(TopicId);
+                                //题型是否存在
                                 if (!listTopic.Contains(itemtopic))
                                 {
+                                    //不存在，添加到list集合
                                     listTopic.Add(itemtopic);
                                 }
                             }
@@ -204,7 +210,7 @@ namespace IonicApi.Controllers
                         {
                             int topicId = 0;
                             //根据题型和试卷id去查找试卷中是否有该题型
-                            PeUserTestPaperTopic testpapertopicModel = _drawPlotRepository.getByTopicId(topicitem.Id, entity.Id);
+                            PeUserTestPaperTopic testpapertopicModel =await _drawPlotRepository.GetByTopicIdAsync(topicitem.Id, entity.Id);
 
                             topicOrder++;
                             if (testpapertopicModel == null)//需要新增一个题型
@@ -224,22 +230,22 @@ namespace IonicApi.Controllers
                             {
                                 topicId = testpapertopicModel.Id;
                                 testpapertopicModel.Ord = topicOrder;
-                                _drawPlotRepository.updateTopicOrd(testpapertopicModel);
+                                _drawPlotRepository.updateTopicOrdAsync(testpapertopicModel);
                             }
 
                             for (int i = 0; i < quesSaved.Length; i++)
                             {
                                 string quesId = quesSaved[i];
-                                if (quesId == "" || quesId == null)
+                                if (!String.IsNullOrEmpty(quesId))
                                 {
                                     continue;
                                 }
-                                PeUserTestPaperQuestions quesModel = _drawPlotRepository.IsPaperContains(int.Parse(quesId), entity.Id);
+                                PeUserTestPaperQuestions quesModel = await _drawPlotRepository.IsPaperContainsAsync(int.Parse(quesId), entity.Id);
                                 //需要新增
                                 if (quesModel == null)
                                 {
-                                    PeTopic itemtopic = _drawPlotRepository.GetQuestion(int.Parse(quesId)).Topic;
-                                    PeQuestion itemques = _drawPlotRepository.GetQuestion(int.Parse(quesId));
+                                    PeTopic itemtopic =  _drawPlotRepository.GetQuestion(int.Parse(quesId)).Topic;
+                                    PeQuestion itemques =  _drawPlotRepository.GetQuestion(int.Parse(quesId));
                                     //题目列表中题型和数据库中题型相同时添加
                                     if (itemtopic.Name.Trim().Equals(topicitem.Name.Trim().ToString()))
                                     {
@@ -257,14 +263,14 @@ namespace IonicApi.Controllers
                                 else
                                 {
                                     //更新题目的排名
-                                    _drawPlotRepository.udpateRank(quesModel, i);
+                                    _drawPlotRepository.udpateRankAsync(quesModel, i);
 
                                 }
                             }
                         }
                         ret.retcode = 0;
                         ret.info = quesList;
-                        ret.message = "二次编辑组卷题目";
+                        ret.message = "二次编辑手工组卷题目";
                     }
                 }
                 catch (Exception e)

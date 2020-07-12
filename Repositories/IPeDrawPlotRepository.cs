@@ -66,7 +66,7 @@ namespace IonicApi.Repositories
         /// </summary>
         /// <param name="topicId"></param>
         /// <returns></returns>
-        PeUserTestPaperTopic getByTopicId(int topicId, int paperId);
+        Task<PeUserTestPaperTopic> GetByTopicIdAsync(int topicId, int paperId);
         /// <summary>
         /// 根据id取题目
         /// </summary>
@@ -74,25 +74,29 @@ namespace IonicApi.Repositories
         /// <returns></returns>
         PeQuestion GetQuestion(int id);
         /// <summary>
+        /// 根据id取题型
+        /// </summary>
+        /// <param name="id"></param>
+        Task<PeTopic> GetTopicAsync(int id);
+        /// <summary>
         /// 改变Topic的排序
         /// </summary>
         /// <param name="model"></param>
-        void updateTopicOrd(PeUserTestPaperTopic model);
+        void updateTopicOrdAsync(PeUserTestPaperTopic model);
         /// <summary>
         /// 组卷中是否包含此题
         /// </summary>
         /// <param name="quesId"></param>
         /// <param name="Id"></param>
         /// <returns></returns>
-        PeUserTestPaperQuestions IsPaperContains(int quesId, int Id);
+        Task<PeUserTestPaperQuestions> IsPaperContainsAsync(int quesId, int Id);
         /// <summary>
         /// 保存试卷时，更新试卷中题目排列顺序
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="rank"></param>
-        void udpateRank(PeUserTestPaperQuestions entity, int rank);
+        void udpateRankAsync(PeUserTestPaperQuestions entity, int rank);
         Task<bool> SaveAsync();
         bool SaveChanges();
-
     }
 }

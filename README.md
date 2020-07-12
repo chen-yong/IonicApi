@@ -2968,7 +2968,26 @@ http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
 }
 ```
 
-##### 
+##### 5.保存手工组卷
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": "43939,43938,43940,43941,43943,43739,43740,43742,43744,43745",
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "二次编辑手工组卷题目"
+}
+```
+
+
 
  #### 8. 邮箱
 
