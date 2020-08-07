@@ -31,6 +31,11 @@ namespace IonicApi.Repositories
             return _context.PeUserTestPaper.Where(e => e.DrawplotId == drawplotId && e.IsDel == false).FirstOrDefault();
         }
 
+        public async Task<PeKnowledge> GetPeKnowledgeAsync(int knowledgeId)
+        {
+            return await _context.PeKnowledge.Where(e => e.Id == knowledgeId && e.IsDel == false).FirstOrDefaultAsync();
+        }
+
         /// <summary>
         /// 获取组卷的题型列表
         /// </summary>
@@ -43,13 +48,39 @@ namespace IonicApi.Repositories
         }
 
         /// <summary>
+        /// 根据策略id获取组卷的所有题目
+        /// </summary>
+        /// <param name="drawplotId">策略id</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<PeUserTestPaperQuestions>> GetTextPaperQuestionListAsync(int drawplotId)
+        {
+            int id = _context.PeUserTestPaper.SingleOrDefault(e => e.DrawplotId == drawplotId && !e.IsDel).Id;
+            return await _context.PeUserTestPaperQuestions.Where(e => e.PaperId == id && !e.IsDel).OrderBy(e => e.Rank).ToListAsync();
+        }
+
+        /// <summary>
+        /// 根据题目id获取题目详情
+        /// </summary>
+        /// <param name="questionId"></param>
+        /// <returns></returns>
+        public async Task <PeQuestion> GetPeQuestion(int questionId)
+        {
+            return await _context.PeQuestion.Where(e => e.Id == questionId && e.IsDel == false).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// 获取策略对应的题库具有的题型列表
         /// </summary>
         /// <param name="drawplotId">手工组卷Id</param>
         /// <returns></returns>
-        public async Task<IEnumerable<PeTopic>> GetDrawPlotTopicListAsync(int labId)
+        public async Task<IEnumerable<PeTopic>> GetLabTopicListAsync(int labId)
         {
             return await _context.PeTopic.Where(e => e.LabId == labId && !e.IsDel).OrderBy(e => e.Ord).ToListAsync();
+        }
+
+        public async Task<PeLab> GetPeLabAsync(int labId)
+        {
+            return await _context.PeLab.Where(e => e.Id == labId).FirstOrDefaultAsync();
         }
 
         /// <summary>

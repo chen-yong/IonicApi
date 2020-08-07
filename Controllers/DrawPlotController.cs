@@ -72,6 +72,25 @@ namespace IonicApi.Controllers
             return Ok(ret);
         }
 
+
+        public async Task<ActionResult> LabTopic(string authtoken, int labId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var topicList = await _drawPlotRepository.GetLabTopicListAsync(labId);
+                ret.info = _mapper.Map<IEnumerable<DrawPlotTopicDto>>(topicList);
+                ret.message = "成功获取题库对应的题型信息";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+
         /// <summary>
         /// 获取题目列表
         /// </summary>
@@ -288,5 +307,100 @@ namespace IonicApi.Controllers
             }
             return Ok(ret);
         }
+
+        /// <summary>
+        /// 根据题目ID获取题目信息
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="questionId"></param>
+        /// <returns></returns>
+        public async Task<ActionResult> getQuestionById(string authtoken, int questionId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var question = await _drawPlotRepository.GetPeQuestion(questionId);
+                ret.info = _mapper.Map<QuestionDto>(question);
+                ret.retcode = 0;
+                ret.message = "成功获取题目信息";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 获取组卷内部的题目【PeUserTestPaperQuestion】
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="drawplotId">策略id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> TextPaperQuestionList(string authtoken, int drawplotId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var textPaperQuestionsList = await _drawPlotRepository.GetTextPaperQuestionListAsync(drawplotId);
+                ret.info = _mapper.Map<IEnumerable<PeUserTestPaperQuestionDto>>(textPaperQuestionsList);
+                ret.retcode = 0;
+                ret.message = "成功获取组卷题目";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 根据题库id获取题库信息
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="labId">题库id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> GetPeLab(string authtoken, int labId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var entity = await _drawPlotRepository.GetPeLabAsync(labId);
+                ret.info = _mapper.Map<PeLabDto>(entity);
+                ret.message = "成功获取题库名称等信息";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
+        /// <summary>
+        /// 根据知识点id获取知识点内容
+        /// </summary>
+        /// <param name="authtoken"></param>
+        /// <param name="knowledgeId">知识点id</param>
+        /// <returns></returns>
+        public async Task<ActionResult> GetKnowledge(string authtoken, int knowledgeId)
+        {
+            MapiData ret = new MapiData();
+            if (AuthtokenUtility.ValidToken(authtoken))
+            {
+                var entity = await _drawPlotRepository.GetPeKnowledgeAsync(knowledgeId);//
+                ret.info = entity.Name;//
+                ret.message = "成功获取知识点内容";
+            }
+            else
+            {
+                ret.retcode = 13;
+                ret.message = "令牌失效";
+            }
+            return Ok(ret);
+        }
+
     }
 }

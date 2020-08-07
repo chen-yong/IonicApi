@@ -34,7 +34,14 @@ namespace IonicApi.Repositories
         /// </summary>
         /// <param name="labId">策略对应的题库Id</param>
         /// <returns></returns>
-        Task<IEnumerable<PeTopic>> GetDrawPlotTopicListAsync(int labId);
+        Task<IEnumerable<PeTopic>> GetLabTopicListAsync(int labId);
+
+        /// <summary>
+        /// 根据题库id获取题库的信息（名字）
+        /// </summary>
+        /// <param name="labId"></param>
+        /// <returns></returns>
+        Task<PeLab> GetPeLabAsync(int labId);
 
         /// <summary>
         /// 获取题目
@@ -44,6 +51,22 @@ namespace IonicApi.Repositories
         /// <param name="difficultyList">难度id列表</param>
         /// <returns></returns>
         Task<IEnumerable<PeQuestion>> GetQuesListAsync(int labId, string topicList, string difficultyList);
+
+        /// <summary>
+        /// 根据策略id获取组卷的题目
+        /// </summary>
+        /// <param name="drawplotId"></param>
+        /// <returns></returns>
+        Task<IEnumerable<PeUserTestPaperQuestions>> GetTextPaperQuestionListAsync(int drawplotId);
+
+        /// <summary>
+        /// 根据id获取题目详情
+        /// </summary>
+        /// <param name="labId"></param>
+        /// <returns></returns>
+        Task<PeQuestion> GetPeQuestion(int questionId);
+
+        Task<PeKnowledge> GetPeKnowledgeAsync(int knowledgeId);
 
         /// <summary>
         /// 添加试卷记录信息

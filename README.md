@@ -2911,10 +2911,10 @@ http://localhost:5000/api/DrawPlot/QuestionList?authtoken=&labId=158&topicList=7
 
 ```
 
-##### 4.策略对应题库的题型列表
+##### 4.【策略对应】题库的题型列表
 
 ```http
-http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
+http://localhost:5000/api/DrawPlot/LabTopic?authtoken=&labId=160
 ```
 
 参数：
@@ -2925,14 +2925,6 @@ http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
 | labId     | int    | 否       | 题库id |
 
 返回：
-
-| 参数名    | 类型   | 说明   |
-| --------- | ------ | ------ |
-| retcode   | 返回码 |        |
-| authtoken | string |        |
-| info      | object |        |
-| name      | string | 题型   |
-| topicId   | int    | 题型Id |
 
 ```json
 {
@@ -2964,7 +2956,7 @@ http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
     "debug": null,
     "id": 0,
     "datetime": null,
-    "message": null
+    "message": "成功获取题库对应的题型信息"
 }
 ```
 
@@ -2986,6 +2978,174 @@ http://localhost:5000/api/DrawPlot/DrawPlotTopic?authtoken=&labId=160
     "message": "二次编辑手工组卷题目"
 }
 ```
+
+##### 6.获取题库信息
+
+```http
+http://localhost:5000/api/DrawPlot/GetPeLab?authtoken=&labId=158
+```
+
+参数：
+
+| 参数名    | 类型   | 是否可空 | 说明   |
+| --------- | ------ | -------- | ------ |
+| authtoken | string | 否       | 令牌   |
+| labId     | int    | 否       | 题库id |
+
+返回：
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 158,
+        "name": "程序设计基础（C）考试题库（20套）",
+        "shared": 1
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "成功获取题库名称等信息"
+}
+```
+
+##### 7.获取知识点内容
+
+```http
+http://localhost:5000/api/DrawPlot/GetKnowledge?authtoken=&knowledgeId=8
+```
+
+参数：
+
+| 参数名      | 类型   | 是否可空 | 说明     |
+| ----------- | ------ | -------- | -------- |
+| authtoken   | string | 否       | 令牌     |
+| knowledgeId | int    | 否       | 知识点id |
+
+返回：
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": "指针",
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "成功获取知识点内容"
+}
+```
+
+##### 8.获取组卷内题目
+
+```http
+http://localhost:5000/api/DrawPlot/TextPaperQuestionList?authtoken=&drawplotId=2570
+```
+
+参数：
+
+| 参数名     | 类型   | 是否可空 | 说明   |
+| ---------- | ------ | -------- | ------ |
+| authtoken  | string | 否       | 令牌   |
+| drawplotId | int    | 否       | 策略id |
+
+返回：
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": [
+        {
+            "id": 6193,
+            "topicId": 862,
+            "questionId": 44241,
+            "paperId": 485,
+            "rank": 14
+        },
+        {
+            "id": 6194,
+            "topicId": 862,
+            "questionId": 44242,
+            "paperId": 485,
+            "rank": 15
+        }
+    ],
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "成功获取组卷题目"
+}
+```
+
+##### 9.获取题目详情
+
+```http
+http://localhost:5000/api/DrawPlot/getQuestionById?authtoken=&questionId=43739
+```
+
+参数：
+
+| 参数名     | 类型   | 是否可空 | 说明   |
+| ---------- | ------ | -------- | ------ |
+| authtoken  | string | 否       | 令牌   |
+| questionId | int    | 否       | 题目id |
+
+返回：
+
+```json
+{
+    "retcode": 0,
+    "authtoken": null,
+    "info": {
+        "id": 43739,
+        "labId": 158,
+        "topicId": 701,
+        "bundleRank": 1,
+        "questionFace": "程序执行的效率与数据的存储结构相关。",
+        "score": 1.0,
+        "optionA": "正确",
+        "optionB": "错误",
+        "optionC": "",
+        "optionD": "",
+        "answerKey": "A",
+        "answerKeyExt": null,
+        "defaultAnswer": null,
+        "difficulty": 3,
+        "knowledge": "6:",
+        "ord": 2,
+        "isDel": false,
+        "maxTopKnowledgeId": 826
+    },
+    "pagecount": 0,
+    "recordcount": 0,
+    "isfirst": false,
+    "hasnext": false,
+    "items": [],
+    "debug": null,
+    "id": 0,
+    "datetime": null,
+    "message": "成功获取题目信息"
+}
+```
+
+##### 
 
 
 
